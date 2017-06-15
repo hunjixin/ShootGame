@@ -27,7 +27,7 @@ angular.module('starter', ['ionic'])
       var en = new Engine()
       en.Create({
         id: 'myCanvas',
-        isAndroid: true,
+       // isAndroid: true,
         resources: {
           shot: shot,
           bullet: bullet,
