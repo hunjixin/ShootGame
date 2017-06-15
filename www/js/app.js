@@ -24,9 +24,11 @@ angular.module('starter', ['ionic'])
   }).controller('crash', ['$scope',
   function ($scope) {
     setTimeout(function () {
-      var en = new Engine( )
-      en.Create( {
-          id: 'myCanvas',
+      var en = new Engine()
+      en.Create({
+        id: 'myCanvas',
+        isAndroid: true,
+        resources: {
           shot: shot,
           bullet: bullet,
           bg: bg,
@@ -34,23 +36,11 @@ angular.module('starter', ['ionic'])
           eshot: eshot,
           plainImg: plain,
           head: head,
-          enes: [ene1, ene2, ene3, ene4],
-          isAndroid: true
-        })
+          enes: [ene1, ene2, ene3, ene4]
+        },
+        attachObj: $scope
+      })
       en.Start()
-      
-      $scope.click = en.BindEvent.click
-      $scope.move = en.BindEvent.move
-
-      $scope.mouseDown = en.BindEvent.mouseDown
-      $scope.mouseUp = en.BindEvent.mouseUp
-      $scope.click = en.BindEvent.click
-
-     // c.onclick = this.BindEvent.click
-     // c.onmousemove = this.BindEvent.move
-     // body.onmousedown = this.BindEvent.mouseDown
-     // body.onmouseup = this.BindEvent.mouseUp
-
 
     }, 1000)
   }])

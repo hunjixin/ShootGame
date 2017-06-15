@@ -9,7 +9,17 @@ function Engine () {
       shotInterVal: 1000
     },
     playerShotSpeedFactor: 1,
-    isAndroid: false
+    isAndroid: false,
+    resources: {
+      plainImg: '',
+      shot: '',
+      bullet: '',
+      bg: '',
+      eshot: '',
+      hp: '',
+      head: '',
+      enes: ''
+    }
   }
   var shots = []
   var enemies = []
@@ -49,16 +59,27 @@ function Engine () {
 
   this.Create = function (_option) {
     option.id = _option.id
-    option.resources = {}
-    option.resources.plainImg = _option.plainImg
-    option.resources.shot = _option.shot
-    option.resources.bullet = _option.bullet
-    option.resources.bg = _option.bg
-    option.resources.eshot = _option.eshot
-    option.resources.hp = _option.hp
-    option.resources.head = _option.head
-    option.resources.enes = _option.enes
     option.isAndroid = _option.isAndroid
+
+    // resources
+    if (!_option.resources) throw new Error('resource not exist')
+    option.resources.plainImg = _option.resources.plainImg
+    var resourceKeys = Object.keys(option.resources)
+    for (var index in resourceKeys) {
+      var pReourceKeys = Object.keys(_option.resources)
+      if (pReourceKeys.indexOf(resourceKeys[index]) != -1) {
+        option.resources[resourceKeys[index]] = _option.resources[resourceKeys[index]]
+      }else {
+        throw new Error('resource ' + esourceKeys[index] + ' not exist')
+      }
+    }
+
+    // events
+    _option.attachObj.click = en.BindEvent.click
+    _option.attachObj.move = en.BindEvent.move
+    _option.attachObj.mouseDown = en.BindEvent.mouseDown
+    _option.attachObj.mouseUp = en.BindEvent.mouseUp
+
     var c = document.getElementById(option.id)
 
     var body = document.body
@@ -329,14 +350,12 @@ function Engine () {
     }
     // 推送页面
     // head
-    context.drawImage(option.resources.head, -5, 0,
-      option.ctxWidth + 10,
-      headOffset)
+    context.drawImage(option.resources.head, -5, 0,option.ctxWidth + 10,headOffset)
     for (var index = 0;index < player.Hp;index++) {
       var width = (option.resources.hp.width + 5) * index + 5
       context.drawImage(option.resources.hp, width, 0, 20, headOffset)
     }
-    context.drawImage(canvas,
+    context.drawImage(canvas,  //绘制
       0, 0, canvas.width, canvas.height,
       0, headOffset, option.ctxWidth, option.ctxHeight - headOffset)
   }
@@ -562,7 +581,7 @@ function Bullet () {
 function Shot () {
   this.type = 'common'
   this.Attact = 1 // 攻击力
-  belong:0
+  belong=0
   EObject.call(this)
 }
 /**
