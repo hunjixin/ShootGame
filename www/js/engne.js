@@ -265,7 +265,7 @@ function Engine () {
     for (var index in shots) {
       if (shots[index].isDie) continue
       var shot = shots[index]
-      shot.position.y += shot.speedY
+      shot.position.y -= shot.speedY
     }
 
     for (var index in enemies) {
@@ -433,8 +433,8 @@ function Engine () {
 
   eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
     if (plainMoveState.isMouseDown === true) {
-      plainMoveState.position.x = eventInfo.position.x - player.width / 2
-      plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y) - player.height / 2
+      plainMoveState.position.x = eventInfo.position.x 
+      plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y)
     }
   })
 
@@ -458,13 +458,8 @@ function Engine () {
     }
 
     if (option.isAndroid) {
-      if (action == 'click') {
         evnetInfo.position.x = event.pageX - event.target.offsetLeft
         evnetInfo.position.y = Util.sceneYTransform(event.pageY)
-      }else {
-        evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
-        evnetInfo.position.y = Util.sceneYTransform(event.gesture.center.pageY)
-      }
     }else {
       evnetInfo.position.x = event.offsetX
       evnetInfo.position.y = Util.sceneYTransform(event.offsetY)
@@ -520,7 +515,7 @@ function Engine () {
       return false
     },
     isEffect: function (plain, action , eventInfo) {
-      var pos = {x: clickXp,y: clickYp}
+      var pos = {x: eventInfo.position.x,y: eventInfo.position.y}
       var rect = {
         x: plain.position.x,
         y: plain.position.y,
