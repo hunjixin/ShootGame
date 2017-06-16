@@ -5,7 +5,7 @@ function Engine () {
     'id': '',
     enemy: {
       speedFactor: 0.8,
-      shotSpeedFactor: 0.6,
+      shotSpeedFactor: -0.6,
       shotInterVal: 1000
     },
     playerShotSpeedFactor: 1,
@@ -116,7 +116,7 @@ function Engine () {
     player.position.y = (option.ctxHeight - player.height)
     player.setShot(100)
   }
-  this.getOption = function () {return option}
+
   /**
    * time
    */
@@ -242,7 +242,6 @@ function Engine () {
       var shot = Util.createShot(player, 0)
       shots.push(shot)
       player.isShot = false
-
       statInfo.emitShot[shot.type]++
     }
 
@@ -254,7 +253,7 @@ function Engine () {
     {
       var rad = Math.random() * 3 + ''
       statInfo.allEnemy++
-      Util.createEnemy(parseInt(rad.charAt(0)) + 1)
+      Util.createEnemy(parseInt(rad.charAt(0)) + 2)
     }
 
     if (Math.random() < 0.01) // 百分之一生成敌军
@@ -266,17 +265,13 @@ function Engine () {
     for (var index in shots) {
       if (shots[index].isDie) continue
       var shot = shots[index]
-      if (shot.direct == 0) {
-        shot.position.y -= shot.speed
-      }else {
-        shot.position.y += shot.speed
-      }
+      shot.position.y += shot.speedY
     }
 
     for (var index in enemies) {
       if (enemies[index].isDie) continue
       var enemy = enemies[index]
-      enemy.position.y += enemy.speed
+      enemy.position.y += enemy.speedY
       if (enemy.isShot) {
         var shot = Util.createShot(enemy, 1)
         shots.push(shot)
@@ -424,9 +419,11 @@ function Engine () {
   eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
     plainMoveState.isMouseDown = true
   })
+
   eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
     plainMoveState.isMouseDown = false
   })
+
   eventRelative.attachEvet(scene, 'click', function (obj, eventInfo) {
     if (!isRunning && !plainMoveState.isMouseDown) {
       isRunning = true
@@ -436,37 +433,63 @@ function Engine () {
 
   eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
     if (plainMoveState.isMouseDown === true) {
-      if (option.isAndroid) {
-        plainMoveState.position.x = eventInfo.gesture.center.pageX - player.width / 2 - eventInfo.gesture.target.offsetLeft
-        plainMoveState.position.y = Util.sceneYTransform(eventInfo.gesture.center.pageY) - player.height / 2
-      }else {
-        plainMoveState.position.x = eventInfo.offsetX - player.width / 2
-        plainMoveState.position.y = Util.sceneYTransform(eventInfo.offsetY) - player.height / 2
-      }
+      plainMoveState.position.x = eventInfo.position.x - player.width / 2
+      plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y) - player.height / 2
     }
   })
-  // 外部事件转内部事件驱动  
 
-  // 外部时间触发内部时间
+  // 外部事件转内部事件驱动  
+  var pacakgeEvent = function (event) {
+    var evnetInfo = {
+      position: {x: 0,y: 0}
+    }
+    if (option.isAndroid) {
+      evnetInfo.position.x = event.gesture.center.pageX - player.width / 2 - event.gesture.target.offsetLeft
+      evnetInfo.position.y = Util.sceneYTransform(event.gesture.center.pageY) - player.height / 2
+    }else {
+      evnetInfo.position.x = event.offsetX - player.width / 2
+      evnetInfo.position.y = Util.sceneYTransform(event.offsetY) - player.height / 2
+    }
+    return evnetInfo
+  }
+  var pacakgeClick = function (event) {
+    var evnetInfo = {
+      position: {x: 0,y: 0}
+    }
+
+    if (option.isAndroid) {
+      if (action == 'click') {
+        evnetInfo.position.x = event.pageX - event.target.offsetLeft
+        evnetInfo.position.y = Util.sceneYTransform(event.pageY)
+      }else {
+        evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
+        evnetInfo.position.y = Util.sceneYTransform(event.gesture.center.pageY)
+      }
+    }else {
+      evnetInfo.position.x = event.offsetX
+      evnetInfo.position.y = Util.sceneYTransform(event.offsetY)
+    }
+    return evnetInfo
+  }
   var moveFunc = (function () {
     return function () {
-      eventRelative.triggerEvent('mouseMove', arguments[0])
+      eventRelative.triggerEvent('mouseMove', pacakgeEvent(arguments[0]))
     }
   })()
 
   var moveDownFunc = (function () {
     return function () {
-      eventRelative.triggerEvent('mouseDown', arguments[0])
+      eventRelative.triggerEvent('mouseDown', pacakgeEvent(arguments[0]))
     }
   })()
   var moveUpFunc = (function () {
     return function () {
-      eventRelative.triggerEvent('mouseUp', arguments[0])
+      eventRelative.triggerEvent('mouseUp', pacakgeEvent(arguments[0]))
     }
   })()
   var clickFunc = (function () {
     return function () {
-      eventRelative.triggerEvent('click', arguments[0])
+      eventRelative.triggerEvent('click', pacakgeClick(arguments[0]))
     }
   })()
 
@@ -497,19 +520,6 @@ function Engine () {
       return false
     },
     isEffect: function (plain, action , eventInfo) {
-      if (this.isAndroid()) {
-        if (action == 'click') {
-          var clickXp = eventInfo.pageX - eventInfo.target.offsetLeft
-          var clickYp = Util.sceneYTransform(eventInfo.pageY)
-        }else {
-          var clickXp = eventInfo.gesture.center.pageX - eventInfo.gesture.target.offsetLeft
-          var clickYp = Util.sceneYTransform(eventInfo.gesture.center.pageY)
-        }
-      }else {
-        var clickXp = eventInfo.offsetX
-        var clickYp = Util.sceneYTransform(eventInfo.offsetY)
-      }
-
       var pos = {x: clickXp,y: clickYp}
       var rect = {
         x: plain.position.x,
@@ -541,8 +551,7 @@ function Engine () {
       enemy.Oid = ++currentOid
       enemy.position.x = option.ctxWidth * Math.random()
       enemy.position.y = 0 - enemy.width
-      enemy.speed = 5 * option.enemy.speedFactor
-      enemy.direct = 0
+      enemy.speedY = 5 * option.enemy.speedFactor
       enemies.push(enemy)
 
       enemy.icon = option.resources.enes[type - 1]
@@ -566,16 +575,14 @@ function Engine () {
         case 0:
           shot.width = 8
           shot.height = 24
-          shot.speed = 10 * option.playerShotSpeedFactor
+          shot.speedY = 10 * option.playerShotSpeedFactor
           shot.icon = option.resources.shot
-          shot.direct = 0
           break
         case 1:
           shot.width = 5
           shot.height = 15
           shot.icon = option.resources.eshot
-          shot.direct = 1
-          shot.speed = (eobject.speed + 8) * option.enemy.shotSpeedFactor
+          shot.speedY = (eobject.speedY + 8) * option.enemy.shotSpeedFactor
           break
       }
       shot.position.x = eobject.position.x + eobject.width / 2 - shot.width / 2
@@ -592,8 +599,8 @@ function EObject (isShot) {
   this.icon // 图片
   this.width = 0 // 宽度
   this.height = 0 // 高度
-  this.speed = 5 // 速度
-  this.direct = 0 // 0  向上   1  向下
+  this.speedY = 5 // Y速度
+  this.speedX = 5 // X速度
   this.position = {x: 0,y: 0} // 位置
   this.isDie = false // 是否死亡
   this.isShot = false // 是否处于发射状态
