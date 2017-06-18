@@ -2,6 +2,7 @@ function Engine () {
   var currentOid = 0
   var isRunning = true
   var option = {
+    isDebug: true,
     'id': '',
     enemy: {
       speedFactor: 0.8,
@@ -77,15 +78,15 @@ function Engine () {
 
     // events
     if (option.isAndroid) {
-      _option.attachObj.click = this.EventInput.click
-      _option.attachObj.move = this.EventInput.move
-      _option.attachObj.mouseDown = this.EventInput.mouseDown
-      _option.attachObj.mouseUp = this.EventInput.mouseUp
+      _option.attachEvent.click = this.EventInput.click
+      _option.attachEvent.move = this.EventInput.move
+      _option.attachEvent.mouseDown = this.EventInput.mouseDown
+      _option.attachEvent.mouseUp = this.EventInput.mouseUp
     }else {
-      _option.attachObj.onclick = this.EventInput.click
-      _option.attachObj.onmousemove = this.EventInput.move
-      _option.attachObj.onmousedown = this.EventInput.mouseDown
-      _option.attachObj.onmouseup = this.EventInput.mouseUp
+      _option.attachEvent.onclick = this.EventInput.click
+      _option.attachEvent.onmousemove = this.EventInput.move
+      _option.attachEvent.onmousedown = this.EventInput.mouseDown
+      _option.attachEvent.onmouseup = this.EventInput.mouseUp
     }
 
     var c = document.getElementById(option.id)
@@ -132,19 +133,18 @@ function Engine () {
       }
     }
     drawTm = setInterval(before(draw), 50)
+    drawTm = setInterval(before(checkCollection), 50)
     moveTm = setInterval(before(objectMove), 50)
     clearTm = setInterval(before(clearObject), 5000)
   }
-
+  // 绘制
   var draw = function () {
-    // 绘制
     drawBuffer()
-    // 检测碰撞
-    checkCollection()
     // 报告
     statInfo.currentShotNum = shots.length
     statInfo.currentEnemyNum = enemies.length
   }
+  // 检测碰撞
   var checkCollection = function () {
     var plainRect = {
       x: player.position.x,
@@ -232,10 +232,10 @@ function Engine () {
     }
 
     if (player.Hp <= 0) {
-      // alert('game over')
       isRunning = false
     }
   }
+  //对象移动
   var objectMove = function () {
     // 生成新的个体
     if (player.isShot) {
@@ -249,14 +249,14 @@ function Engine () {
       player.position = plainMoveState.position
     }
 
-    if (Math.random() < 0.07) // 百分之五生成敌军
+    if (Math.random() < 0.07) // 百分之七生成敌军
     {
       var rad = Math.random() * 3 + ''
       statInfo.allEnemy++
       Util.createEnemy(parseInt(rad.charAt(0)) + 2)
     }
 
-    if (Math.random() < 0.01) // 百分之一生成敌军
+    if (Math.random() < 0.01) // 百分之一生成强力敌军
     {
       statInfo.allEnemy++
       Util.createEnemy(1)
@@ -280,7 +280,7 @@ function Engine () {
       }
     }
   }
-
+  //对象清理
   var clearObject = function (that) {
     // 删除越界的对象  
     for (var i = shots.length - 1;i > -1;i--) {
@@ -301,7 +301,9 @@ function Engine () {
       }
     }
   }
-
+ /**
+  * 绘图
+  */
   function drawBuffer () {
     var canvas = document.createElement('canvas')
     var tempContext = canvas.getContext('2d')
@@ -312,25 +314,6 @@ function Engine () {
       tempContext.drawImage(eobj.icon,
         eobj.position.x , eobj.position.y,
         eobj.width, eobj.height)
-    }
-    function drawString (str) {
-      var lineWidth = 0
-      var initHeight = 30
-      var lastSubStrIndex = 0
-      var wid = 100
-      // tempContext.font = '30px Verdana'
-      for (let i = 0;i < str.length;i++) {
-        lineWidth += tempContext.measureText(str[i]).width
-        if (lineWidth > wid) {
-          tempContext.fillText(str.substring(lastSubStrIndex, i), 0, initHeight); // 绘制截取部分
-          initHeight += 20; // 20为字体的高度
-          lineWidth = 0
-          lastSubStrIndex = i
-        }
-        if (i == str.length - 1) { // 绘制剩余部分
-          tempContext.fillText(str.substring(lastSubStrIndex, i + 1), 0, initHeight)
-        }
-      }
     }
     // 背景
     tempContext.drawImage(option.resources.bg, 0, 0,
@@ -354,11 +337,13 @@ function Engine () {
       drawEobject(bullet)
     }
     // 绘制文本
-    var arr = statInfo.getDebugArray()
-    for (var index = 0;index < arr.length;index++) {
-      tempContext.strokeText(arr[index], 10, 10 * (index + 1))
+    if (option.isDebug) {
+      var arr = statInfo.getDebugArray()
+      for (var index = 0;index < arr.length;index++) {
+        tempContext.strokeText(arr[index], 10, 10 * (index + 1))
+      }
     }
-    // 推送页面
+
     // head
     context.drawImage(option.resources.head, -5, 0, option.ctxWidth + 10, headOffset)
     // hp
@@ -394,16 +379,18 @@ function Engine () {
    */
   // 此类型用于事件转换
   var eventRelative = {
-    click: [],
-    mouseDown: [],
+    click: [],        
+    mouseDown: [],     
     mouseUp: [],
     mouseMove: [],
+    //附加事件中 object-action-callback
     attachEvet: function (target, action, callback) {
       var eventMsg = {target: target,callback: callback}
       var funcs = this[action]
       if (!funcs) throw new Error('not support event')
       funcs.push(eventMsg)
     },
+    //触发事件中 action-eventInfo
     triggerEvent: function (action, eventInfo) {
       var funcs = this[action]
       if (!funcs) throw new Error('not support event')
@@ -416,29 +403,31 @@ function Engine () {
   }
 
   // 注册内部事件
+  //玩家开始移动
   eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
     plainMoveState.isMouseDown = true
   })
-
+  //玩家停止移动
   eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
     plainMoveState.isMouseDown = false
   })
-
+  //重置事件
   eventRelative.attachEvet(scene, 'click', function (obj, eventInfo) {
     if (!isRunning && !plainMoveState.isMouseDown) {
       isRunning = true
       reset()
     }
   })
-
+  //玩家移动中
   eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
     if (plainMoveState.isMouseDown === true) {
-      plainMoveState.position.x = eventInfo.position.x 
+      plainMoveState.position.x = eventInfo.position.x
       plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y)
     }
   })
 
   // 外部事件转内部事件驱动  
+  //包装按键按下，抬起，移动事件
   var pacakgeEvent = function (event) {
     var evnetInfo = {
       position: {x: 0,y: 0}
@@ -452,42 +441,46 @@ function Engine () {
     }
     return evnetInfo
   }
+  //包装单击事件
   var pacakgeClick = function (event) {
     var evnetInfo = {
       position: {x: 0,y: 0}
     }
 
     if (option.isAndroid) {
-        evnetInfo.position.x = event.pageX - event.target.offsetLeft
-        evnetInfo.position.y = Util.sceneYTransform(event.pageY)
+      evnetInfo.position.x = event.pageX - event.target.offsetLeft
+      evnetInfo.position.y = Util.sceneYTransform(event.pageY)
     }else {
       evnetInfo.position.x = event.offsetX
       evnetInfo.position.y = Util.sceneYTransform(event.offsetY)
     }
     return evnetInfo
   }
+  //移动事件
   var moveFunc = (function () {
     return function () {
       eventRelative.triggerEvent('mouseMove', pacakgeEvent(arguments[0]))
     }
   })()
-
+ //按下事件
   var moveDownFunc = (function () {
     return function () {
       eventRelative.triggerEvent('mouseDown', pacakgeEvent(arguments[0]))
     }
   })()
+  //抬起事件
   var moveUpFunc = (function () {
     return function () {
       eventRelative.triggerEvent('mouseUp', pacakgeEvent(arguments[0]))
     }
   })()
+  //点击事件
   var clickFunc = (function () {
     return function () {
       eventRelative.triggerEvent('click', pacakgeClick(arguments[0]))
     }
   })()
-
+  //事件输入
   this.EventInput = {
     mouseDown: moveDownFunc,
     mouseUp: moveUpFunc,
@@ -586,7 +579,9 @@ function Engine () {
     }
   }
 }
-
+/**
+ * 基类
+ */
 function EObject (isShot) {
   this.Oid = -1 // id
   this.AllHp = 1 // 总HP

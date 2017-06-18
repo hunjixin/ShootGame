@@ -39,14 +39,6 @@ body
 {
     text-align:center
 }
-textarea{
-    position: absolute;
-    z-index: 200;
-    width: 100px;
-    height:500px;
-    top: 0;
-    left: 0;
-}
     </style>
 
 
@@ -55,7 +47,7 @@ textarea{
 
     <ion-pane>
       <ion-content>
-        <canvas on-drag="move($event)" ng-click="click()" on-touch="mouseDown($event)" on-release="mouseUp($event)" id="myCanvas"  style="border:1px solid #d3d3d3;background:#ffffff;">
+        <canvas width="300" height="500" on-drag="move($event)" ng-click="click($event)" on-touch="mouseDown($event)" on-release="mouseUp($event)" id="myCanvas"  style="border:1px solid #d3d3d3;background:#ffffff;">
       Your browser does not support the HTML5 canvas tag.
 </canvas>
       </ion-content>

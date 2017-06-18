@@ -9,8 +9,19 @@ function Engine () {
       shotInterVal: 1000
     },
     playerShotSpeedFactor: 1,
-    isAndroid: false
+    isAndroid: false,
+    resources: {
+      plainImg: '',
+      shot: '',
+      bullet: '',
+      bg: '',
+      eshot: '',
+      hp: '',
+      head: '',
+      enes: ''
+    }
   }
+  var scene = {}
   var shots = []
   var enemies = []
   var bullets = []
@@ -48,28 +59,52 @@ function Engine () {
   }
 
   this.Create = function (_option) {
+    option.isAndroid = Util.isAndroid()
     option.id = _option.id
-    option.resources = {}
-    option.resources.plainImg = _option.plainImg
-    option.resources.shot = _option.shot
-    option.resources.bullet = _option.bullet
-    option.resources.bg = _option.bg
-    option.resources.eshot = _option.eshot
-    option.resources.hp = _option.hp
-    option.resources.head = _option.head
-    option.resources.enes = _option.enes
-    option.isAndroid = _option.isAndroid
+
+    // resources
+    if (!_option.resources) throw new Error('resource not exist')
+    option.resources.plainImg = _option.resources.plainImg
+    var resourceKeys = Object.keys(option.resources)
+    for (var index in resourceKeys) {
+      var pReourceKeys = Object.keys(_option.resources)
+      if (pReourceKeys.indexOf(resourceKeys[index]) != -1) {
+        option.resources[resourceKeys[index]] = _option.resources[resourceKeys[index]]
+      }else {
+        throw new Error('resource ' + esourceKeys[index] + ' not exist')
+      }
+    }
+
+    // events
+    if (option.isAndroid) {
+      _option.attachObj.click = this.EventInput.click
+      _option.attachObj.move = this.EventInput.move
+      _option.attachObj.mouseDown = this.EventInput.mouseDown
+      _option.attachObj.mouseUp = this.EventInput.mouseUp
+    }else {
+      _option.attachObj.onclick = this.EventInput.click
+      _option.attachObj.onmousemove = this.EventInput.move
+      _option.attachObj.onmousedown = this.EventInput.mouseDown
+      _option.attachObj.onmouseup = this.EventInput.mouseUp
+    }
+
     var c = document.getElementById(option.id)
 
     var body = document.body
     if (option.isAndroid) {
       c.width = body.scrollWidth
-      c.height = body.scrollHeight
+      c.height = body.scrollHeight - 6
     }
 
     context = c.getContext('2d')
     option.ctxHeight = context.canvas.clientHeight
     option.ctxWidth = context.canvas.clientWidth
+
+    scene.position = {}
+    scene.position.x = 0
+    scene.position.y = 0
+    scene.width = option.ctxWidth
+    scene.height = option.ctxHeight
 
     player.icon = option.resources.plainImg
     player.Oid = ++currentOid
@@ -81,6 +116,7 @@ function Engine () {
     player.position.y = (option.ctxHeight - player.height)
     player.setShot(100)
   }
+  this.getOption = function () {return option}
   /**
    * time
    */
@@ -329,14 +365,14 @@ function Engine () {
     }
     // 推送页面
     // head
-    context.drawImage(option.resources.head, -5, 0,
-      option.ctxWidth + 10,
-      headOffset)
+    context.drawImage(option.resources.head, -5, 0, option.ctxWidth + 10, headOffset)
+    // hp
     for (var index = 0;index < player.Hp;index++) {
       var width = (option.resources.hp.width + 5) * index + 5
       context.drawImage(option.resources.hp, width, 0, 20, headOffset)
     }
-    context.drawImage(canvas,
+    // scene
+    context.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height,
       0, headOffset, option.ctxWidth, option.ctxHeight - headOffset)
   }
@@ -361,55 +397,80 @@ function Engine () {
   /**
    * event
    */
-  var shotFunc = (function () {
-    return function () {}
-  })()
-
-  var moveFunc = (function () {
-    return function () {
-      if (plainMoveState.isMouseDown === true) {
-        if (arguments[0].gesture) {
-          plainMoveState.position.x = arguments[0].gesture.center.pageX - player.width / 2 - arguments[0].gesture.target.offsetLeft
-          plainMoveState.position.y = Util.sceneYTransform(arguments[0].gesture.center.pageY) - player.height / 2
-        }else {
-          plainMoveState.position.x = arguments[0].offsetX - player.width / 2
-          plainMoveState.position.y = Util.sceneYTransform(arguments[0].offsetY) - player.height / 2
+  // 此类型用于事件转换
+  var eventRelative = {
+    click: [],
+    mouseDown: [],
+    mouseUp: [],
+    mouseMove: [],
+    attachEvet: function (target, action, callback) {
+      var eventMsg = {target: target,callback: callback}
+      var funcs = this[action]
+      if (!funcs) throw new Error('not support event')
+      funcs.push(eventMsg)
+    },
+    triggerEvent: function (action, eventInfo) {
+      var funcs = this[action]
+      if (!funcs) throw new Error('not support event')
+      for (var i = 0;i < funcs.length;i++) {
+        if (Util.isEffect(funcs[i].target, action, eventInfo)) {
+          funcs[i].callback(funcs[i].target, eventInfo)
         }
       }
+    }
+  }
+
+  // 注册内部事件
+  eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
+    plainMoveState.isMouseDown = true
+  })
+  eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
+    plainMoveState.isMouseDown = false
+  })
+  eventRelative.attachEvet(scene, 'click', function (obj, eventInfo) {
+    if (!isRunning && !plainMoveState.isMouseDown) {
+      isRunning = true
+      reset()
+    }
+  })
+
+  eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
+    if (plainMoveState.isMouseDown === true) {
+      if (option.isAndroid) {
+        plainMoveState.position.x = eventInfo.gesture.center.pageX - player.width / 2 - eventInfo.gesture.target.offsetLeft
+        plainMoveState.position.y = Util.sceneYTransform(eventInfo.gesture.center.pageY) - player.height / 2
+      }else {
+        plainMoveState.position.x = eventInfo.offsetX - player.width / 2
+        plainMoveState.position.y = Util.sceneYTransform(eventInfo.offsetY) - player.height / 2
+      }
+    }
+  })
+  // 外部事件转内部事件驱动  
+
+  // 外部时间触发内部时间
+  var moveFunc = (function () {
+    return function () {
+      eventRelative.triggerEvent('mouseMove', arguments[0])
     }
   })()
 
   var moveDownFunc = (function () {
     return function () {
-      var eventInfo = arguments[0]
-      if (Util.effectOp(player, eventInfo)) {
-        plainMoveState.isMouseDown = true
-      }
+      eventRelative.triggerEvent('mouseDown', arguments[0])
     }
   })()
   var moveUpFunc = (function () {
     return function () {
-      plainMoveState.isMouseDown = false
+      eventRelative.triggerEvent('mouseUp', arguments[0])
     }
   })()
   var clickFunc = (function () {
     return function () {
-      if (!isRunning && !plainMoveState.isMouseDown) {
-        isRunning = true
-        reset()
-      }
+      eventRelative.triggerEvent('click', arguments[0])
     }
   })()
-  this.BindEvent = {
-    start: function () {
-      isRunning = true
-    },
-    stop: function () {
-      isRunning = false
-    },
-    exit: function () {
-      // 销毁
-    },
+
+  this.EventInput = {
     mouseDown: moveDownFunc,
     mouseUp: moveUpFunc,
     click: clickFunc,
@@ -435,10 +496,15 @@ function Engine () {
       }
       return false
     },
-    effectOp: function (plain, eventInfo) {
-      if (eventInfo.gesture) {
-        var clickXp = eventInfo.gesture.center.pageX - eventInfo.gesture.target.offsetLeft
-        var clickYp = Util.sceneYTransform(eventInfo.gesture.center.pageY)
+    isEffect: function (plain, action , eventInfo) {
+      if (this.isAndroid()) {
+        if (action == 'click') {
+          var clickXp = eventInfo.pageX - eventInfo.target.offsetLeft
+          var clickYp = Util.sceneYTransform(eventInfo.pageY)
+        }else {
+          var clickXp = eventInfo.gesture.center.pageX - eventInfo.gesture.target.offsetLeft
+          var clickYp = Util.sceneYTransform(eventInfo.gesture.center.pageY)
+        }
       }else {
         var clickXp = eventInfo.offsetX
         var clickYp = Util.sceneYTransform(eventInfo.offsetY)
@@ -461,6 +527,10 @@ function Engine () {
     },
     sceneYTransform: function (y) {
       return (y - headOffset) / (option.ctxHeight - headOffset) * option.ctxHeight
+    },
+    isAndroid: function () {
+      var u = navigator.userAgent
+      return u.indexOf('Android') > -1 || u.indexOf('Adr') > -1
     },
     createEnemy: function (type) {
       // 1 大飞机  2,3,4 小飞机
@@ -562,7 +632,7 @@ function Bullet () {
 function Shot () {
   this.type = 'common'
   this.Attact = 1 // 攻击力
-  belong:0
+  belong = 0
   EObject.call(this)
 }
 /**

@@ -38,7 +38,7 @@ angular.module('starter', ['ionic'])
           head: head,
           enes: [ene1, ene2, ene3, ene4]
         },
-        attachObj: $scope
+        attachEvent: $scope
       })
       en.Start()
 
