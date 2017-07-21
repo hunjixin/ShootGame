@@ -1,6 +1,6 @@
 function Engine () {
   var currentOid = 0
-  var isRunning = true
+  var isRunning = 1  //三种状态 1 预备/2 进行 /3 结束
   var option = {
     isDebug: true,
     'id': '',
@@ -27,7 +27,7 @@ function Engine () {
   var enemies = []
   var bullets = []
   var headOffset = 20
-  var player = new Player(true)
+  var player
   var context = ''
   var plainMoveState = {
     isMouseDown: false,
@@ -106,16 +106,32 @@ function Engine () {
     scene.position.y = 0
     scene.width = option.ctxWidth
     scene.height = option.ctxHeight
+    // 重置事件
+    eventRelative.attachEvet(scene, 'click', function (obj, eventInfo) {
+      if (!isRunning && !plainMoveState.isMouseDown) {
+        isRunning = true
+        reset()
+      }
+    })
 
-    player.icon = option.resources.plainImg
-    player.Oid = ++currentOid
-    player.width = 30
-    player.height = 24
-    player.AllHp = 3
-    player.Hp = player.AllHp
-    player.position.x = (option.ctxWidth - player.width) / 2
-    player.position.y = (option.ctxHeight - player.height)
-    player.setShot(100)
+    player = new Player(true)
+    player.readyShot(100)
+    // 注册事件
+    // 玩家开始移动
+    eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
+      plainMoveState.isMouseDown = true
+    })
+    // 玩家停止移动
+    eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
+      plainMoveState.isMouseDown = false
+    })
+    // 玩家移动中
+    eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
+      if (plainMoveState.isMouseDown === true) {
+        plainMoveState.position.x = eventInfo.position.x
+        plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y)
+      }
+    })
   }
 
   /**
@@ -128,7 +144,7 @@ function Engine () {
     // 拦截作用 必要时可以扩展出去
     var before = function (callback) {
       return function () {
-        if (!isRunning) return
+        if (isRunning!=1) return
         callback()
       }
     }
@@ -232,16 +248,15 @@ function Engine () {
     }
 
     if (player.Hp <= 0) {
-      isRunning = false
+      isRunning = 2
     }
   }
-  //对象移动
+  // 对象移动
   var objectMove = function () {
     // 生成新的个体
-    if (player.isShot) {
-      var shot = Util.createShot(player, 0)
+    var shot = player.getShot()
+    if (shot) {
       shots.push(shot)
-      player.isShot = false
       statInfo.emitShot[shot.type]++
     }
 
@@ -272,15 +287,14 @@ function Engine () {
       if (enemies[index].isDie) continue
       var enemy = enemies[index]
       enemy.position.y += enemy.speedY
-      if (enemy.isShot) {
-        var shot = Util.createShot(enemy, 1)
-        shots.push(shot)
-        enemy.isShot = false
-        statInfo.emitShot[shot.type]++
+      var eShot = enemy.getShot()
+      if (eShot) {
+        shots.push(eShot)
+        statInfo.emitShot[eShot.type]++
       }
     }
   }
-  //对象清理
+  // 对象清理
   var clearObject = function (that) {
     // 删除越界的对象  
     for (var i = shots.length - 1;i > -1;i--) {
@@ -301,9 +315,9 @@ function Engine () {
       }
     }
   }
- /**
-  * 绘图
-  */
+  /**
+   * 绘图
+   */
   function drawBuffer () {
     var canvas = document.createElement('canvas')
     var tempContext = canvas.getContext('2d')
@@ -383,14 +397,23 @@ function Engine () {
     mouseDown: [],     
     mouseUp: [],
     mouseMove: [],
-    //附加事件中 object-action-callback
+    // 附加事件中 object-action-callback
     attachEvet: function (target, action, callback) {
       var eventMsg = {target: target,callback: callback}
       var funcs = this[action]
       if (!funcs) throw new Error('not support event')
       funcs.push(eventMsg)
     },
-    //触发事件中 action-eventInfo
+    detachEvent:function(target,action)
+    {
+      var funcs = this[action]
+      for (var i = 0;i < funcs.length;i++) {
+        if (funcs[i].target==target) {
+         Util.removeArr(funcs,funcs[i])
+        }
+      }
+    },
+    // 触发事件中 action-eventInfo
     triggerEvent: function (action, eventInfo) {
       var funcs = this[action]
       if (!funcs) throw new Error('not support event')
@@ -402,32 +425,8 @@ function Engine () {
     }
   }
 
-  // 注册内部事件
-  //玩家开始移动
-  eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
-    plainMoveState.isMouseDown = true
-  })
-  //玩家停止移动
-  eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
-    plainMoveState.isMouseDown = false
-  })
-  //重置事件
-  eventRelative.attachEvet(scene, 'click', function (obj, eventInfo) {
-    if (!isRunning && !plainMoveState.isMouseDown) {
-      isRunning = true
-      reset()
-    }
-  })
-  //玩家移动中
-  eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
-    if (plainMoveState.isMouseDown === true) {
-      plainMoveState.position.x = eventInfo.position.x
-      plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y)
-    }
-  })
-
   // 外部事件转内部事件驱动  
-  //包装按键按下，抬起，移动事件
+  // 包装按键按下，抬起，移动事件
   var pacakgeEvent = function (event) {
     var evnetInfo = {
       position: {x: 0,y: 0}
@@ -441,7 +440,7 @@ function Engine () {
     }
     return evnetInfo
   }
-  //包装单击事件
+  // 包装单击事件
   var pacakgeClick = function (event) {
     var evnetInfo = {
       position: {x: 0,y: 0}
@@ -456,31 +455,31 @@ function Engine () {
     }
     return evnetInfo
   }
-  //移动事件
+  // 移动事件
   var moveFunc = (function () {
     return function () {
       eventRelative.triggerEvent('mouseMove', pacakgeEvent(arguments[0]))
     }
   })()
- //按下事件
+  // 按下事件
   var moveDownFunc = (function () {
     return function () {
       eventRelative.triggerEvent('mouseDown', pacakgeEvent(arguments[0]))
     }
   })()
-  //抬起事件
+  // 抬起事件
   var moveUpFunc = (function () {
     return function () {
       eventRelative.triggerEvent('mouseUp', pacakgeEvent(arguments[0]))
     }
   })()
-  //点击事件
+  // 点击事件
   var clickFunc = (function () {
     return function () {
       eventRelative.triggerEvent('click', pacakgeClick(arguments[0]))
     }
   })()
-  //事件输入
+  // 事件输入
   this.EventInput = {
     mouseDown: moveDownFunc,
     mouseUp: moveUpFunc,
@@ -500,8 +499,8 @@ function Engine () {
       return false
     },
     inArea: function (position, rect) {
-      if (position.x > rect.x && position.x < rect.x + rect.width) {
-        if (position.y > rect.y && position.y < rect.y + rect.height) {
+      if (position.x >= rect.x && position.x <= rect.x + rect.width) {
+        if (position.y >= rect.y && position.y <= rect.y + rect.height) {
           return true
         }
       }
@@ -535,7 +534,7 @@ function Engine () {
 
       statInfo.allEnemy++
       var enemy = new Enemy(true)
-      enemy.setShot(option.enemy.shotInterVal)
+      enemy.readyShot(500 * (Math.random() + 1))
       enemy.Oid = ++currentOid
       enemy.position.x = option.ctxWidth * Math.random()
       enemy.position.y = 0 - enemy.width
@@ -551,92 +550,119 @@ function Engine () {
         enemy.width = 20
         enemy.height = 30
       }
-      enemy.setShot(500 * (Math.random() + 1))
-    },
-    createShot: function (eobject, type) {
-      // type 型号1 玩家 型号2
+    }
+  }
+
+  /**
+ * 基类
+ */
+  function EObject () {
+    this.Oid = -1 // id
+    this.icon // 图片
+    this.width = 0 // 宽度
+    this.height = 0 // 高度
+    this.speedY = 5 // Y速度
+    this.speedX = 5 // X速度
+    this.position = {x: 0,y: 0} // 位置
+  }
+
+  function Plain (enableShot) {
+    EObject.call(this)
+
+    this.AllHp = 1 // 总HP
+    this.Hp = 1 // 当前Hp
+    this.isDie = false // 是否死亡
+    this.shotInterVal = 500 // 发射周期
+    this.enableShot = enableShot // 是否发射
+    this.interval // 发射器
+    this.shot
+    var that = this
+    this.readyShot = function (time) {
+      if (! this.enableShot) return
+      var that = this
+      that.shotInterVal = time
+      clearTimeout(that.interval)
+      that.interval = setInterval(function () {
+        if (that.shot) return
+        that.shot = that.shotFactory()
+      }, time)
+    }
+
+    this.getShot = function () {
+      if (this.shot) {
+        var rShot = this.shot
+        this.shot = undefined
+        return rShot
+      }else {
+        return undefined
+      }
+    }
+  }
+  /**
+   * 敌军
+   * @param {*是否发射} isShot 
+   */
+  function Enemy (isShot) {
+    Plain.call(this, isShot)
+    this.type = 'common'
+
+    this.shotFactory = function () {
       var shot = new Shot()
       shot.Oid = ++currentOid
-      shot.belong = eobject.Oid
+      shot.belong = this.Oid
       shot.Hp = 1
-      switch (type) {
-        case 0:
-          shot.width = 8
-          shot.height = 24
-          shot.speedY = 10 * option.playerShotSpeedFactor
-          shot.icon = option.resources.shot
-          break
-        case 1:
-          shot.width = 5
-          shot.height = 15
-          shot.icon = option.resources.eshot
-          shot.speedY = (eobject.speedY + 8) * option.enemy.shotSpeedFactor
-          break
-      }
-      shot.position.x = eobject.position.x + eobject.width / 2 - shot.width / 2
-      shot.position.y = eobject.position.y
+      shot.width = 5
+      shot.height = 15
+      shot.icon = option.resources.eshot
+      shot.speedY = (this.speedY + 8) * option.enemy.shotSpeedFactor
+      shot.position.x = this.position.x + this.width / 2 - shot.width / 2
+      shot.position.y = this.position.y
       return shot
     }
   }
-}
-/**
- * 基类
- */
-function EObject (isShot) {
-  this.Oid = -1 // id
-  this.AllHp = 1 // 总HP
-  this.Hp = 1 // 当前Hp
-  this.icon // 图片
-  this.width = 0 // 宽度
-  this.height = 0 // 高度
-  this.speedY = 5 // Y速度
-  this.speedX = 5 // X速度
-  this.position = {x: 0,y: 0} // 位置
-  this.isDie = false // 是否死亡
-  this.isShot = false // 是否处于发射状态
-  this.shotInterVal = 500 // 发射周期
-  this.enableShot = isShot // 是否发射
-
-  var that = this
-  this.interval // 发射器
-  this.setShot = function (time) {
-    if (! this.enableShot) return false
-    this.shotInterVal = time
-    clearTimeout(this.interval)
-    this.interval = setInterval(function () {
-      that.isShot = true
-    }, time)
+  /**
+   * 爆炸
+   */
+  function Bullet () {
+    EObject.call(this)
   }
-}
-/**
- * 敌军
- * @param {*是否发射} isShot 
- */
-function Enemy (isShot) {
-  this.enableShot = isShot
-  this.type = 'common'
-  EObject.call(this, isShot)
-}
-/**
- * 爆炸
- */
-function Bullet () {
-  EObject.call(this)
-}
-/**
- * 子弹
- */
-function Shot () {
-  this.type = 'common'
-  this.Attact = 1 // 攻击力
-  belong = 0
-  EObject.call(this)
-}
-/**
- * 
- * @param {*玩家} isShot 
- */
-function Player (isShot) {
-  this.enableShot = isShot
-  EObject.call(this, isShot)
+  /**
+   * 子弹
+   */
+  function Shot () {
+    this.type = 'common'
+    this.Attact = 1 // 攻击力
+    belong = 0
+    EObject.call(this)
+  }
+  /**
+   * @param {*玩家} isShot 
+   */
+  function Player (isShot) {
+    Plain.call(this, isShot)
+
+    this.icon = option.resources.plainImg
+    this.Oid = ++currentOid
+    this.width = 30
+    this.height = 24
+    this.AllHp = 3
+    this.Hp = this.AllHp
+    this.position.x = (option.ctxWidth - this.width) / 2
+    this.position.y = (option.ctxHeight - this.height)
+    this.enableShot = isShot
+
+    this.shotFactory = function () {
+      var shot = new Shot()
+      shot.Oid = ++currentOid
+      shot.belong = this.Oid
+      shot.Hp = 1
+      shot.width = 8
+      shot.height = 24
+      shot.speedY = 10 * option.playerShotSpeedFactor
+      shot.icon = option.resources.shot
+      shot.position.x = this.position.x + this.width / 2 - shot.width / 2
+      shot.position.y = this.position.y
+      return shot
+    }
+  }
 }
