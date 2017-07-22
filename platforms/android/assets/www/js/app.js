@@ -28,17 +28,8 @@ angular.module('starter', ['ionic'])
       en.Create({
         id: 'myCanvas',
        // isAndroid: true,
-        resources: {
-          shot: shot,
-          bullet: bullet,
-          bg: bg,
-          hp: hp,
-          eshot: eshot,
-          plainImg: plain,
-          head: head,
-          enes: [ene1, ene2, ene3, ene4]
-        },
-        attachObj: $scope
+        resources: resource,
+        attachEvent: $scope
       })
       en.Start()
 

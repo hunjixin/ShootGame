@@ -1,6 +1,6 @@
 function Engine () {
   var currentOid = 0
-  var isRunning = 1  //三种状态 1 预备/2 进行 /3 结束
+  var isRunning = 0 // 三种状态 1 预备/2 进行 /3 结束
   var option = {
     isDebug: true,
     'id': '',
@@ -12,6 +12,7 @@ function Engine () {
     playerShotSpeedFactor: 1,
     isAndroid: false,
     resources: {
+      button: '',
       plainImg: '',
       shot: '',
       bullet: '',
@@ -19,16 +20,22 @@ function Engine () {
       eshot: '',
       hp: '',
       head: '',
-      enes: ''
+      enes: '',
+      gz: '',
+      u: '',
+      g: ''
     }
   }
-  var scene = {}
+  var scene
+  var resetButton
   var shots = []
   var enemies = []
   var bullets = []
+  var spoils = []
   var headOffset = 20
   var player
   var context = ''
+  var spoilManager = new SpoilManager()
   var plainMoveState = {
     isMouseDown: false,
     position: {x: 0,y: 0}
@@ -72,7 +79,7 @@ function Engine () {
       if (pReourceKeys.indexOf(resourceKeys[index]) != -1) {
         option.resources[resourceKeys[index]] = _option.resources[resourceKeys[index]]
       }else {
-        throw new Error('resource ' + esourceKeys[index] + ' not exist')
+        throw new Error('resource ' + resourceKeys[index] + ' not exist')
       }
     }
 
@@ -101,17 +108,23 @@ function Engine () {
     option.ctxHeight = context.canvas.clientHeight
     option.ctxWidth = context.canvas.clientWidth
 
-    scene.position = {}
+    scene = new Scene()
     scene.position.x = 0
     scene.position.y = 0
     scene.width = option.ctxWidth
     scene.height = option.ctxHeight
+
+    resetButton = new ResetButton()
+    resetButton.position.x = option.ctxWidth / 4
+    resetButton.position.y = option.ctxHeight / 2
+    resetButton.width = option.ctxWidth / 2
+    resetButton.height = 40
+    resetButton.icon = option.resources.button
     // 重置事件
-    eventRelative.attachEvet(scene, 'click', function (obj, eventInfo) {
-      if (!isRunning && !plainMoveState.isMouseDown) {
-        isRunning = true
-        reset()
-      }
+    eventRelative.attachEvet(resetButton, 'click', function (obj, eventInfo) {
+      isRunning = 1
+      obj.isDisplay = false
+      reset()
     })
 
     player = new Player(true)
@@ -119,17 +132,17 @@ function Engine () {
     // 注册事件
     // 玩家开始移动
     eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
-      plainMoveState.isMouseDown = true
+      if (isRunning == 1)  plainMoveState.isMouseDown = true
     })
     // 玩家停止移动
     eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
-      plainMoveState.isMouseDown = false
+      if (isRunning == 1)  plainMoveState.isMouseDown = false
     })
     // 玩家移动中
     eventRelative.attachEvet(scene, 'mouseMove', function (obj, eventInfo) {
-      if (plainMoveState.isMouseDown === true) {
-        plainMoveState.position.x = eventInfo.position.x
-        plainMoveState.position.y = Util.sceneYTransform(eventInfo.position.y)
+      if (isRunning == 1 && plainMoveState.isMouseDown === true) {
+        player.position.x = eventInfo.position.x - player.width / 2
+        player.position.y = eventInfo.position.y - player.height / 2
       }
     })
   }
@@ -144,11 +157,10 @@ function Engine () {
     // 拦截作用 必要时可以扩展出去
     var before = function (callback) {
       return function () {
-        if (isRunning!=1) return
-        callback()
+        if (isRunning == 1)  callback()
       }
     }
-    drawTm = setInterval(before(draw), 50)
+    drawTm = setInterval(draw, 50)
     drawTm = setInterval(before(checkCollection), 50)
     moveTm = setInterval(before(objectMove), 50)
     clearTm = setInterval(before(clearObject), 5000)
@@ -181,11 +193,15 @@ function Engine () {
       for (var j = shots.length - 1;j > -1;j--) {
         var oneShot = shots[j]
         if (oneShot.isDie) continue
-
-        if (player.Oid == oneShot.belong && Util.inArea({x: oneShot.position.x + oneShot.width / 2,y: oneShot.position.y}, enemyRect)) {
+        var shotRect = {x: oneShot.position.x,y: oneShot.position.y,width: oneShot.width,height: oneShot.height}
+        if (player.Oid == oneShot.belong && Util.isChonghe(shotRect, enemyRect)) {
           enemy.Hp--
           oneShot.Hp--
           if (enemy.Hp <= 0) {
+            // 判断是否产生战利品
+            var spoil = spoilManager.createSpoil(enemy)
+            if (spoil) spoils.push(spoil)
+
             statInfo.kill[enemy.type]++
 
             enemy.isDie = true
@@ -219,6 +235,7 @@ function Engine () {
       if (Util.isChonghe(plainRect, enemyRect)) {
         enemy.Hp--
         player.Hp--
+        Util.isChonghe(plainRect, enemyRect)
         if (enemy.Hp <= 0) {
           enemy.isDie = true
           setTimeout(function () {
@@ -246,22 +263,30 @@ function Engine () {
         }
       }
     }
+    // 检查玩家是否获取战利品
+    for (var j = spoils.length - 1;j > -1;j--) {
+      var oneSpoil = spoils[j]
+      if (oneSpoil.isDie) continue
+      var spoilRect = {x: oneSpoil.position.x,y: oneSpoil.position.y,width: oneSpoil.width,height: oneSpoil.height}
+      if (Util.isChonghe(spoilRect, plainRect)) {
+        oneSpoil.isDie = true
+        oneSpoil.Effect(player)
+        Util.removeArr(spoils, oneSpoil)
+      }
+    }
 
     if (player.Hp <= 0) {
       isRunning = 2
+      resetButton.isDisplay = true
     }
   }
   // 对象移动
   var objectMove = function () {
     // 生成新的个体
-    var shot = player.getShot()
-    if (shot) {
-      shots.push(shot)
-      statInfo.emitShot[shot.type]++
-    }
-
-    if (plainMoveState.isMouseDown) {
-      player.position = plainMoveState.position
+    var pShots = player.getShot()
+    if (pShots) {
+      shots.push.apply(shots, pShots)
+      statInfo.emitShot[pShots[0].type]++
     }
 
     if (Math.random() < 0.07) // 百分之七生成敌军
@@ -281,16 +306,25 @@ function Engine () {
       if (shots[index].isDie) continue
       var shot = shots[index]
       shot.position.y -= shot.speedY
+      shot.position.x -= shot.speedX
+    }
+
+    for (var index in spoils) {
+      if (spoils[index].isDie) continue
+      var spoil = spoils[index]
+      spoil.position.y += spoil.speedY
+      spoil.position.x += spoil.speedX
     }
 
     for (var index in enemies) {
       if (enemies[index].isDie) continue
       var enemy = enemies[index]
       enemy.position.y += enemy.speedY
-      var eShot = enemy.getShot()
-      if (eShot) {
-        shots.push(eShot)
-        statInfo.emitShot[eShot.type]++
+      enemy.position.x += enemy.speedX
+      var eShots = enemy.getShot()
+      if (eShots) {
+        shots.push.apply(shots, eShots)
+        statInfo.emitShot[eShots[0].type]++
       }
     }
   }
@@ -299,7 +333,7 @@ function Engine () {
     // 删除越界的对象  
     for (var i = shots.length - 1;i > -1;i--) {
       var oneShot = shots[i]
-      if (!Util.inArea(oneShot.position, {x: -10,y: -10,width: option.ctxWidth + 10,height: option.ctxHeight + 10})) {
+      if (oneShot.isDie || !Util.inArea(oneShot.position, {x: -10,y: -10,width: option.ctxWidth + 10,height: option.ctxHeight + 10})) {
         Util.removeArr(shots, oneShot)
       }
     }
@@ -312,6 +346,17 @@ function Engine () {
       }
       if (!Util.inArea(enemy.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
         Util.removeArr(enemies, enemy)
+      }
+    }
+
+    for (var i = spoils.length - 1;i > -1;i--) {
+      var spoil = spoils[i]
+      if (spoil.isDie) {
+        Util.removeArr(spoils, spoil)
+        continue
+      }
+      if (!Util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
+        Util.removeArr(spoils, spoil)
       }
     }
   }
@@ -345,10 +390,19 @@ function Engine () {
       var enemy = enemies[index]
       drawEobject(enemy)
     }
+    // 战利品
+    for (var index in spoils) {
+      var spoil = spoils[index]
+      drawEobject(spoil)
+    }
     // 死亡
     for (var index in bullets) {
       var bullet = bullets[index]
       drawEobject(bullet)
+    }
+    // 重置
+    if (isRunning != 1) {
+      drawEobject(resetButton)
     }
     // 绘制文本
     if (option.isDebug) {
@@ -384,17 +438,16 @@ function Engine () {
   var reset = function () {
     shots.length = 0
     enemies.length = 0
-    player.Hp = player.AllHp
-    player.position.x = (option.ctxWidth - player.width) / 2
-    player.position.y = (option.ctxHeight - player.height)
+    spoils.length = 0
+    player.reset()
   }
   /**
    * event
    */
   // 此类型用于事件转换
   var eventRelative = {
-    click: [],        
-    mouseDown: [],     
+    click: [],
+    mouseDown: [],
     mouseUp: [],
     mouseMove: [],
     // 附加事件中 object-action-callback
@@ -404,12 +457,11 @@ function Engine () {
       if (!funcs) throw new Error('not support event')
       funcs.push(eventMsg)
     },
-    detachEvent:function(target,action)
-    {
+    detachEvent: function (target, action) {
       var funcs = this[action]
       for (var i = 0;i < funcs.length;i++) {
-        if (funcs[i].target==target) {
-         Util.removeArr(funcs,funcs[i])
+        if (funcs[i].target == target) {
+          Util.removeArr(funcs, funcs[i])
         }
       }
     },
@@ -418,7 +470,7 @@ function Engine () {
       var funcs = this[action]
       if (!funcs) throw new Error('not support event')
       for (var i = 0;i < funcs.length;i++) {
-        if (Util.isEffect(funcs[i].target, action, eventInfo)) {
+        if (funcs[i].target.isDisplay && Util.isEffect(funcs[i].target, action, eventInfo)) {
           funcs[i].callback(funcs[i].target, eventInfo)
         }
       }
@@ -432,11 +484,11 @@ function Engine () {
       position: {x: 0,y: 0}
     }
     if (option.isAndroid) {
-      evnetInfo.position.x = event.gesture.center.pageX - player.width / 2 - event.gesture.target.offsetLeft
-      evnetInfo.position.y = Util.sceneYTransform(event.gesture.center.pageY) - player.height / 2
+      evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
+      evnetInfo.position.y = Util.sceneYTransform(event.gesture.center.pageY)
     }else {
-      evnetInfo.position.x = event.offsetX - player.width / 2
-      evnetInfo.position.y = Util.sceneYTransform(event.offsetY) - player.height / 2
+      evnetInfo.position.x = event.offsetX
+      evnetInfo.position.y = Util.sceneYTransform(event.offsetY)
     }
     return evnetInfo
   }
@@ -496,6 +548,12 @@ function Engine () {
       if (Util.inArea({x: rect1.x + rect1.width,y: rect1.y}, rect2)) return true
       if (Util.inArea({x: rect1.x,y: rect1.y + rect1.height}, rect2)) return true
       if (Util.inArea({x: rect1.x + rect1,y: rect1 + rect1.height.y}, rect2)) return true
+
+      if (Util.inArea({x: rect2.x,y: rect2.y}, rect1)) return true
+      if (Util.inArea({x: rect2.x + rect2.width,y: rect2.y}, rect1)) return true
+      if (Util.inArea({x: rect2.x,y: rect2.y + rect2.height}, rect1)) return true
+      if (Util.inArea({x: rect2.x + rect2,y: rect2 + rect2.height.y}, rect1)) return true
+
       return false
     },
     inArea: function (position, rect) {
@@ -536,19 +594,21 @@ function Engine () {
       var enemy = new Enemy(true)
       enemy.readyShot(500 * (Math.random() + 1))
       enemy.Oid = ++currentOid
+      var span = shot.width / 5
       enemy.position.x = option.ctxWidth * Math.random()
       enemy.position.y = 0 - enemy.width
-      enemy.speedY = 5 * option.enemy.speedFactor
+      enemy.speed = enemy.speedY = 5 * option.enemy.speedFactor
       enemies.push(enemy)
 
       enemy.icon = option.resources.enes[type - 1]
       if (type == 1) {
         enemy.width = 40
         enemy.height = 60
-        enemy.Hp = 10
+        enemy.Hp = 20 + 10 * Math.random()
       }else {
         enemy.width = 20
         enemy.height = 30
+        enemy.Hp = 2 + 5 * Math.random()
       }
     }
   }
@@ -557,12 +617,14 @@ function Engine () {
  * 基类
  */
   function EObject () {
+    this.isDisplay = true
     this.Oid = -1 // id
     this.icon // 图片
     this.width = 0 // 宽度
     this.height = 0 // 高度
+    this.speed = 5 // 合速度
     this.speedY = 5 // Y速度
-    this.speedX = 5 // X速度
+    this.speedX = 0 // X速度
     this.position = {x: 0,y: 0} // 位置
   }
 
@@ -575,24 +637,25 @@ function Engine () {
     this.shotInterVal = 500 // 发射周期
     this.enableShot = enableShot // 是否发射
     this.interval // 发射器
-    this.shot
+    this.shots = []
     var that = this
     this.readyShot = function (time) {
+      clearInterval(this.interval)
       if (! this.enableShot) return
       var that = this
       that.shotInterVal = time
       clearTimeout(that.interval)
       that.interval = setInterval(function () {
-        if (that.shot) return
-        that.shot = that.shotFactory()
+        if (that.shots && that.shots.length > 0) return
+        that.shots.push.apply(that.shots, that.shotFactory())
       }, time)
     }
 
     this.getShot = function () {
-      if (this.shot) {
-        var rShot = this.shot
-        this.shot = undefined
-        return rShot
+      if (this.shots && that.shots.length > 0) {
+        var shotes = this.shots.concat([])
+        this.shots.length = 0
+        return shotes
       }else {
         return undefined
       }
@@ -605,6 +668,7 @@ function Engine () {
   function Enemy (isShot) {
     Plain.call(this, isShot)
     this.type = 'common'
+    this.speedX = 0
 
     this.shotFactory = function () {
       var shot = new Shot()
@@ -614,10 +678,10 @@ function Engine () {
       shot.width = 5
       shot.height = 15
       shot.icon = option.resources.eshot
-      shot.speedY = (this.speedY + 8) * option.enemy.shotSpeedFactor
+      shot.speed = shot.speedY = (this.speedY + 8) * option.enemy.shotSpeedFactor
       shot.position.x = this.position.x + this.width / 2 - shot.width / 2
       shot.position.y = this.position.y
-      return shot
+      return [shot]
     }
   }
   /**
@@ -630,16 +694,18 @@ function Engine () {
    * 子弹
    */
   function Shot () {
+    EObject.call(this)
+
+    this.speedX = 0
     this.type = 'common'
     this.Attact = 1 // 攻击力
     belong = 0
-    EObject.call(this)
   }
   /**
    * @param {*玩家} isShot 
    */
-  function Player (isShot) {
-    Plain.call(this, isShot)
+  function Player () {
+    Plain.call(this, true)
 
     this.icon = option.resources.plainImg
     this.Oid = ++currentOid
@@ -649,20 +715,193 @@ function Engine () {
     this.Hp = this.AllHp
     this.position.x = (option.ctxWidth - this.width) / 2
     this.position.y = (option.ctxHeight - this.height)
-    this.enableShot = isShot
-
+    this.enableShot = true
+    this.shotEx = new ShotEx()
+    this.shotType = {
+      type: 'umShot',
+      num: 1
+    }
     this.shotFactory = function () {
+      return this.shotEx.CreateShot(this)
+    }
+    this.reset = function () {
+      this.Hp = player.AllHp
+      this.position.x = (option.ctxWidth - player.width) / 2
+      this.position.y = (option.ctxHeight - player.height)
+      this.shotType = {
+        type: 'umShot',
+        num: 1
+      }
+    }
+  }
+
+  function ResetButton () {
+    EObject.call(this)
+  }
+  function Scene () {
+    EObject.call(this)
+  }
+  function Spoil (obj, type) {
+    EObject.call(this)
+    this.speedY = 20
+    this.spoiltype = type
+    this.width = 25
+    this.height = 25
+    this.position.x = obj.position.x
+    this.position.y = obj.position.y
+    this.Effect = function (targetPlayer) {}
+  }
+  function UmShotSpoil (object) {
+    Spoil.call(this, object)
+    this.spoiltype = 'umShot'
+    this.icon = option.resources.u
+    this.Effect = function (targetPlayer) {
+      if (targetPlayer.shotType.type == spoilManager.spoilType.umShot) {
+        targetPlayer.shotType.num++
+      }else {
+        targetPlayer.shotType = {
+          type: spoilManager.spoilType.umShot,
+          num: 1
+        }
+      }
+
+      targetPlayer.readyShot(200)
+    }
+  }
+  function GzShotSpoil (object) {
+    Spoil.call(this, object)
+    this.spoiltype = 'gzShot'
+    this.icon = option.resources.g
+    this.Effect = function (targetPlayer) {
+      if (targetPlayer.shotType.type == spoilManager.spoilType.gzShot) {
+        targetPlayer.shotType.num++
+      }else {
+        targetPlayer.shotType = {
+          type: spoilManager.spoilType.gzShot,
+          num: 1
+        }
+      }
+      targetPlayer.readyShot(1500-200*targetPlayer.shotType.num)
+    }
+  }
+  function AddHpSpoil (object) {
+    Spoil.call(this, object)
+    this.spoiltype = 'addHp'
+    this.icon = option.resources.hp
+    this.Effect = function (targetPlayer) {
+      if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++
+    }
+  }
+  function ShotEx () {
+    EObject.call(this)
+    this.CreateShot = function (ePlayer) {
+      // ePlayer.shots.
+      if (ePlayer.shotType.type == 'umShot') return umbrellaShot(ePlayer, ePlayer.shotType.num)
+      else if (ePlayer.shotType.type == 'gzShot') return gzShot(ePlayer, ePlayer.shotType.num)
+      else if (ePlayer.shotType.type == 'common') return commonShot(ePlayer)
+    }
+    var umbrellaShot = function (ePlayer, num) {
+      var split
+      var sp = (ePlayer.speed + 8) * option.playerShotSpeedFactor
+      if (2 * num - 1 < 15)
+        split = 2 * num - 1
+      else
+        split = 15
+      var rotate = Math.PI / (split + 1)
+      var shots = []
+      for (var i = 1;i <= split;i++) {
+        var shot = new Shot()
+        shot.Oid = ++currentOid
+        shot.belong = ePlayer.Oid
+        shot.Hp = 1
+        shot.width = 5
+        shot.height = 15
+        shot.icon = option.resources.shot
+        shot.position.x = ePlayer.position.x + ePlayer.width / 2-shot.width/2
+        shot.position.y = ePlayer.position.y
+
+        shot.speedY = sp * Math.sin(rotate * i)
+        shot.speedX = sp * Math.cos(rotate * i)
+        shots.push(shot)
+      }
+      return shots
+    }
+    var gzShot = function (ePlayer) {
+      var sp = (ePlayer.speed + 8) * option.playerShotSpeedFactor
       var shot = new Shot()
       shot.Oid = ++currentOid
-      shot.belong = this.Oid
+      shot.belong = ePlayer.Oid
+      shot.Hp = 100000000
+      shot.width = 100
+      shot.height = option.ctxHeight
+      shot.icon = option.resources.gz
+      shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
+      shot.position.y = 0
+
+      shot.speedY = 0
+      shot.speedX = 0
+      var shotCount = 100
+      var tm
+      // 1秒后威力减弱
+      setTimeout(function () {
+        var span = shot.width / 5
+        if (isRunning == 1) {
+          tm = setInterval(function () {
+            if (isRunning == 1) {
+              shot.width = shot.width - span
+              shot.position.x=shot.position.x+span/2
+            }
+          }, 100)
+        }
+      }, 1000)
+      // 1.5秒后消失
+      setTimeout(function () {
+        if (isRunning == 1) {
+          shot.position.y = -option.ctxHeight
+          shot.isDie = true
+          clearTimeout(tm)
+        }
+      }, 1500)
+      return [shot]
+    }
+    var commonShot = function (ePlayer) {
+      var shot = new Shot()
+      shot.Oid = ++currentOid
+      shot.belong = ePlayer.Oid
       shot.Hp = 1
       shot.width = 8
       shot.height = 24
       shot.speedY = 10 * option.playerShotSpeedFactor
       shot.icon = option.resources.shot
-      shot.position.x = this.position.x + this.width / 2 - shot.width / 2
-      shot.position.y = this.position.y
-      return shot
+      shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
+      shot.position.y = ePlayer.position.y
+
+      return [shot]
+    }
+  }
+
+  function SpoilManager () {
+    this.spoilType = {
+      umShot: 'umShot',
+      gzShot: 'gzShot',
+      addHp: 'addHp'
+    }
+    this.createSpoil = function (obj) {
+      if (Math.random() < 0.5) return undefined
+      var types = Object.values(this.spoilType)
+      var t = types[ (Math.random() * types.length).toString().charAt(0) - '0']
+
+      switch (t) {
+        case this.spoilType.umShot:
+          return new UmShotSpoil(obj)
+          break
+        case this.spoilType.gzShot:
+          return new GzShotSpoil(obj)
+          break
+        case this.spoilType.addHp:
+          return new AddHpSpoil(obj)
+          break
+      }
     }
   }
 }
