@@ -732,6 +732,7 @@ function Engine () {
         type: 'umShot',
         num: 1
       }
+      this.readyShot(200)
     }
   }
 
