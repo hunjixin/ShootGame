@@ -313,7 +313,7 @@ function Engine () {
       if (spoils[index].isDie) continue
       var spoil = spoils[index]
       spoil.position.y += spoil.speedY
-      spoil.position.x += spoil.speedX
+      spoil.position.x += spoil.getXPosition()
     }
 
     for (var index in enemies) {
@@ -355,9 +355,9 @@ function Engine () {
         Util.removeArr(spoils, spoil)
         continue
       }
-      if (!Util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
-        Util.removeArr(spoils, spoil)
-      }
+     // if (!Util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
+     //   Util.removeArr(spoils, spoil)
+     // }
     }
   }
   /**
@@ -744,12 +744,20 @@ function Engine () {
   }
   function Spoil (obj, type) {
     EObject.call(this)
-    this.speedY = 20
+    this.speedY = 5
     this.spoiltype = type
     this.width = 25
     this.height = 25
     this.position.x = obj.position.x
     this.position.y = obj.position.y
+    this.XPath
+    this.currentTick = 0
+    this.applyXPath = function (path) {
+      this.XPath = path
+    }
+    this.getXPosition = function () {
+      return this.XPath()
+    }
     this.Effect = function (targetPlayer) {}
   }
   function UmShotSpoil (object) {
@@ -782,7 +790,7 @@ function Engine () {
           num: 1
         }
       }
-      targetPlayer.readyShot(1500-200*targetPlayer.shotType.num)
+      targetPlayer.readyShot(1500 - 200 * targetPlayer.shotType.num)
     }
   }
   function AddHpSpoil (object) {
@@ -818,7 +826,7 @@ function Engine () {
         shot.width = 5
         shot.height = 15
         shot.icon = option.resources.shot
-        shot.position.x = ePlayer.position.x + ePlayer.width / 2-shot.width/2
+        shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
         shot.position.y = ePlayer.position.y
 
         shot.speedY = sp * Math.sin(rotate * i)
@@ -850,7 +858,7 @@ function Engine () {
           tm = setInterval(function () {
             if (isRunning == 1) {
               shot.width = shot.width - span
-              shot.position.x=shot.position.x+span/2
+              shot.position.x = shot.position.x + span / 2
             }
           }, 100)
         }
@@ -891,18 +899,25 @@ function Engine () {
       if (Math.random() < 0.5) return undefined
       var types = Object.values(this.spoilType)
       var t = types[ (Math.random() * types.length).toString().charAt(0) - '0']
-
+      var spoil
       switch (t) {
         case this.spoilType.umShot:
-          return new UmShotSpoil(obj)
+          spoil = new UmShotSpoil(obj)
           break
         case this.spoilType.gzShot:
-          return new GzShotSpoil(obj)
+          spoil = new GzShotSpoil(obj)
           break
         case this.spoilType.addHp:
-          return new AddHpSpoil(obj)
+          spoil = new AddHpSpoil(obj)
           break
       }
+      var factor = 3 * Math.random()*Math.sign(Math.random()-0.5)
+      spoil.applyXPath(
+        function (x) {
+          return factor * Math.cos(this.currentTick)
+        }
+        )
+      return spoil
     }
   }
 }
