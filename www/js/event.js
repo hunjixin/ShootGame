@@ -1,5 +1,5 @@
 define(['util'], function (util) {
-  function MyEvent (option,_context) {
+  function MyEvent (_context) {
     var that=this
     // Do setup work here
     // 此类型用于事件转换
@@ -43,10 +43,10 @@ define(['util'], function (util) {
       }
       if (util.isAndroid()) {
         evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
-        evnetInfo.position.y = util.sceneYTransform(event.gesture.center.pageY, option,_context.headOffset)
+        evnetInfo.position.y = util.sceneYTransform(event.gesture.center.pageY, _context.option,_context.headOffset)
       }else {
         evnetInfo.position.x = event.offsetX
-        evnetInfo.position.y = util.sceneYTransform(event.offsetY,option, _context.headOffset)
+        evnetInfo.position.y = util.sceneYTransform(event.offsetY,_context.option, _context.headOffset)
       }
       return evnetInfo
     }
@@ -58,10 +58,10 @@ define(['util'], function (util) {
 
       if (util.isAndroid()) {
         evnetInfo.position.x = event.pageX - event.target.offsetLeft
-        evnetInfo.position.y = Util.sceneYTransform(event.pageY,option, _context.headOffset)
+        evnetInfo.position.y = Util.sceneYTransform(event.pageY,_context.option, _context.headOffset)
       }else {
         evnetInfo.position.x = event.offsetX
-        evnetInfo.position.y = Util.sceneYTransform(event.offsetY,option, _context.headOffset)
+        evnetInfo.position.y = Util.sceneYTransform(event.offsetY,_context.option, _context.headOffset)
       }
       return evnetInfo
     }

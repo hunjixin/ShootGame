@@ -28,7 +28,13 @@ angular.module('starter', ['ionic'])
       paths: {
         engne: 'engne',
         event:'event',
-        util:'util'
+        util:'util',
+        spoil:'obj/spoil',
+        shot:'obj/shot',
+        plain:'obj/plain',
+        EObject:'obj/eobject',
+        uiComonent:'obj/uiComonent',
+        resource:'resource'
       }
      });
      requirejs(['engne'],function(Engine){
@@ -36,8 +42,6 @@ angular.module('starter', ['ionic'])
         var en = new Engine()
         en.Create({
           id: 'myCanvas',
-         // isAndroid: true,
-          resources: resource,
           attachEvent: $scope
         })
         en.Start()

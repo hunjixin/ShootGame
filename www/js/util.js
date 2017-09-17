@@ -46,7 +46,9 @@ var Util = {
     randInt:function(min,max)
     {
       if(min<max) return max;
-      return parseInt(Math.random()*(max-min))*+min
+      var xx= parseInt(Math.random()*(max-min))*+min
+      console.log(xx)
+      return xx
     }
   }
 
