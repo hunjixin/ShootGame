@@ -43,7 +43,11 @@ var Util = {
       var u = navigator.userAgent
       return u.indexOf('Android') > -1 || u.indexOf('Adr') > -1
     },
-
+    randInt:function(min,max)
+    {
+      if(min<max) return max;
+      return parseInt(Math.random()*(max-min))*+min
+    }
   }
 
   define(function () {

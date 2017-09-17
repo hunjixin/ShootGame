@@ -141,7 +141,7 @@ function(MyEvent,util) {
       })
   
       player = new Player(true)
-      player.readyShot(100)
+      player.setShotInterVal(1)
       // 注册事件
       // 玩家开始移动
       myevent.eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
@@ -365,6 +365,10 @@ function(MyEvent,util) {
           shots.push.apply(shots, eShots)
         }
       }
+      player.refresh()
+      for (var i = 0;i < enemies.length;i++) {
+        enemies[i].refresh()
+      }
     }
     // 对象清理
     var clearObject = function (that) {
@@ -500,12 +504,12 @@ function(MyEvent,util) {
     var createEnemy= function (type) {
       // 1 大飞机  2,3,4 小飞机
       var enemy = new Enemy(true)
-      enemy.readyShot(500 * (Math.random() + 1))
+      enemy.setShotInterVal(util.randInt(5,15))
       enemy.Oid = ++currentOid
       var span = shot.width / 5
       enemy.position.x = option.ctxWidth * Math.random()
       enemy.position.y = 0 - enemy.width
-      enemy.speed = enemy.speedY = 5 * option.enemy.speedFactor
+      enemy.speedY = enemy.speedY = 5 * option.enemy.speedFactor
 
       enemy.icon = option.resources.enes[type - 1]
       if (type == 1) {
@@ -529,7 +533,6 @@ function(MyEvent,util) {
       this.icon // 图片
       this.width = 0 // 宽度
       this.height = 0 // 高度
-      this.speed = 5 // 合速度
       this.speedY = 5 // Y速度
       this.speedX = 0 // X速度
       this.position = {x: 0,y: 0} // 位置
@@ -541,23 +544,29 @@ function(MyEvent,util) {
       this.AllHp = 1 // 总HP
       this.Hp = 1 // 当前Hp
       this.isDie = false // 是否死亡
-      this.shotInterVal = 500 // 发射周期
+      this.shotInterVal = 10 // 发射周期
       this.enableShot = enableShot // 是否发射
-      this.interval // 发射器
       this.shots = []
       this.shotEx=1
       var that = this
-      this.readyShot = function (time) {
-        clearInterval(this.interval)
-        if (! this.enableShot) return
-        var that = this
-        that.shotInterVal = time
-        that.interval = setInterval(function () {
+      var currentTick=0
+      this.setShotInterVal=function(val,minVal)
+      {
+        if(minVal<1) minVal=1
+        if(val<minVal) val=minVal
+        this.shotInterVal=val
+      }
+      this.refresh=function()
+      {
+        if(currentTick<=that.shotInterVal)
+        {
+          currentTick++
+        }else{
           if (that.shots && that.shots.length > 0) return
           that.shots.push.apply(that.shots, that.shotFactory())
-        }, time)
+          currentTick=0
+        }
       }
-  
       this.getShot = function () {
         if (this.shots && that.shots.length > 0) {
           var shotes = this.shots.concat([])
@@ -585,7 +594,7 @@ function(MyEvent,util) {
         shot.width = 5
         shot.height = 15
         shot.icon = option.resources.eshot
-        shot.speed = shot.speedY = (this.speedY + 8) * option.enemy.shotSpeedFactor
+        shot.speedY = (this.speedY + 8) * option.enemy.shotSpeedFactor
         shot.position.x = this.position.x + this.width / 2 - shot.width / 2
         shot.position.y = this.position.y
         return [shot]
@@ -639,7 +648,7 @@ function(MyEvent,util) {
           type: 'umShot',
           num: 1
         }
-        this.readyShot(200)
+        this.setShotInterVal(5)
       }
     }
   
@@ -686,7 +695,7 @@ function(MyEvent,util) {
           }
         }
   
-        targetPlayer.readyShot(200)
+        targetPlayer.setShotInterVal(4)
       }
     }
     function GzShotSpoil (object) {
@@ -702,7 +711,7 @@ function(MyEvent,util) {
             num: 1
           }
         }
-        targetPlayer.readyShot(1500 - 200 * targetPlayer.shotType.num)
+        targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num,2);
       }
     }
     function AddHpSpoil (object) {
@@ -723,7 +732,7 @@ function(MyEvent,util) {
       }
       var umbrellaShot = function (ePlayer, num) {
         var split
-        var sp = (ePlayer.speed + 8) * option.playerShotSpeedFactor
+        var sp = 10* option.playerShotSpeedFactor
         if (2 * num - 1 < 15)
           split = 2 * num - 1
         else
@@ -748,7 +757,7 @@ function(MyEvent,util) {
         return shots
       }
       var gzShot = function (ePlayer) {
-        var sp = (ePlayer.speed + 8) * option.playerShotSpeedFactor
+        var sp = 10 * option.playerShotSpeedFactor
         var shot = new Shot()
         shot.Oid = ++currentOid
         shot.belong = ePlayer.Oid
@@ -786,13 +795,14 @@ function(MyEvent,util) {
         return [shot]
       }
       var commonShot = function (ePlayer) {
+        var sp = 10 * option.playerShotSpeedFactor
         var shot = new Shot()
         shot.Oid = ++currentOid
         shot.belong = ePlayer.Oid
         shot.Hp = 1
         shot.width = 8
         shot.height = 24
-        shot.speedY = 10 * option.playerShotSpeedFactor
+        shot.speedY = sp
         shot.icon = option.resources.shot
         shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
         shot.position.y = ePlayer.position.y
