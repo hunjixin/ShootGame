@@ -23,15 +23,26 @@ angular.module('starter', ['ionic'])
     })
   }).controller('crash', ['$scope',
   function ($scope) {
-    setTimeout(function () {
-      var en = new Engine()
-      en.Create({
-        id: 'myCanvas',
-       // isAndroid: true,
-        resources: resource,
-        attachEvent: $scope
-      })
-      en.Start()
-
-    }, 1000)
+    requirejs.config({
+      baseUrl:'js',
+      paths: {
+        engne: 'engne',
+        event:'event',
+        util:'util'
+      }
+     });
+     requirejs(['engne'],function(Engine){
+      setTimeout(function () {
+        var en = new Engine()
+        en.Create({
+          id: 'myCanvas',
+         // isAndroid: true,
+          resources: resource,
+          attachEvent: $scope
+        })
+        en.Start()
+  
+      }, 1000)
+     });
   }])
+

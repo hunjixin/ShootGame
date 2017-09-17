@@ -40,25 +40,43 @@ function Engine () {
     isMouseDown: false,
     position: {x: 0,y: 0}
   }
-  var statInfo = {
-    debugMsg: '',
-    kill: {
-      common: 0
+  var stateInfo = {
+    enemies: {
+      all: {},
+      resolve: {}
     },
-    allEnemy: 0,
+    emitShot: {
+      all: {},
+      resolve: {}
+    },
+    spoils: {
+      all: {},
+      resolve: {}
+    },
     currentShotNum: 0,
     currentEnemyNum: 0,
-    emitShot: {
-      common: 0
-    },
     getDebugArray: function () {
+      var sumLog = function (obj) {
+        var keys = Object.keys(obj)
+        var sum = 0
+        for (var i = 0;i < keys.length;i++) {
+          sum += obj[keys[i]]
+        }
+        return sum
+      }
       var arr = []
-      arr.push('杀敌总数量：' + this.kill.common + '\r\n')
-      arr.push('敌人总数：' + this.allEnemy + '\r\n')
-      arr.push('击杀比：' + this.kill.common / this.allEnemy + '\r\n')
 
-      arr.push('发射弹药总量：' + this.emitShot.common + '\r\n')
-      arr.push('命中比：' + this.kill.common / this.emitShot.common + '\r\n')
+      var allKillEmemies = sumLog(this.enemies.resolve)
+      var allEnemies = sumLog(this.enemies.all)
+      arr.push('杀敌总数量：' + allKillEmemies + '\r\n')
+      arr.push('敌人总数：' + allEnemies + '\r\n')
+      arr.push('击杀比：' + allKillEmemies / allEnemies + '\r\n')
+
+      var allTargetShots = sumLog(this.emitShot.resolve)
+      var allShots = sumLog(this.emitShot.all)
+      arr.push('命中弹药' + allTargetShots + '\r\n')
+      arr.push('发射弹药总量：' + allShots + '\r\n')
+      arr.push('命中比：' + allTargetShots / allShots + '\r\n')
 
       arr.push('子弹数量：' + this.currentShotNum + '\r\n')
       arr.push('敌人数量：' + this.currentEnemyNum + '\r\n')
@@ -169,8 +187,8 @@ function Engine () {
   var draw = function () {
     drawBuffer()
     // 报告
-    statInfo.currentShotNum = shots.length
-    statInfo.currentEnemyNum = enemies.length
+    stateInfo.currentShotNum = shots.length
+    stateInfo.currentEnemyNum = enemies.length
   }
   // 检测碰撞
   var checkCollection = function () {
@@ -195,14 +213,21 @@ function Engine () {
         if (oneShot.isDie) continue
         var shotRect = {x: oneShot.position.x,y: oneShot.position.y,width: oneShot.width,height: oneShot.height}
         if (player.Oid == oneShot.belong && Util.isChonghe(shotRect, enemyRect)) {
-          enemy.Hp--
+          enemy.Hp=enemy.Hp-oneShot.attack*player.shotEx
           oneShot.Hp--
           if (enemy.Hp <= 0) {
             // 判断是否产生战利品
             var spoil = spoilManager.createSpoil(enemy)
-            if (spoil) spoils.push(spoil)
-
-            statInfo.kill[enemy.type]++
+            if (spoil) {
+              if (1===stateInfo.spoils.all[spoil.type])
+                stateInfo.spoils.all[spoil.type]++
+              else stateInfo.spoils.all[spoil.type] = 1
+              spoils.push(spoil)
+            }
+            if (1===stateInfo.enemies.resolve[enemy.type])
+              stateInfo.enemies.resolve[enemy.type]++
+            else
+              stateInfo.enemies.resolve[enemy.type] = 1
 
             enemy.isDie = true
             var bullet = new Bullet()
@@ -225,6 +250,9 @@ function Engine () {
             oneShot.isDie = true
             setTimeout((function (shot) {
               return function () {
+                if (1===stateInfo.emitShot.resolve[shot.type])
+                  stateInfo.emitShot.resolve[shot.type]++
+                else stateInfo.emitShot.resolve[shot.type] = 1
                 Util.removeArr(shots, shot)
               }
             })(oneShot), 500)
@@ -251,7 +279,9 @@ function Engine () {
       if (oneShot.isDie) continue
 
       if (player.Oid != oneShot.belong && Util.inArea({x: oneShot.position.x + oneShot.width / 2,y: oneShot.position.y}, plainRect)) {
-        player.Hp--
+        var ene=findEnemyByOid(oneShot.belong)
+        var shotEx=ene?ene.shotEx:1
+        player.Hp=player.Hp-oneShot.attack*shotEx
         oneShot.Hp--
         if (oneShot.Hp <= 0) {
           oneShot.isDie = true
@@ -269,6 +299,9 @@ function Engine () {
       if (oneSpoil.isDie) continue
       var spoilRect = {x: oneSpoil.position.x,y: oneSpoil.position.y,width: oneSpoil.width,height: oneSpoil.height}
       if (Util.isChonghe(spoilRect, plainRect)) {
+        if (1===stateInfo.spoils.resolve[oneSpoil.type])
+          stateInfo.spoils.resolve[oneSpoil.type]++
+        else stateInfo.spoils.resolve[oneSpoil.type] = 1
         oneSpoil.isDie = true
         oneSpoil.Effect(player)
         Util.removeArr(spoils, oneSpoil)
@@ -286,20 +319,30 @@ function Engine () {
     var pShots = player.getShot()
     if (pShots) {
       shots.push.apply(shots, pShots)
-      statInfo.emitShot[pShots[0].type]++
+      for (var i = 0;i < pShots.length;i++) {
+        if (1===stateInfo.emitShot.all[pShots[i].type])
+          stateInfo.emitShot.all[pShots[i].type]++
+        else stateInfo.emitShot.all[pShots[i].type] = 1
+      }
     }
 
     if (Math.random() < 0.07) // 百分之七生成敌军
     {
       var rad = Math.random() * 3 + ''
-      statInfo.allEnemy++
-      Util.createEnemy(parseInt(rad.charAt(0)) + 2)
+      var newEmeny = Util.createEnemy(parseInt(rad.charAt(0)) + 2)
+      if (1===stateInfo.enemies.all[newEmeny.type])
+        stateInfo.enemies.all[newEmeny.type]++
+      else stateInfo.enemies.all[newEmeny.type] = 1
+      enemies.push(newEmeny)
     }
 
     if (Math.random() < 0.01) // 百分之一生成强力敌军
     {
-      statInfo.allEnemy++
-      Util.createEnemy(1)
+      var newEmeny = Util.createEnemy(1)
+      if (1===stateInfo.enemies.all[newEmeny.type])
+        stateInfo.enemies.all[newEmeny.type]++
+      else stateInfo.enemies.all[newEmeny.type] = 1
+      enemies.push(newEmeny)
     }
 
     for (var index in shots) {
@@ -312,8 +355,9 @@ function Engine () {
     for (var index in spoils) {
       if (spoils[index].isDie) continue
       var spoil = spoils[index]
+
       spoil.position.y += spoil.speedY
-      spoil.position.x += spoil.speedX
+      spoil.position.x += spoil.getXPosition()
     }
 
     for (var index in enemies) {
@@ -324,7 +368,6 @@ function Engine () {
       var eShots = enemy.getShot()
       if (eShots) {
         shots.push.apply(shots, eShots)
-        statInfo.emitShot[eShots[0].type]++
       }
     }
   }
@@ -355,9 +398,9 @@ function Engine () {
         Util.removeArr(spoils, spoil)
         continue
       }
-      if (!Util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
-        Util.removeArr(spoils, spoil)
-      }
+    // if (!Util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
+    //   Util.removeArr(spoils, spoil)
+    // }
     }
   }
   /**
@@ -406,7 +449,7 @@ function Engine () {
     }
     // 绘制文本
     if (option.isDebug) {
-      var arr = statInfo.getDebugArray()
+      var arr = stateInfo.getDebugArray()
       for (var index = 0;index < arr.length;index++) {
         tempContext.strokeText(arr[index], 10, 10 * (index + 1))
       }
@@ -432,6 +475,7 @@ function Engine () {
     clearTimeout(drawTm)
     clearTimeout(moveTm)
   }
+  
   /**
    * reset
    */
@@ -440,6 +484,22 @@ function Engine () {
     enemies.length = 0
     spoils.length = 0
     player.reset()
+  }
+  /**
+   * 根据id查找敌人
+   * @param {*敌人id} oid 
+   */
+  var findEnemyByOid=function(oid){
+    if(enemies)
+    {
+      for(var i=0 ;i<enemies.length;i++)
+      {
+        if(enemies[i].Oid==oid)
+        {
+          return enemies[i]
+        }
+      }
+    }
   }
   /**
    * event
@@ -589,8 +649,6 @@ function Engine () {
     },
     createEnemy: function (type) {
       // 1 大飞机  2,3,4 小飞机
-
-      statInfo.allEnemy++
       var enemy = new Enemy(true)
       enemy.readyShot(500 * (Math.random() + 1))
       enemy.Oid = ++currentOid
@@ -598,7 +656,6 @@ function Engine () {
       enemy.position.x = option.ctxWidth * Math.random()
       enemy.position.y = 0 - enemy.width
       enemy.speed = enemy.speedY = 5 * option.enemy.speedFactor
-      enemies.push(enemy)
 
       enemy.icon = option.resources.enes[type - 1]
       if (type == 1) {
@@ -610,6 +667,7 @@ function Engine () {
         enemy.height = 30
         enemy.Hp = 2 + 5 * Math.random()
       }
+      return enemy
     }
   }
 
@@ -638,13 +696,13 @@ function Engine () {
     this.enableShot = enableShot // 是否发射
     this.interval // 发射器
     this.shots = []
+    this.shotEx=1
     var that = this
     this.readyShot = function (time) {
       clearInterval(this.interval)
       if (! this.enableShot) return
       var that = this
       that.shotInterVal = time
-      clearTimeout(that.interval)
       that.interval = setInterval(function () {
         if (that.shots && that.shots.length > 0) return
         that.shots.push.apply(that.shots, that.shotFactory())
@@ -698,7 +756,7 @@ function Engine () {
 
     this.speedX = 0
     this.type = 'common'
-    this.Attact = 1 // 攻击力
+    this.attack = 1 // 攻击力
     belong = 0
   }
   /**
@@ -716,13 +774,13 @@ function Engine () {
     this.position.x = (option.ctxWidth - this.width) / 2
     this.position.y = (option.ctxHeight - this.height)
     this.enableShot = true
-    this.shotEx = new ShotEx()
+    this.shotor = new ShotorFactory()
     this.shotType = {
       type: 'umShot',
       num: 1
     }
     this.shotFactory = function () {
-      return this.shotEx.CreateShot(this)
+      return this.shotor.CreateShot(this)
     }
     this.reset = function () {
       this.Hp = player.AllHp
@@ -732,6 +790,7 @@ function Engine () {
         type: 'umShot',
         num: 1
       }
+      this.readyShot(200)
     }
   }
 
@@ -743,12 +802,20 @@ function Engine () {
   }
   function Spoil (obj, type) {
     EObject.call(this)
-    this.speedY = 20
+    this.speedY = 5
     this.spoiltype = type
     this.width = 25
     this.height = 25
     this.position.x = obj.position.x
     this.position.y = obj.position.y
+    this.XPath
+    this.currentTick = 0
+    this.applyXPath = function (path) {
+      this.XPath = path
+    }
+    this.getXPosition = function () {
+      return this.XPath()
+    }
     this.Effect = function (targetPlayer) {}
   }
   function UmShotSpoil (object) {
@@ -757,7 +824,12 @@ function Engine () {
     this.icon = option.resources.u
     this.Effect = function (targetPlayer) {
       if (targetPlayer.shotType.type == spoilManager.spoilType.umShot) {
-        targetPlayer.shotType.num++
+        if(targetPlayer.shotType.num>7)
+        {
+          targetPlayer.shotEx++
+        }else{
+          targetPlayer.shotType.num++
+        }
       }else {
         targetPlayer.shotType = {
           type: spoilManager.spoilType.umShot,
@@ -781,7 +853,7 @@ function Engine () {
           num: 1
         }
       }
-      targetPlayer.readyShot(1500-200*targetPlayer.shotType.num)
+      targetPlayer.readyShot(1500 - 200 * targetPlayer.shotType.num)
     }
   }
   function AddHpSpoil (object) {
@@ -792,7 +864,7 @@ function Engine () {
       if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++
     }
   }
-  function ShotEx () {
+  function ShotorFactory () {
     EObject.call(this)
     this.CreateShot = function (ePlayer) {
       // ePlayer.shots.
@@ -817,7 +889,7 @@ function Engine () {
         shot.width = 5
         shot.height = 15
         shot.icon = option.resources.shot
-        shot.position.x = ePlayer.position.x + ePlayer.width / 2-shot.width/2
+        shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
         shot.position.y = ePlayer.position.y
 
         shot.speedY = sp * Math.sin(rotate * i)
@@ -849,7 +921,7 @@ function Engine () {
           tm = setInterval(function () {
             if (isRunning == 1) {
               shot.width = shot.width - span
-              shot.position.x=shot.position.x+span/2
+              shot.position.x = shot.position.x + span / 2
             }
           }, 100)
         }
@@ -890,18 +962,25 @@ function Engine () {
       if (Math.random() < 0.5) return undefined
       var types = Object.values(this.spoilType)
       var t = types[ (Math.random() * types.length).toString().charAt(0) - '0']
-
+      var spoil
       switch (t) {
         case this.spoilType.umShot:
-          return new UmShotSpoil(obj)
+          spoil = new UmShotSpoil(obj)
           break
         case this.spoilType.gzShot:
-          return new GzShotSpoil(obj)
+          spoil = new GzShotSpoil(obj)
           break
         case this.spoilType.addHp:
-          return new AddHpSpoil(obj)
+          spoil = new AddHpSpoil(obj)
           break
       }
+      var factor = 3 * Math.random() * Math.sign(Math.random() - 0.5)
+      spoil.applyXPath(
+        function (x) {
+          return factor * Math.cos(this.currentTick)
+        }
+      )
+      return spoil
     }
   }
 }
