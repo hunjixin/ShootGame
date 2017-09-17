@@ -1,11 +1,11 @@
 define({
-    enemyType:{
-        level1:{
+  enemyType: {
+    level1: {
 
-        },
-        leven2:{
-
-        }
     },
-    
-});
+    leven2: {
+
+    }
+  }
+
+})

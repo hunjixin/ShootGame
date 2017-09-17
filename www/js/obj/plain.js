@@ -1,7 +1,7 @@
-define(['util', 'EObject', 'resource','shot'], function (util, EObject, resource,shotObj) {
-  var createEnemy = function (_context,type) {
+define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resource, shotObj) {
+  var createEnemy = function (_context, type) {
     // 1 大飞机  2,3,4 小飞机
-    var enemy = new Enemy(_context,true)
+    var enemy = new Enemy(_context, true)
     enemy.setShotInterVal(util.randInt(5, 15))
     enemy.Oid = ++_context.currentOid
     enemy.position.x = _context.option.ctxWidth * Math.random()
@@ -21,9 +21,7 @@ define(['util', 'EObject', 'resource','shot'], function (util, EObject, resource
     return enemy
   }
 
-
-
-  function Plain (_context,enableShot) {
+  function Plain (_context, enableShot) {
     EObject.call(this)
 
     this.AllHp = 1 // 总HP
@@ -64,8 +62,8 @@ define(['util', 'EObject', 'resource','shot'], function (util, EObject, resource
    * 敌军
    * @param {*是否发射} isShot 
    */
-  function Enemy (_context,isShot) {
-    Plain.call(this,_context, isShot)
+  function Enemy (_context, isShot) {
+    Plain.call(this, _context, isShot)
     this.type = 'common'
     this.speedX = 0
     this.shotType = {
@@ -81,7 +79,7 @@ define(['util', 'EObject', 'resource','shot'], function (util, EObject, resource
    * @param {*玩家} isShot 
    */
   function Player (_context) {
-    Plain.call(this,_context, true)
+    Plain.call(this, _context, true)
 
     this.icon = resource.plainImg
     this.Oid = ++_context.currentOid

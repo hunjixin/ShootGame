@@ -24,20 +24,20 @@ angular.module('starter', ['ionic'])
   }).controller('crash', ['$scope',
   function ($scope) {
     requirejs.config({
-      baseUrl:'js',
+      baseUrl: 'js',
       paths: {
         engne: 'engne',
-        event:'event',
-        util:'util',
-        spoil:'obj/spoil',
-        shot:'obj/shot',
-        plain:'obj/plain',
-        EObject:'obj/eobject',
-        uiComonent:'obj/uiComonent',
-        resource:'resource'
+        event: 'event',
+        util: 'util',
+        spoil: 'obj/spoil',
+        shot: 'obj/shot',
+        plain: 'obj/plain',
+        EObject: 'obj/eobject',
+        uiComonent: 'obj/uiComonent',
+        resource: 'resource'
       }
-     });
-     requirejs(['engne'],function(Engine){
+    })
+    requirejs(['engne'], function (Engine) {
       setTimeout(function () {
         var en = new Engine()
         en.Create({
@@ -45,8 +45,6 @@ angular.module('starter', ['ionic'])
           attachEvent: $scope
         })
         en.Start()
-  
       }, 1000)
-     });
+    })
   }])
-

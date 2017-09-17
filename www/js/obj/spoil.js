@@ -1,4 +1,4 @@
-define(['util','EObject','resource'], function (util,EObject,resource) {
+define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
   function Spoil (obj, type) {
     EObject.call(this)
     this.speedY = 5
@@ -94,10 +94,10 @@ define(['util','EObject','resource'], function (util,EObject,resource) {
     addHp: 'addHp'
   }
   return {
-    Spoil:Spoil,
-    UmShotSpoil:UmShotSpoil,
-    GzShotSpoil:GzShotSpoil,
-    AddHpSpoil:AddHpSpoil,
-    SpoilManager:SpoilManager,
+    Spoil: Spoil,
+    UmShotSpoil: UmShotSpoil,
+    GzShotSpoil: GzShotSpoil,
+    AddHpSpoil: AddHpSpoil,
+    SpoilManager: SpoilManager
   }
 })
