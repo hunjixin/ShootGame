@@ -6,7 +6,7 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     enemy.Oid = ++_context.currentOid
     enemy.position.x = _context.option.ctxWidth * Math.random()
     enemy.position.y = 0 - enemy.width
-    enemy.speedY = 5 * _context.option.enemy.speedFactor
+    enemy.speedY = util.randInt(3,6)
 
     enemy.icon = resource.enes[type - 1]
     if (type == 1) {
@@ -33,19 +33,19 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     this.shots = []
     this.shotEx = 1
     var that = this
-    var currentTick = 0
+    var shotTick = 0
     this.setShotInterVal = function (val, minVal) {
       if (minVal < 1) minVal = 1
       if (val < minVal) val = minVal
       this.shotInterVal = val
     }
     this.refresh = function () {
-      if (currentTick <= that.shotInterVal) {
-        currentTick++
+      if (shotTick <= that.shotInterVal) {
+        shotTick++
       }else {
         if (that.shots && that.shots.length > 0) return
         that.shots.push.apply(that.shots, that.shotFactory())
-        currentTick = 0
+        shotTick = 0
       }
     }
     this.getShot = function () {
@@ -74,6 +74,24 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       return this.shotor.CreateShot(this)
     }
   }
+  function Boss(_context,isShot){
+    Plain.call(this, _context, isShot)
+    this.type = 'common'
+    this.speedX = 0
+
+    this.width = _context.option.ctxWidth*0.6
+    this.height = enemy.width*0.6
+    this.position.x = _context.option.ctxWidth *0.5
+    this.position.y = - enemy.height
+
+    this.shotType = {
+      type: 'enemyShot',
+      num: 1
+    }
+    this.shotFactory = function () {
+      return this.shotor.CreateShot(this)
+    }
+  }
 
   /**
    * @param {*玩家} isShot 
@@ -92,7 +110,7 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     this.enableShot = true
     this.speedY = -1
     this.shotType = {
-      type: 'umShot',
+      type: 'gzShot',
       num: 1
     }
     this.shotFactory = function () {
@@ -103,7 +121,7 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       this.position.x = (_context.option.ctxWidth - 30) / 2
       this.position.y = (_context.option.ctxHeight - 24)
       this.shotType = {
-        type: 'umShot',
+        type: 'gzShot',
         num: 1
       }
       this.setShotInterVal(5)

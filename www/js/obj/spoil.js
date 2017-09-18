@@ -1,20 +1,12 @@
 define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
   function Spoil (obj, type) {
     EObject.call(this)
-    this.speedY = 5
+    this.speedY = 3
     this.spoiltype = type
     this.width = 25
     this.height = 25
     this.position.x = obj.position.x
     this.position.y = obj.position.y
-    this.XPath
-    this.currentTick = 0
-    this.applyXPath = function (path) {
-      this.XPath = path
-    }
-    this.getXPosition = function () {
-      return this.XPath()
-    }
     this.Effect = function (targetPlayer) {}
   }
   function UmShotSpoil (object) {
@@ -79,10 +71,10 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
           spoil = new AddHpSpoil(obj)
           break
       }
-      var factor = 3 * Math.random() * Math.sign(Math.random() - 0.5)
-      spoil.applyXPath(
+      var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5)
+      spoil.setXPath(
         function (x) {
-          return factor * Math.cos(this.currentTick)
+          return factor * (Math.cos(this.moveTick/15)+Math.random()-0.5)
         }
       )
       return spoil

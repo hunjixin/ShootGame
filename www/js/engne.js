@@ -6,7 +6,7 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         'id': '',
         enemy: {
           speedFactor: 0.8,
-          shotSpeedFactor: -0.6,
+          shotSpeedFactor: 0.6,
           shotInterVal: 1000
         },
         playerShotSpeedFactor: 1,
@@ -359,28 +359,26 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         for (var index in shots) {
           if (shots[index].isDie) continue
           var shot = shots[index]
-          shot.position.y -= shot.speedY
-          shot.position.x -= shot.speedX
+          shot.update()
         }
 
         for (var index in spoils) {
           if (spoils[index].isDie) continue
           var spoil = spoils[index]
-
-          spoil.position.y += spoil.speedY
-          spoil.position.x += spoil.getXPosition()
+          spoil.update()
         }
 
         for (var index in enemies) {
           if (enemies[index].isDie) continue
           var enemy = enemies[index]
-          enemy.position.y += enemy.speedY
-          enemy.position.x += enemy.speedX
+
+       
           var eShots = enemy.getShot()
           if (eShots) {
             shots.push.apply(shots, eShots)
           }
-          enemies[index].refresh()
+          enemy.refresh()
+          enemy.update()
         }
         player.refresh()
       }

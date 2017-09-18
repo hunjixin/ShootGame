@@ -10,7 +10,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
     }
     var umbrellaShot = function (ePlayer, num) {
       var split
-      var sp = 10 * _context.option.playerShotSpeedFactor
+      var sp = 10 * _context.option.playerShotSpeedFactor*Math.sign(ePlayer.speedY)*Math.abs(ePlayer.speedY)
       if (2 * num - 1 < 15)
         split = 2 * num - 1
       else
@@ -28,14 +28,14 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
         shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
         shot.position.y = ePlayer.position.y
 
-        shot.speedY = -Math.sign(ePlayer.speedY) * sp * Math.sin(rotate * i)
+        shot.speedY = sp * Math.sin(rotate * i)
         shot.speedX = sp * Math.cos(rotate * i)
         shots.push(shot)
       }
       return shots
     }
     var gzShot = function (ePlayer) {
-      var sp = 10 * _context.option.playerShotSpeedFactor
+      var sp = 10 * _context.option.playerShotSpeedFactor*Math.sign(ePlayer.speedY)*Math.abs(ePlayer.speedY)
       var shot = new Shot()
       shot.Oid = ++_context.currentOid
       shot.belong = ePlayer.Oid
@@ -69,7 +69,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       return [shot]
     }
     var commonShot = function (ePlayer) {
-      var sp = 10 * _context.option.playerShotSpeedFactor
+      var sp = 10 * _context.option.playerShotSpeedFactor*Math.sign(ePlayer.speedY)*Math.abs(ePlayer.speedY)
       var shot = new Shot()
       shot.Oid = ++_context.currentOid
       shot.belong = ePlayer.Oid
@@ -91,7 +91,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       shot.width = 5
       shot.height = 15
       shot.icon = resource.eshot
-      shot.speedY = (enemy.speedY + 8) * _context.option.enemy.shotSpeedFactor
+      shot.speedY = (Math.abs(enemy.speedY) + 8) * _context.option.enemy.shotSpeedFactor*Math.sign(enemy.speedY)
       shot.position.x = enemy.position.x + enemy.width / 2 - shot.width / 2
       shot.position.y = enemy.position.y
       return [shot]

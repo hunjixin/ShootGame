@@ -40,17 +40,18 @@ var Util = {
     return (y - headOffset) / (option.ctxHeight - headOffset) * option.ctxHeight
   },
   isAndroid: function () {
-    var u = navigator.userAgent
-    return u.indexOf('Android') > -1 || u.indexOf('Adr') > -1
+    if ( (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+      return true
+    }else {
+      return false
+    }
   },
   randInt: function (min, max) {
-    if (min < max) return max
-    var xx = parseInt(Math.random() * (max - min)) * +min
-    console.log(xx)
-    return xx
+    if (min > max) return max
+    return parseInt(Math.random() * (max - min))+min
   },
-  drawEobject:function (context,eobj, rotateValue) {
-      context.drawImage(eobj.icon,
+  drawEobject: function (context, eobj, rotateValue) {
+    context.drawImage(eobj.icon,
       eobj.position.x , eobj.position.y,
       eobj.width, eobj.height)
   }
