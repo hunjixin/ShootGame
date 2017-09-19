@@ -9,8 +9,9 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       else if (ePlayer.shotType.type == 'enemyShot') return enemyShot(ePlayer)
     }
     var umbrellaShot = function (ePlayer, num) {
+      var spy=ePlayer.speedY===0?1:ePlayer.speedY
       var split
-      var sp = 10 * _context.option.playerShotSpeedFactor*Math.sign(ePlayer.speedY)*Math.abs(ePlayer.speedY)
+      var sp = 10 * ePlayer.shotSpeedFactor*Math.sign(spy)*Math.abs(spy)
       if (2 * num - 1 < 15)
         split = 2 * num - 1
       else
@@ -26,7 +27,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
         shot.height = 15
         shot.icon = resource.shot
         shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
-        shot.position.y = ePlayer.position.y
+        shot.position.y = ePlayer.position.y+ePlayer.height-15
 
         shot.speedY = sp * Math.sin(rotate * i)
         shot.speedX = sp * Math.cos(rotate * i)
@@ -35,7 +36,8 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       return shots
     }
     var gzShot = function (ePlayer) {
-      var sp = 10 * _context.option.playerShotSpeedFactor*Math.sign(ePlayer.speedY)*Math.abs(ePlayer.speedY)
+      var spy=ePlayer.speedY===0?1:ePlayer.speedY
+      var sp = 10 *  ePlayer.shotSpeedFactor*Math.sign(spy)*Math.abs(spy)*Math.sign(spy)
       var shot = new Shot()
       shot.Oid = ++_context.currentOid
       shot.belong = ePlayer.Oid
@@ -69,7 +71,8 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       return [shot]
     }
     var commonShot = function (ePlayer) {
-      var sp = 10 * _context.option.playerShotSpeedFactor*Math.sign(ePlayer.speedY)*Math.abs(ePlayer.speedY)
+      var spy=ePlayer.speedY===0?1:ePlayer.speedY
+      var sp = 10 *  ePlayer.shotSpeedFactor*Math.sign(spy)*Math.abs(spy)
       var shot = new Shot()
       shot.Oid = ++_context.currentOid
       shot.belong = ePlayer.Oid
@@ -79,7 +82,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       shot.speedY = sp
       shot.icon = resource.shot
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
-      shot.position.y = ePlayer.position.y
+     
 
       return [shot]
     }
@@ -93,7 +96,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       shot.icon = resource.eshot
       shot.speedY = (Math.abs(enemy.speedY) + 8) * _context.option.enemy.shotSpeedFactor*Math.sign(enemy.speedY)
       shot.position.x = enemy.position.x + enemy.width / 2 - shot.width / 2
-      shot.position.y = enemy.position.y
+      shot.position.y = enemy.position.y+enemy.height-15
       return [shot]
     }
   }

@@ -1,4 +1,4 @@
-define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
+define(['util', 'EObject', 'resource','plain'], function (util, EObject, resource,plain) {
   function ResetButton (_context) {
     EObject.call(this)
     this.position.x = _context.option.ctxWidth / 4
@@ -9,6 +9,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
   }
   function Stage (_context, stageConfig) {
     EObject.call(this)
+    var that=this
     this.context = _context
 
     this.position.x = 0
@@ -75,6 +76,22 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
         this.bullets.length=0
         this.spoils.length=0
     }
+    var checkTm=setInterval(function(){
+       if(that.isStageTimeOut())
+       {
+        that.createBoss()
+         clearInterval(checkTm)
+       }
+    },100)
+    
+    this.createBoss=function(){
+      var boss=new plain.Boss(this.context)
+      this.boss=boss
+      this.enemies.push(boss)
+    }
+    this.isStageTimeOut=function(){
+      return (new Date()-this.startTime)/1000>this.time
+    }
   }
   function StageManager (_context) {
     this.context = _context
@@ -94,7 +111,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
      * 判断关卡是否超时   单位s
      */
     this.isStageTimeOut=function(){
-       return (new Date()-this.context.stage.startTime)/1000>this.context.stage.time
+       return this.context.stage.isStageTimeOut()
     }
     this.init = function () {
         this.context.stage= new Stage(this.context , this.stagesConfig[0])
@@ -105,6 +122,11 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
         this.context.stage.destroy()
         this.context.stage=new Stage(this.context , this.stagesConfig[this.currentStageIndex])
       }
+    }
+    this.reset=function(){
+      this.currentStageIndex=0
+      this.context.stage= new Stage(this.context , this.stagesConfig[0])
+      this.context.stage.boss=undefined
     }
   }
   return {

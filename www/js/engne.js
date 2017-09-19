@@ -189,10 +189,6 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
       }
       // 检测碰撞
       var checkCollection = function () {
-        if(stageManager.isStageTimeOut())
-        {
-          stageManager.next()
-        }
         var plainRect = {
           x: player.position.x,
           y: player.position.y,
@@ -326,6 +322,11 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         var shots = _context.stage.shots
         var bullets = _context.stage.bullets
         var spoils = _context.stage.spoils
+        if(stageManager.isStageTimeOut())
+        {
+         
+           //stageManager.next()
+        }
         // 生成新的个体
         var pShots = player.getShot()
         if (pShots) {
@@ -433,9 +434,9 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
        * reset
        */
       var reset = function () {
-        _context.stage.reset()
         player.reset()
         stateInfo.reset()
+        stageManager.reset()
       }
       /**
        * 根据id查找敌人
