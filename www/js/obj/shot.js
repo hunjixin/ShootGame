@@ -43,7 +43,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       shot.belong = ePlayer.Oid
       shot.Hp = 100000000
       shot.width = 100
-      shot.height = _context.option.ctxHeight
+      shot.height = _context.stage.height
       shot.icon = resource.gz
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
       shot.position.y = 0
@@ -64,7 +64,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       }, 1000)
       // 1.5秒后消失
       setTimeout(function () {
-        shot.position.y = -_context.option.ctxHeight
+        shot.position.y = _context.stage.height
         shot.isDie = true
         clearTimeout(tm)
       }, 1500)

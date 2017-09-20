@@ -5,8 +5,8 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       var enemy = new Enemy(_context, true)
       enemy.setShotInterVal(util.randInt(5, 15))
       enemy.Oid = ++_context.currentOid
-      enemy.position.x = _context.option.ctxWidth * Math.random()
-      enemy.position.y = 0 - enemy.width
+      enemy.position.x = _context.stage.width * Math.random()
+      enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
   
       enemy.icon = resource.enes[type - 1]
@@ -18,8 +18,8 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       var enemy = new Enemy(_context, true)
       enemy.setShotInterVal(util.randInt(5, 15))
       enemy.Oid = ++_context.currentOid
-      enemy.position.x = _context.option.ctxWidth * Math.random()
-      enemy.position.y = 0 - enemy.width
+      enemy.position.x = _context.stage.width  * Math.random()
+      enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
   
       enemy.icon = resource.enes[type - 1]
@@ -69,6 +69,12 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
         return shotes
       }else {
         return undefined
+      }
+    }
+    this.getPositionAbsolute=function(){
+      return {
+             x:this.position.x,
+             y:this.position.y+_context.headOffset
       }
     }
   }
@@ -130,8 +136,8 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     this.height = 24
     this.AllHp = 3
     this.Hp = this.AllHp
-    this.position.x = (_context.option.ctxWidth - this.width) / 2
-    this.position.y = (_context.option.ctxHeight - this.height)
+    this.position.x = (_context.stage.width - this.width) / 2
+    this.position.y = (_context.stage.height - this.height)
     this.enableShot = true
     this.speedY = -1
     this.shotType = {
@@ -143,8 +149,8 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     }
     this.reset = function () {
       this.Hp = 3
-      this.position.x = (_context.option.ctxWidth - 30) / 2
-      this.position.y = (_context.option.ctxHeight - 24)
+      this.position.x = (_context.stage.width - this.width) / 2
+      this.position.y = (_context.stage.height  - this.height)
       this.shotType = {
         type: 'gzShot',
         num: 1

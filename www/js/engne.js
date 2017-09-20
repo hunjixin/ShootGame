@@ -77,10 +77,12 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
 
       var player
       var resetButton
+      var settingButton
       var _context
       var myevent
       var spoilManager
       var stageManager
+
 
       this.Create = function (_option) {
         _context = {
@@ -103,11 +105,11 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         var body = document.body
         if (option.isAndroid) {
           c.width = body.scrollWidth
-          c.height = body.scrollHeight - 6
+          c.height = body.scrollHeight
         }
         context = c.getContext('2d')
-        option.ctxHeight = context.canvas.clientHeight
-        option.ctxWidth = context.canvas.clientWidth
+        option.ctxHeight = context.canvas.offsetHeight
+        option.ctxWidth = context.canvas.offsetWidth
 
         stageManager.init()
         resetButton = new uiComonent.ResetButton(_context)
@@ -117,6 +119,12 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
           obj.isDisplay = false
           reset()
         })
+        //设置按钮
+        settingButton = new uiComonent.SettingButton(_context)
+        myevent.eventRelative.attachEvet(settingButton, 'click', function (obj, eventInfo) {
+          _option.showConsoleView()
+        })
+
 
         player = new plain.Player(_context, true)
         _context.player = player
@@ -134,7 +142,7 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         myevent.eventRelative.attachEvet(_context.stage, 'mouseMove', function (obj, eventInfo) {
           if (_context.isRunning == 1 && plainMoveState.isMouseDown === true) {
             player.position.x = eventInfo.position.x - player.width / 2
-            player.position.y = eventInfo.position.y - player.height / 2
+            player.position.y = eventInfo.position.y - player.height / 2-_context.headOffset
           }
         })
       }
@@ -164,7 +172,7 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         var canvas = _context.stage.drawScene()
         context.drawImage(canvas, // 绘制
           0, 0, canvas.width, canvas.height,
-          0, _context.headOffset, option.ctxWidth, option.ctxHeight - _context.headOffset)
+          0, _context.headOffset, option.ctxWidth, canvas.height)
         // head
         context.drawImage(resource.head, -5, 0, option.ctxWidth + 10, _context.headOffset)
         // hp
@@ -172,6 +180,8 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
           var width = (resource.hp.width + 5) * index + 5
           context.drawImage(resource.hp, width, 0, 20, _context.headOffset)
         }
+        //设置图标
+        util.drawEobject(context, settingButton) 
         // 重置
         if (_context.isRunning != 1) {
           util.drawEobject(context, resetButton)

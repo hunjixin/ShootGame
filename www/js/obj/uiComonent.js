@@ -7,15 +7,23 @@ define(['util', 'EObject', 'resource','plain'], function (util, EObject, resourc
     this.height = 40
     this.icon = resource.button
   }
+  function SettingButton (_context) {
+    EObject.call(this)
+    this.position.x = _context.option.ctxWidth -_context.headOffset
+    this.position.y = 2
+    this.width = _context.headOffset
+    this.height = _context.headOffset-4
+    this.icon = resource.setting
+  }
   function Stage (_context, stageConfig) {
     EObject.call(this)
     var that=this
     this.context = _context
 
     this.position.x = 0
-    this.position.y = 0
+    this.position.y = _context.headOffset
     this.width = _context.option.ctxWidth
-    this.height = _context.option.ctxHeight
+    this.height = _context.option.ctxHeight-_context.headOffset
     // 背景图片
     // 敌军种类  自动配置敌军
     // boss
@@ -38,12 +46,12 @@ define(['util', 'EObject', 'resource','plain'], function (util, EObject, resourc
 
       var canvas = document.createElement('canvas')
       var drawContext = canvas.getContext('2d')
-      canvas.height = this.context.option.ctxHeight
-      canvas.width = this.context.option.ctxWidth
+      canvas.height =this.height
+      canvas.width =  this.width
       // 背景
       drawContext.drawImage(this.icon, 0, 0,
-        this.context.option.ctxWidth,
-        this.context.option.ctxHeight)
+        this.width,
+        this.height)
       // 子弹
       for (var index in this.shots) {
         var shot = shots[index]
@@ -132,6 +140,7 @@ define(['util', 'EObject', 'resource','plain'], function (util, EObject, resourc
   return {
     ResetButton: ResetButton,
     Stage: Stage,
+    SettingButton:SettingButton,
     StageManager:StageManager
   }
 })

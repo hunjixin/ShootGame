@@ -22,9 +22,10 @@ var Util = {
   },
   isEffect: function (plain, action , eventInfo) {
     var pos = {x: eventInfo.position.x,y: eventInfo.position.y}
+    var absolutePosition = plain.getPositionAbsolute?plain.getPositionAbsolute():plain.position
     var rect = {
-      x: plain.position.x,
-      y: plain.position.y,
+      x: absolutePosition.x,
+      y: absolutePosition.y,
       width: plain.width,
       height: plain.height
     }
@@ -48,7 +49,7 @@ var Util = {
   },
   randInt: function (min, max) {
     if (min > max) return max
-    return parseInt(Math.random() * (max - min))+min
+    return parseInt(Math.random() * (max - min)) + min
   },
   drawEobject: function (context, eobj, rotateValue) {
     context.drawImage(eobj.icon,

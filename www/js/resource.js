@@ -46,6 +46,10 @@ define(['util'], function (util) {
 
   var g = new Image()
   g.src = 'img/g.png'
+
+  var setting=new Image()
+  setting.src='img/setting.png'
+
   var resource = {
     shot: shot,
     bullet: bullet,
@@ -62,7 +66,8 @@ define(['util'], function (util) {
     button: button,
     gz: gz,
     g: g,
-    u: u
+    u: u,
+    setting:setting
   }
   return resource
 })
