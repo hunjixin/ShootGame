@@ -55,6 +55,60 @@
       </canvas>
     </ion-content>
   </ion-pane>
+  <script id='templates/modal.html' type="text/ng-template">
+    <ion-modal-view>
+      <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">控制台</h1>
+      </ion-header-bar>
+      <ion-content class="padding">
+        <div class="list">
+
+          <label class="item item-input">
+            <span class="input-label">子弹类型</span>
+            <input ng-model="newUser.firstName" type="number">
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">子弹强度</span>
+            <input ng-model="newUser.lastName" type="number">
+          </label>
+
+          <label class="item item-input">
+              <span class="input-label">战利品生成几率</span>
+              <input ng-model="newUser.lastName" type="number">
+          </label>
+
+
+          <label class="item item-input" ng-click="hd1=!hd1" ng-init="hd1=true">
+              <span class="input-label">关卡策略</span>
+          </label>
+          <ion-radio ng-repeat="item in clientSideList" ng-hide="hd1"
+          ng-value="item.value"
+           ng-model="data.clientSide">
+       {{ item.text }}
+       </ion-radio>
+          <ion-toggle  ng-model="item.checked"    ng-checked="item.checked">
+           开启debug
+          </ion-toggle>
+
+          <div class="row">
+            <div class="col"></div>
+            <div class="col">
+              <button  class="button button-full button-positive" ng-click="modal.hide()">取消</button>
+              
+            </div>
+            <div class="col"></div>
+            <div class="col">
+              <button class="button button-full button-positive" ng-click="createContact(newUser)">确定</button>
+              
+            </div>
+            <div class="col"></div>
+          </div>
+       </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+  
   <script src="js/require.js"></script>
   <script>
  
@@ -63,32 +117,7 @@
   <!-- your app's js -->
   <script src="js/app.js"></script>
 
-  <script id="modal.html" type="text/ng-template">
-    <ion-modal-view>
-      <ion-header-bar class="bar bar-header bar-positive">
-        <h1 class="title">New Contact</h1>
-        <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
-      </ion-header-bar>
-      <ion-content class="padding">
-        <div class="list">
-          <label class="item item-input">
-            <span class="input-label">First Name</span>
-            <input ng-model="newUser.firstName" type="text">
-          </label>
-          <label class="item item-input">
-            <span class="input-label">Last Name</span>
-            <input ng-model="newUser.lastName" type="text">
-          </label>
-          <label class="item item-input">
-            <span class="input-label">Email</span>
-            <input ng-model="newUser.email" type="text">
-          </label>
-          <button class="button button-full button-positive" ng-click="createContact(newUser)">Create</button>
-        </div>
-      </ion-content>
-    </ion-modal-view>
-  </script>
-  
+
 </body>
 
 </html>

@@ -122,7 +122,11 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         //设置按钮
         settingButton = new uiComonent.SettingButton(_context)
         myevent.eventRelative.attachEvet(settingButton, 'click', function (obj, eventInfo) {
-          _option.showConsoleView()
+          _context.isRunning=false
+          _option.showConsoleView(function(){
+            _context.isRunning=true
+          })
+
         })
 
 
