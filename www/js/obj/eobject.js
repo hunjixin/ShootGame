@@ -47,6 +47,13 @@ define(['util'], function (util) {
       this.move()
       this.moveTick++
     }
+
+    this.show=function(){
+      this.isDisplay=true
+    }
+    this.hide=function(){
+      this.isDisplay=false
+    }
   }
   return EObject
 })

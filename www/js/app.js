@@ -23,26 +23,19 @@ angular.module('starter', ['ionic'])
     })
   }).controller('crash', ['$scope','$ionicModal' ,
   function ($scope,$ionicModal) {
-    $ionicModal.fromTemplateUrl('templates/modal.html', {
-      scope: $scope
-    }).then(function(modal) {
-      $scope.modal = modal;
-    });
 
-    function showConsoleView(type, size, id,callback) { 
-   
+    function initConsoleView(context)
+    {
+      $scope.context=context
+      $ionicModal.fromTemplateUrl('templates/modal.html', {
+        scope: $scope
+      }).then(function(modal) {
+        $scope.modal = modal;
+      });
+    }
+    function showConsoleView(context,callback) { 
       $scope.modal.show();
     }
-    $scope.clientSideList = [
-      { text: "Backbone", value: "bb" },
-      { text: "Angular", value: "ng" },
-      { text: "Ember", value: "em" },
-      { text: "Knockout", value: "ko" }
-    ];
-    $scope.createContact = function(u) {        
-      $scope.contacts.push({ name: u.firstName + ' ' + u.lastName });
-      $scope.modal.hide();
-    };
 
 
     requirejs.config({
@@ -55,6 +48,7 @@ angular.module('starter', ['ionic'])
         shot: 'obj/shot',
         plain: 'obj/plain',
         EObject: 'obj/eobject',
+        Debug:'obj/debug',
         uiComonent: 'obj/uiComonent',
         resource: 'resource'
       }
@@ -66,7 +60,8 @@ angular.module('starter', ['ionic'])
         en.Create({
           id: 'myCanvas',
           attachEvent: $scope,
-          showConsoleView:showConsoleView
+          showConsoleView:showConsoleView,
+          initConsoleView:initConsoleView
         })
         en.Start()
       }, 1000)

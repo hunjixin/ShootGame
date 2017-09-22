@@ -1,4 +1,5 @@
 define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
+  var shotTypes=['umShot','gzShot','common']
   function ShotorFactory (_context) {
     EObject.call(this)
     this.CreateShot = function (ePlayer) {
@@ -118,6 +119,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
     belong = 0
   }
   return {
+    shotTypes:shotTypes,
     ShotorFactory: ShotorFactory,
     Bullet: Bullet,
     Shot: Shot

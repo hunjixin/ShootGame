@@ -36,7 +36,7 @@
     canvas {
       margin: auto;
     }
-    
+
     body {
       text-align: center
     }
@@ -49,8 +49,8 @@
 
   <ion-pane>
     <ion-content style="position:relative">
-      <canvas  on-drag="move($event)" ng-click="click($event)" on-touch="mouseDown($event)" on-release="mouseUp($event)"
-        id="myCanvas"  style="height:100%;width:100%;border:1px solid #d3d3d3;background:#ffffff;">
+      <canvas on-drag="move($event)" ng-click="click($event)" on-touch="mouseDown($event)" on-release="mouseUp($event)" id="myCanvas"
+        style="height:100%;width:100%;border:1px solid #d3d3d3;background:#ffffff;">
         Your browser does not support the HTML5 canvas tag.
       </canvas>
     </ion-content>
@@ -63,57 +63,68 @@
       <ion-content class="padding">
         <div class="list">
 
+          <ion-toggle ng-model="context.setting.isDebug.value" ng-checked="context.setting.isDebug.value">
+            {{context.setting.isDebug.message}}
+          </ion-toggle>
           <label class="item item-input">
-            <span class="input-label">子弹类型</span>
-            <input ng-model="newUser.firstName" type="number">
+              <span class="input-label">{{context.setting.stageTime.message}}</span>
+              <input ng-model="context.setting.stageTime.value" type="number">
           </label>
-
           <label class="item item-input">
-            <span class="input-label">子弹强度</span>
-            <input ng-model="newUser.lastName" type="number">
+              <span class="input-label">{{context.setting.spoilRate.message}}</span>
+              <input ng-model="context.setting.spoilRate.value" type="number">
           </label>
-
           <label class="item item-input">
-              <span class="input-label">战利品生成几率</span>
-              <input ng-model="newUser.lastName" type="number">
+              <span class="input-label">{{context.setting.enemyRemoveRate.message}}</span>
+              <input ng-model="context.setting.enemyRemoveRate.value" type="number">
           </label>
-
-
-          <label class="item item-input" ng-click="hd1=!hd1" ng-init="hd1=true">
+          <label class="item item-input">
+              <span class="input-label">{{context.setting.enemyShotRate.message}}</span>
+              <input ng-model="context.setting.enemyShotRate.value" type="number">
+          </label>
+          <label class="item item-input">
+              <span class="input-label">{{context.setting.playerShotRate.message}}</span>
+              <input ng-model="context.setting.playerShotRate.value" type="number">
+          </label>
+          <label class="item item-input">
+              <span class="input-label">{{context.setting.spoilRate.message}}</span>
+              <input ng-model="context.setting.spoilRate.value" type="number">
+          </label>
+          <!--  <label class="item item-input" ng-click="hd1=!hd1" ng-init="hd1=true">
               <span class="input-label">关卡策略</span>
           </label>
           <ion-radio ng-repeat="item in clientSideList" ng-hide="hd1"
           ng-value="item.value"
            ng-model="data.clientSide">
-       {{ item.text }}
+         {{ item.text }}
        </ion-radio>
           <ion-toggle  ng-model="item.checked"    ng-checked="item.checked">
            开启debug
-          </ion-toggle>
+          </ion-toggle>-->
 
           <div class="row">
             <div class="col"></div>
             <div class="col">
-              <button  class="button button-full button-positive" ng-click="modal.hide()">取消</button>
-              
+              <button class="button button-full button-positive" ng-click="modal.hide()">取消</button>
+
             </div>
             <div class="col"></div>
             <div class="col">
               <button class="button button-full button-positive" ng-click="createContact(newUser)">确定</button>
-              
+
             </div>
             <div class="col"></div>
           </div>
-       </div>
+        </div>
       </ion-content>
     </ion-modal-view>
   </script>
-  
+
   <script src="js/require.js"></script>
   <script>
- 
+
   </script>
-   <!-- <script src="js/engne.js"></script>-->
+  <!-- <script src="js/engne.js"></script>-->
   <!-- your app's js -->
   <script src="js/app.js"></script>
 

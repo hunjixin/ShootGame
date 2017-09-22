@@ -26,6 +26,10 @@ define(['util'], function (util) {
       // 触发事件中 action-eventInfo
       triggerEvent: function (action, eventInfo) {
         var funcs = this[action]
+        //  if(action==='click')
+        //  {
+        //    debugger
+        //  }
         if (!funcs) throw new Error('not support event')
         for (var i = 0;i < funcs.length;i++) {
           if (funcs[i].target.isDisplay && Util.isEffect(funcs[i].target, action, eventInfo)) {

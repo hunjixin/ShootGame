@@ -1,8 +1,7 @@
-define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiComonent'],
-  function (MyEvent, util, spoil, EObject, resource, shotObj, plain, uiComonent) {
+define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiComonent','Debug'],
+  function (MyEvent, util, spoil, EObject, resource, shotObj, plain, uiComonent,Debug) {
     return function Engine () {
       var option = {
-        isDebug: true,
         'id': '',
         enemy: {
           speedFactor: 0.8,
@@ -83,17 +82,20 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
       var spoilManager
       var stageManager
 
-
       this.Create = function (_option) {
         _context = {
           headOffset: 20,
           currentOid: 0,
           isRunning: 2, // 三种状态 1 预备/2 进行 /3 结束
-          option: option
+          option: option,
+          myevent: myevent,
+          plainMoveState: plainMoveState,
+          shotType: shotObj.shotTypes,
+          setting: new Debug()
         }
         myevent = new MyEvent(_context)
         spoilManager = new spoil.SpoilManager()
-        stageManager=new uiComonent.StageManager(_context)
+        stageManager = new uiComonent.StageManager(_context)
 
         option.isAndroid = util.isAndroid()
         option.id = _option.id
@@ -112,23 +114,25 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         option.ctxWidth = context.canvas.offsetWidth
 
         stageManager.init()
-        resetButton = new uiComonent.ResetButton(_context)
         // 重置事件
+        resetButton = new uiComonent.ResetButton(_context)
         myevent.eventRelative.attachEvet(resetButton, 'click', function (obj, eventInfo) {
           _context.isRunning = 1
           obj.isDisplay = false
           reset()
         })
-        //设置按钮
+        // 设置按钮
         settingButton = new uiComonent.SettingButton(_context)
         myevent.eventRelative.attachEvet(settingButton, 'click', function (obj, eventInfo) {
-          _context.isRunning=false
-          _option.showConsoleView(function(){
-            _context.isRunning=true
+          _context.isRunning = 2
+          resetButton.show()
+          _context.stage.stop()
+          _option.showConsoleView(_context, function () {
+            _context.isRunning = true
+            _context.stage.restart()
+            resetButton.hide()
           })
-
         })
-
 
         player = new plain.Player(_context, true)
         _context.player = player
@@ -136,19 +140,21 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         // 注册事件
         // 玩家开始移动
         myevent.eventRelative.attachEvet(player, 'mouseDown', function (obj, eventInfo) {
-          if (_context.isRunning == 1)  plainMoveState.isMouseDown = true
+          if ( _context.isRunning == 1)  plainMoveState.isMouseDown = true
         })
         // 玩家停止移动
         myevent.eventRelative.attachEvet(player, 'mouseUp', function (obj, eventInfo) {
-          if (_context.isRunning == 1)  plainMoveState.isMouseDown = false
+          if ( _context.isRunning == 1)  plainMoveState.isMouseDown = false
         })
         // 玩家移动中
         myevent.eventRelative.attachEvet(_context.stage, 'mouseMove', function (obj, eventInfo) {
-          if (_context.isRunning == 1 && plainMoveState.isMouseDown === true) {
+          if ( _context.isRunning == 1 && plainMoveState.isMouseDown === true) {
             player.position.x = eventInfo.position.x - player.width / 2
             player.position.y = eventInfo.position.y - player.height / 2-_context.headOffset
           }
         })
+
+        _option.initConsoleView(_context)
       }
 
       /**
@@ -184,14 +190,14 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
           var width = (resource.hp.width + 5) * index + 5
           context.drawImage(resource.hp, width, 0, 20, _context.headOffset)
         }
-        //设置图标
-        util.drawEobject(context, settingButton) 
+        // 设置图标
+        util.drawEobject(context, settingButton)
         // 重置
         if (_context.isRunning != 1) {
           util.drawEobject(context, resetButton)
         }
         // 绘制文本
-        if (option.isDebug) {
+        if (_context.setting.isDebug.value) {
           var arr = stateInfo.getDebugArray()
           for (var index = 0;index < arr.length;index++) {
             context.strokeText(arr[index], 10, 10 * (index + 1) + _context.headOffset)
@@ -336,10 +342,9 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
         var shots = _context.stage.shots
         var bullets = _context.stage.bullets
         var spoils = _context.stage.spoils
-        if(stageManager.isStageTimeOut())
-        {
-         
-           //stageManager.next()
+        if (stageManager.isStageTimeOut()) {
+
+          // stageManager.next()
         }
         // 生成新的个体
         var pShots = player.getShot()
@@ -387,7 +392,6 @@ define(['event', 'util', 'spoil', 'EObject', 'resource', 'shot', 'plain', 'uiCom
           if (enemies[index].isDie) continue
           var enemy = enemies[index]
 
-       
           var eShots = enemy.getShot()
           if (eShots) {
             shots.push.apply(shots, eShots)

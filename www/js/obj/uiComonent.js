@@ -7,7 +7,7 @@ define(['util', 'EObject', 'resource','plain'], function (util, EObject, resourc
     this.height = 40
     this.icon = resource.button
   }
-  function SettingButton (_context) {
+  function SettingButton (_context,callback) {
     EObject.call(this)
     this.position.x = _context.option.ctxWidth -_context.headOffset
     this.position.y = 2
@@ -37,7 +37,14 @@ define(['util', 'EObject', 'resource','plain'], function (util, EObject, resourc
     this.enemies = []
     this.bullets = []
     this.spoils = []
-
+    this.stopInterval=0
+    var stopTime
+    this.stop=function(){
+      stopTime=new Date()
+    }
+    this.restart=function(){
+      this.stopInterval+=(new Date()-stopTime)
+    }
     this.drawScene = function () {
       var enemies = this.enemies
       var shots = this.shots
@@ -98,7 +105,7 @@ define(['util', 'EObject', 'resource','plain'], function (util, EObject, resourc
       this.enemies.push(boss)
     }
     this.isStageTimeOut=function(){
-      return (new Date()-this.startTime)/1000>this.time
+      return (new Date()-this.startTime-this.stopInterval)/1000>this.time
     }
   }
   function StageManager (_context) {

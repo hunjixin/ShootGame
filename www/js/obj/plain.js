@@ -129,7 +129,7 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
    */
   function Player (_context) {
     Plain.call(this, _context, true)
-
+    var that=this
     this.icon = resource.plainImg
     this.Oid = ++_context.currentOid
     this.width = 30
