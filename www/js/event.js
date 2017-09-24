@@ -1,5 +1,5 @@
-define(['util'], function (util) {
-  function MyEvent (_context) {
+define(['context','util'], function (context,util) {
+  function MyEvent () {
     var that=this
     // Do setup work here
     // 此类型用于事件转换
@@ -41,16 +41,16 @@ define(['util'], function (util) {
 
     // 外部事件转内部事件驱动  
     // 包装按键按下，抬起，移动事件
-    this.pacakgeEvent = function (event,) {
+    this.pacakgeEvent = function (event) {
       var evnetInfo = {
         position: {x: 0,y: 0}
       }
       if (util.isAndroid()) {
         evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
-        evnetInfo.position.y = event.gesture.center.pageY, _context.option,_context.headOffset
+        evnetInfo.position.y = event.gesture.center.pageY, context.option,context.headOffset
       }else {
         evnetInfo.position.x = event.offsetX
-        evnetInfo.position.y = event.offsetY,_context.option, _context.headOffset
+        evnetInfo.position.y = event.offsetY,context.option, context.headOffset
       }
       return evnetInfo
     }
@@ -62,10 +62,10 @@ define(['util'], function (util) {
 
       if (util.isAndroid()) {
         evnetInfo.position.x = event.pageX - event.target.offsetLeft
-        evnetInfo.position.y = event.pageY,_context.option, _context.headOffset
+        evnetInfo.position.y = event.pageY,context.option, context.headOffset
       }else {
         evnetInfo.position.x = event.offsetX
-        evnetInfo.position.y = event.offsetY,_context.option, _context.headOffset
+        evnetInfo.position.y = event.offsetY,context.option, context.headOffset
       }
       return evnetInfo
     }

@@ -33,10 +33,18 @@ angular.module('starter', ['ionic'])
         $scope.modal = modal;
       });
     }
-    function showConsoleView(context,callback) { 
+    
+    function showConsoleView(callback) { 
       $scope.modal.show();
+      $scope.showCallback=callback
     }
+    $scope.confirm=function(){
 
+    }
+    $scope.cancel=function(){
+      $scope.modal.hide();
+      $scope.showCallback.apply($scope.context)
+    }
 
     requirejs.config({
       baseUrl: 'js',
@@ -49,6 +57,7 @@ angular.module('starter', ['ionic'])
         plain: 'obj/plain',
         EObject: 'obj/eobject',
         Debug:'obj/debug',
+        context:'context',
         uiComonent: 'obj/uiComonent',
         resource: 'resource'
       }

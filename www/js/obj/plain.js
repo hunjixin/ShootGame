@@ -1,11 +1,10 @@
-define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resource, shotObj) {
-  var createEnemy = function (_context, type) {
+define(['util', 'EObject', 'resource', 'shot','context'], function (util, EObject, resource, shotObj,context) {
+  var createEnemy = function (type) {
     // 1 大飞机  2,3,4 小飞机
     if (type == 1) {
-      var enemy = new Enemy(_context, true)
+      var enemy = new Enemy(true)
       enemy.setShotInterVal(util.randInt(5, 15))
-      enemy.Oid = ++_context.currentOid
-      enemy.position.x = _context.stage.width * Math.random()
+      enemy.position.x = context.stage.width * Math.random()
       enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
   
@@ -15,10 +14,9 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       enemy.Hp = 20 + 10 * Math.random()
       return enemy
     }else if(type == 2||type ==3||type == 4) {
-      var enemy = new Enemy(_context, true)
+      var enemy = new Enemy(context, true)
       enemy.setShotInterVal(util.randInt(5, 15))
-      enemy.Oid = ++_context.currentOid
-      enemy.position.x = _context.stage.width  * Math.random()
+      enemy.position.x = context.stage.width  * Math.random()
       enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
   
@@ -28,12 +26,12 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       enemy.Hp = 2 + 5 * Math.random()
       return enemy
     }else {
-        return new Boss(_context);
+        return new Boss();
     }
   
   }
 
-  function Plain (_context, enableShot) {
+  function Plain (enableShot) {
     EObject.call(this)
 
     this.AllHp = 1 // 总HP
@@ -41,7 +39,7 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     this.isDie = false // 是否死亡
     this.shotInterVal = 10 // 发射周期
     this.enableShot = enableShot // 是否发射
-    this.shotor = new shotObj.ShotorFactory(_context)
+    this.shotor = new shotObj.ShotorFactory()
     this.shotSpeedFactor=1
     this.shots = []
     this.shotEx = 1
@@ -53,7 +51,9 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       if (val < minVal) val = minVal
       this.shotInterVal = val
     }
-    this.refresh = function () {
+
+    this.update = function () {
+      this.base.update()
       if (shotTick <= that.shotInterVal) {
         shotTick++
       }else {
@@ -74,7 +74,7 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
     this.getPositionAbsolute=function(){
       return {
              x:this.position.x,
-             y:this.position.y+_context.headOffset
+             y:this.position.y+context.headOffset
       }
     }
   }
@@ -82,8 +82,8 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
    * 敌军
    * @param {*是否发射} isShot 
    */
-  function Enemy (_context, isShot) {
-    Plain.call(this, _context, isShot)
+  function Enemy (isShot) {
+    Plain.call(this, isShot)
     this.type = 'common'
     this.speedX = 0
     this.shotSpeedFactor=0.6
@@ -95,15 +95,15 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
       return this.shotor.CreateShot(this)
     }
   }
-  function Boss(_context){
-    Plain.call(this, _context, true)
+  function Boss(){
+    Plain.call(this, true)
     this.type = 'boss'
+    this.fixed.y=true
     this.setShotInterVal(util.randInt(10, 20))
-    this.Oid = ++_context.currentOid
-    this.width = _context.option.ctxWidth*0.6
+    this.width = context.option.ctxWidth*0.6
     this.height = this.width*0.6
-    this.position.x = _context.option.ctxWidth *0.5
-    this.position.y = - this.height*3/4
+    this.position.x = context.option.ctxWidth *0.5
+    this.position.y = 0
     this.speedY=0
     this.icon = resource.enes[1]
     this.Hp = 200 + 200 * Math.random()
@@ -127,33 +127,33 @@ define(['util', 'EObject', 'resource', 'shot'], function (util, EObject, resourc
   /**
    * @param {*玩家} isShot 
    */
-  function Player (_context) {
-    Plain.call(this, _context, true)
+  function Player () {
+    Plain.call(this, true)
     var that=this
+    this.fixed.y=true
     this.icon = resource.plainImg
-    this.Oid = ++_context.currentOid
     this.width = 30
     this.height = 24
-    this.AllHp = 3
+    this.AllHp = 12
     this.Hp = this.AllHp
-    this.position.x = (_context.stage.width - this.width) / 2
-    this.position.y = (_context.stage.height - this.height)
+    this.position.x = (context.stage.width - this.width) / 2
+    this.position.y = (context.stage.height - this.height)
     this.enableShot = true
     this.speedY = -1
     this.shotType = {
-      type: 'gzShot',
-      num: 1
+      type: 'umShot',
+      num: 5
     }
     this.shotFactory = function () {
       return this.shotor.CreateShot(this)
     }
     this.reset = function () {
       this.Hp = 3
-      this.position.x = (_context.stage.width - this.width) / 2
-      this.position.y = (_context.stage.height  - this.height)
+      this.position.x = (context.stage.width - this.width) / 2
+      this.position.y = (context.stage.height  - this.height)
       this.shotType = {
-        type: 'gzShot',
-        num: 1
+        type: 'umShot',
+        num: 5
       }
       this.setShotInterVal(5)
     }

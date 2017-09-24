@@ -46,7 +46,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2)
     }
   }
-  function AddHpSpoil (object) {
+  function HpSpoil (object) {
     Spoil.call(this, object)
     this.spoiltype = 'addHp'
     this.icon = resource.hp
@@ -68,7 +68,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
           spoil = new GzShotSpoil(obj)
           break
         case SpoilManager.spoilType.addHp:
-          spoil = new AddHpSpoil(obj)
+          spoil = new HpSpoil(obj)
           break
       }
       var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5)
@@ -87,9 +87,6 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
   }
   return {
     Spoil: Spoil,
-    UmShotSpoil: UmShotSpoil,
-    GzShotSpoil: GzShotSpoil,
-    AddHpSpoil: AddHpSpoil,
     SpoilManager: SpoilManager
   }
 })

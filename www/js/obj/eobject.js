@@ -1,58 +1,70 @@
-define(['util'], function (util) {
+define(['util','context'], function (util,context) {
   /**
    * 基类
    */
   function EObject () {
     this.isDisplay = true
-    this.Oid = -1 // id
+    var that=this
+    this.Oid = ++context.currentOid // id
     this.icon // 图片
     this.width = 0 // 宽度
     this.height = 0 // 高度
     this.speedY = 5 // Y速度
     this.speedX = 0 // X速度
+    this.fixed={x:false,y:false}
     this.position = {x: 0,y: 0} // 位置
-
-    this.move = function () {
-      this.moveY()
-      this.moveX()
+    this.base={}
+    this.move =this.base.move= function () {
+      that.moveY()
+      that.moveX()
     }
 
     this._xpath
     this._ypath
     this.moveTick = 0
-    this.moveX = function () {
-      if (this._xpath && this._xpath instanceof Function) {
-          this.position.x += this._xpath()
+    this.moveX =this.base.moveX= function () {
+      if(that.fixed.x) return
+      if (that._xpath && that._xpath instanceof Function) {
+        that.position.x += that._xpath()
       }else {
-        this.position.x += this.speedX 
+        that.position.x += that.speedX 
       } 
     }
 
-    this.moveY = function () {
-      if (this._ypath && this._ypath instanceof Function) {
-               this.position.y += this._ypath()
+    this.moveY = this.base.moveY=function () {
+      if(that.fixed.y) return
+      if (that._ypath && that._ypath instanceof Function) {
+        that.position.y += that._ypath()
       }else {
-        this.position.y += this.speedY 
+        that.position.y += that.speedY 
       }
     }
 
-    this.setXPath = function (xpath) {
-      this._xpath = xpath
+    this.setXPath =this.base.setXPath= function (xpath) {
+      that._xpath = xpath
     }
-    this.setYPath = function (ypath) {
-      this._xpath = ypath
-    }
-
-    this.update=function(){
-      this.move()
-      this.moveTick++
+    this.setYPath =this.base.setYPath= function (ypath) {
+      that._xpath = ypath
     }
 
-    this.show=function(){
-      this.isDisplay=true
+    this.update=this.base.update=function(){
+      that.move()
+      that.moveTick++
     }
-    this.hide=function(){
-      this.isDisplay=false
+
+    this.show=this.base.show=function(){
+      that.isDisplay=true
+    }
+    this.hide=this.base.hide=function(){
+      that.isDisplay=false
+    }
+
+    this.on=function(evnetName,callback)
+    {
+      var that=this
+      context.myevent.eventRelative.attachEvet(this, evnetName, function (obj, eventInfo) {
+          if(callback)  callback.call(that,eventInfo)
+      })
     }
   }
   return EObject

@@ -1,7 +1,6 @@
-define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
+define(['util', 'EObject', 'resource','context'], function (util, EObject, resource,context) {
   var shotTypes=['umShot','gzShot','common']
-  function ShotorFactory (_context) {
-    EObject.call(this)
+  function ShotorFactory () {
     this.CreateShot = function (ePlayer) {
       // ePlayer.shots.
       if (ePlayer.shotType.type == 'umShot') return umbrellaShot(ePlayer, ePlayer.shotType.num)
@@ -21,7 +20,6 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       var shots = []
       for (var i = 1;i <= split;i++) {
         var shot = new Shot()
-        shot.Oid = ++_context.currentOid
         shot.belong = ePlayer.Oid
         shot.Hp = 1
         shot.width = 5
@@ -40,11 +38,10 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       var spy=ePlayer.speedY===0?1:ePlayer.speedY
       var sp = 10 *  ePlayer.shotSpeedFactor*Math.sign(spy)*Math.abs(spy)*Math.sign(spy)
       var shot = new Shot()
-      shot.Oid = ++_context.currentOid
       shot.belong = ePlayer.Oid
       shot.Hp = 100000000
       shot.width = 100
-      shot.height = _context.stage.height
+      shot.height = context.stage.height
       shot.icon = resource.gz
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
       shot.position.y = 0
@@ -57,7 +54,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       setTimeout(function () {
         var span = shot.width / 5
         tm = setInterval(function () {
-          if (_context.isRunning == 1) {
+          if (context.isRunning == 1) {
             shot.width = shot.width - span
             shot.position.x = shot.position.x + span / 2
           }
@@ -65,7 +62,7 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       }, 1000)
       // 1.5秒后消失
       setTimeout(function () {
-        shot.position.y = _context.stage.height
+        shot.position.y = context.stage.height
         shot.isDie = true
         clearTimeout(tm)
       }, 1500)
@@ -75,7 +72,6 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
       var spy=ePlayer.speedY===0?1:ePlayer.speedY
       var sp = 10 *  ePlayer.shotSpeedFactor*Math.sign(spy)*Math.abs(spy)
       var shot = new Shot()
-      shot.Oid = ++_context.currentOid
       shot.belong = ePlayer.Oid
       shot.Hp = 1
       shot.width = 8
@@ -89,13 +85,12 @@ define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
     }
     var enemyShot = function (enemy) {
       var shot = new Shot()
-      shot.Oid = ++_context.currentOid
       shot.belong = enemy.Oid
       shot.Hp = 1
       shot.width = 5
       shot.height = 15
       shot.icon = resource.eshot
-      shot.speedY = (Math.abs(enemy.speedY) + 8) * _context.option.enemy.shotSpeedFactor*Math.sign(enemy.speedY)
+      shot.speedY = (Math.abs(enemy.speedY) + 8) *Math.sign(enemy.speedY)
       shot.position.x = enemy.position.x + enemy.width / 2 - shot.width / 2
       shot.position.y = enemy.position.y+enemy.height-15
       return [shot]

@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, height=device-height">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title></title>
 
   <link rel="manifest" href="manifest.json">
@@ -38,7 +39,11 @@
     }
 
     body {
-      text-align: center
+      text-align: center;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
     }
   </style>
 
@@ -47,14 +52,11 @@
 
 <body ng-app="starter" ng-controller="crash">
 
-  <ion-pane>
-    <ion-content style="position:relative">
-      <canvas on-drag="move($event)" ng-click="click($event)" on-touch="mouseDown($event)" on-release="mouseUp($event)" id="myCanvas"
-        style="height:100%;width:100%;border:1px solid #d3d3d3;background:#ffffff;">
-        Your browser does not support the HTML5 canvas tag.
-      </canvas>
-    </ion-content>
-  </ion-pane>
+  <canvas on-drag="move($event)" ng-click="click($event)" on-touch="mouseDown($event)" on-release="mouseUp($event)" id="myCanvas"
+    style="height:100%;width:100%;border:1px solid #d3d3d3;background:#ffffff;">
+    Your browser does not support the HTML5 canvas tag.
+  </canvas>
+
   <script id='templates/modal.html' type="text/ng-template">
     <ion-modal-view>
       <ion-header-bar class="bar bar-header bar-positive">
@@ -105,12 +107,12 @@
           <div class="row">
             <div class="col"></div>
             <div class="col">
-              <button class="button button-full button-positive" ng-click="modal.hide()">取消</button>
+              <button class="button button-full button-positive" ng-click="cancel()">取消</button>
 
             </div>
             <div class="col"></div>
             <div class="col">
-              <button class="button button-full button-positive" ng-click="createContact(newUser)">确定</button>
+              <button class="button button-full button-positive" ng-click="confirm()">确定</button>
 
             </div>
             <div class="col"></div>
@@ -120,6 +122,7 @@
     </ion-modal-view>
   </script>
 
+  </script>
   <script src="js/require.js"></script>
   <script>
 
