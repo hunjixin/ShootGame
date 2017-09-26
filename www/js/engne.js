@@ -43,7 +43,8 @@ define([
 
         option.ctxWidth =canvas.width = window.screen.width
         option.ctxHeight =canvas.height = window.screen.height
-
+        canvas.canvas.width= option.ctxWidth+'px'
+        canvas.canvas.height= option.ctxHeight+'px'
        Object.assign(context,{
           headOffset: 20,
           currentOid: 0,
