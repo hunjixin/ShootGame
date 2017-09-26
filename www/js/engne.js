@@ -2,7 +2,6 @@ define([
       'event',
       'util',
       'spoil',
-      'EObject',
       'resource', 
       'shot',
       'plain', 
@@ -14,7 +13,6 @@ define([
       MyEvent,
       util, 
       spoil,
-      EObject,
       resource,
       shotObj, 
       plain,
@@ -143,11 +141,11 @@ define([
           drawContext.drawImage(resource.hp, width, 0, 20, context.headOffset)
         }
         // 设置图标
-        util.drawEobject(drawContext, settingButton)
+        util.drawShap(drawContext, settingButton)
         // 按钮
         for (var i = 0;i < buttons.length;i++) {
           if (buttons[i].isDisplay) {
-            util.drawEobject(drawContext, buttons[i])
+            util.drawShap(drawContext, buttons[i])
           }
         }
         // 绘制文本

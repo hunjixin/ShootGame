@@ -51,7 +51,7 @@ var Util = {
     if (min > max) return max
     return parseInt(Math.random() * (max - min)) + min
   },
-  drawEobject: function (context, eobj, rotateValue) {
+  drawShap: function (context, eobj, rotateValue) {
     context.drawImage(eobj.icon,
       eobj.position.x , eobj.position.y,
       eobj.width, eobj.height)

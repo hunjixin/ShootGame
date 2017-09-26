@@ -1,4 +1,4 @@
-define(['util', 'EObject', 'resource','context'], function (util, EObject, resource,context) {
+define(['util', 'eShape', 'resource','context'], function (util, eShape, resource,context) {
   var shotTypes=['umShot','gzShot','common']
   function ShotorFactory () {
     this.CreateShot = function (ePlayer) {
@@ -100,13 +100,13 @@ define(['util', 'EObject', 'resource','context'], function (util, EObject, resou
        * 爆炸
        */
   function Bullet () {
-    EObject.call(this)
+    eShape.call(this)
   }
   /**
    * 子弹
    */
   function Shot () {
-    EObject.call(this)
+    eShape.call(this)
 
     this.speedX = 0
     this.type = 'common'

@@ -1,6 +1,6 @@
-define(['util', 'EObject', 'resource', 'plain','context'], function (util, EObject, resource, plain,context) {
+define(['util', 'eShape', 'resource', 'plain','context'], function (util, eShape, resource, plain,context) {
   function ResetButton () {
-    EObject.call(this)
+    eShape.call(this)
     this.position.x = context.option.ctxWidth / 4
     this.position.y = context.option.ctxHeight / 2
     this.width = context.option.ctxWidth / 2
@@ -8,7 +8,7 @@ define(['util', 'EObject', 'resource', 'plain','context'], function (util, EObje
     this.icon = resource.button
   }
   function SettingButton (callback) {
-    EObject.call(this)
+    eShape.call(this)
     this.position.x = context.option.ctxWidth - context.headOffset
     this.position.y = 2
     this.width = context.headOffset
@@ -16,7 +16,7 @@ define(['util', 'EObject', 'resource', 'plain','context'], function (util, EObje
     this.icon = resource.setting
   }
   function Stage (stageConfig) {
-    EObject.call(this)
+    eShape.call(this)
     var that = this
 
     this.isRunning= 2, // 三种状态 1 预备/2 进行 /3 结束
@@ -68,24 +68,24 @@ define(['util', 'EObject', 'resource', 'plain','context'], function (util, EObje
       // 子弹
       for (var index in this.shots) {
         var shot = shots[index]
-        util.drawEobject(drawContext, shot)
+        util.drawShap(drawContext, shot)
       }
       // 飞机
-      util.drawEobject(drawContext, context.player)
+      util.drawShap(drawContext, context.player)
       // 敌军
       for (var index in this.enemies) {
         var enemy = enemies[index]
-        util.drawEobject(drawContext, enemy)
+        util.drawShap(drawContext, enemy)
       }
       // 战利品
       for (var index in this.spoils) {
         var spoil = spoils[index]
-        util.drawEobject(drawContext, spoil)
+        util.drawShap(drawContext, spoil)
       }
       // 死亡
       for (var index in this.bullets) {
         var bullet = bullets[index]
-        util.drawEobject(drawContext, bullet)
+        util.drawShap(drawContext, bullet)
       }
       return canvas
     }

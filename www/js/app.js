@@ -47,18 +47,18 @@ angular.module('starter', ['ionic'])
     }
 
     requirejs.config({
-      baseUrl: 'js',
+      baseUrl: widows.baseUrl+'js',
       paths: {
         engne: 'engne',
         event: 'event',
         util: 'util',
-        spoil: 'obj/spoil',
-        shot: 'obj/shot',
-        plain: 'obj/plain',
-        EObject: 'obj/eobject',
-        Debug:'obj/debug',
+        spoil: 'lib/spoil',
+        shot: 'lib/shot',
+        plain: 'lib/plain',
+        eShape: 'lib/eShape',
+        Debug:'lib/debug',
         context:'context',
-        uiComonent: 'obj/uiComonent',
+        uiComonent: 'lib/uiComonent',
         resource: 'resource'
       }
     })

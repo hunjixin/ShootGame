@@ -412,7 +412,7 @@ function Engine () {
     canvas.height = option.ctxHeight
     canvas.width = option.ctxWidth
 
-    function drawEobject (eobj, rotateValue) {
+    function drawShap (eobj, rotateValue) {
       tempContext.drawImage(eobj.icon,
         eobj.position.x , eobj.position.y,
         eobj.width, eobj.height)
@@ -424,28 +424,28 @@ function Engine () {
     // 子弹
     for (var index in shots) {
       var shot = shots[index]
-      drawEobject(shot)
+      drawShap(shot)
     }
     // 飞机
-    drawEobject(player)
+    drawShap(player)
     // 敌军
     for (var index in enemies) {
       var enemy = enemies[index]
-      drawEobject(enemy)
+      drawShap(enemy)
     }
     // 战利品
     for (var index in spoils) {
       var spoil = spoils[index]
-      drawEobject(spoil)
+      drawShap(spoil)
     }
     // 死亡
     for (var index in bullets) {
       var bullet = bullets[index]
-      drawEobject(bullet)
+      drawShap(bullet)
     }
     // 重置
     if (isRunning != 1) {
-      drawEobject(resetButton)
+      drawShap(resetButton)
     }
     // 绘制文本
     if (option.isDebug) {

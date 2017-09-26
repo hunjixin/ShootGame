@@ -1,6 +1,6 @@
-define(['util', 'EObject', 'resource'], function (util, EObject, resource) {
+define(['util', 'eShape', 'resource'], function (util, eShape, resource) {
   function Spoil (obj, type) {
-    EObject.call(this)
+    eShape.call(this)
     this.speedY = 3
     this.spoiltype = type
     this.width = 25

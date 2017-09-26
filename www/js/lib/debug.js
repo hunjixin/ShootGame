@@ -1,4 +1,4 @@
-define(['context','util', 'EObject', 'resource'], function (context,util, EObject, resource) {
+define(['context','util', 'resource'], function (context,util, resource) {
   function StateInfo () {
     this.enemies = {
       all: {},

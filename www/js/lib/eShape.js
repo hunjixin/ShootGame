@@ -2,7 +2,7 @@ define(['util','context'], function (util,context) {
   /**
    * 基类
    */
-  function EObject () {
+  function eShape () {
     this.isDisplay = true
     var that=this
     this.Oid = ++context.currentOid // id
@@ -67,5 +67,5 @@ define(['util','context'], function (util,context) {
       })
     }
   }
-  return EObject
+  return eShape
 })

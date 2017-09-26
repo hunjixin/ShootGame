@@ -1,4 +1,4 @@
-define(['util', 'EObject', 'resource', 'shot','context'], function (util, EObject, resource, shotObj,context) {
+define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape, resource, shotObj,context) {
   var createEnemy = function (type) {
     // 1 大飞机  2,3,4 小飞机
     if (type == 1) {
@@ -32,7 +32,7 @@ define(['util', 'EObject', 'resource', 'shot','context'], function (util, EObjec
   }
 
   function Plain (enableShot) {
-    EObject.call(this)
+    eShape.call(this)
 
     this.AllHp = 1 // 总HP
     this.Hp = 1 // 当前Hp
