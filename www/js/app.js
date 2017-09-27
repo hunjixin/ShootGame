@@ -47,7 +47,7 @@ angular.module('starter', ['ionic'])
     }
 
     requirejs.config({
-      baseUrl: widows.baseUrl+'js',
+      baseUrl: window.baseUrl+'js',
       paths: {
         engne: 'engne',
         event: 'event',

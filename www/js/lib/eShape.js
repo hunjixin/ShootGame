@@ -3,16 +3,19 @@ define(['util','context'], function (util,context) {
    * 基类
    */
   function eShape () {
+
     this.isDisplay = true
     var that=this
     this.Oid = ++context.currentOid // id
     this.icon // 图片
+    this.name=""
     this.width = 0 // 宽度
     this.height = 0 // 高度
     this.speedY = 5 // Y速度
     this.speedX = 0 // X速度
     this.fixed={x:false,y:false}
     this.position = {x: 0,y: 0} // 位置
+
     this.base={}
     this.move =this.base.move= function () {
       that.moveY()
@@ -58,7 +61,12 @@ define(['util','context'], function (util,context) {
     this.hide=this.base.hide=function(){
       that.isDisplay=false
     }
-
+    this.render=function(drawContext){
+      if(!this.isDisplay) return
+      drawContext.drawImage(this.icon,
+        this.position.x , this.position.y,
+        this.width, this.height)
+    }
     this.on=function(evnetName,callback)
     {
       var that=this
@@ -67,5 +75,6 @@ define(['util','context'], function (util,context) {
       })
     }
   }
+
   return eShape
 })

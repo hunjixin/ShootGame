@@ -4,7 +4,7 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
     if (type == 1) {
       var enemy = new Enemy(true)
       enemy.setShotInterVal(util.randInt(5, 15))
-      enemy.position.x = context.stage.width * Math.random()
+      enemy.position.x = context.stageManager.stage.width * Math.random()
       enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
   
@@ -16,7 +16,7 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
     }else if(type == 2||type ==3||type == 4) {
       var enemy = new Enemy(context, true)
       enemy.setShotInterVal(util.randInt(5, 15))
-      enemy.position.x = context.stage.width  * Math.random()
+      enemy.position.x =  context.stageManager.stage.width  * Math.random()
       enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
   
@@ -136,8 +136,8 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
     this.height = 24
     this.AllHp = 12
     this.Hp = this.AllHp
-    this.position.x = (context.stage.width - this.width) / 2
-    this.position.y = (context.stage.height - this.height)
+    this.position.x = (context.stageManager.stage.width - this.width) / 2
+    this.position.y = (context.stageManager.stage.height - this.height)
     this.enableShot = true
     this.speedY = -1
     this.shotType = {
@@ -149,8 +149,8 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
     }
     this.reset = function () {
       this.Hp = 3
-      this.position.x = (context.stage.width - this.width) / 2
-      this.position.y = (context.stage.height  - this.height)
+      this.position.x = (context.stageManager.stage.width - this.width) / 2
+      this.position.y = (context.stageManager.stage.height  - this.height)
       this.shotType = {
         type: 'umShot',
         num: 5

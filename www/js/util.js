@@ -50,11 +50,6 @@ var Util = {
   randInt: function (min, max) {
     if (min > max) return max
     return parseInt(Math.random() * (max - min)) + min
-  },
-  drawShap: function (context, eobj, rotateValue) {
-    context.drawImage(eobj.icon,
-      eobj.position.x , eobj.position.y,
-      eobj.width, eobj.height)
   }
 }
 

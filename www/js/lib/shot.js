@@ -41,7 +41,7 @@ define(['util', 'eShape', 'resource','context'], function (util, eShape, resourc
       shot.belong = ePlayer.Oid
       shot.Hp = 100000000
       shot.width = 100
-      shot.height = context.stage.height
+      shot.height = context.stageManager.stage.height
       shot.icon = resource.gz
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
       shot.position.y = 0
@@ -62,7 +62,7 @@ define(['util', 'eShape', 'resource','context'], function (util, eShape, resourc
       }, 1000)
       // 1.5秒后消失
       setTimeout(function () {
-        shot.position.y = context.stage.height
+        shot.position.y = context.stageManager.stage.height
         shot.isDie = true
         clearTimeout(tm)
       }, 1500)
