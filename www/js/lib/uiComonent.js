@@ -1,35 +1,16 @@
-define([
-  'util',
-  'eShape',
-  'resource',
-  'plain',
-  'context',
-  'shot'
-], function (
-  util,
-  eShape,
-  resource,
-  plain,
-  context,
-  shotObj
-) {
+define(function (require, exports, module) {
+  var eShape = require('eShape')
+  var util = require('util')
+  var resource = require('resource')
+  var plain = require('plain')
+  var context = require('context')
+  var shotObj = require('shot')
+
   function Button (option) {
-    eShape.call(this)
-    this.name = option.name
-    this.position.x = option.position.x
-    this.position.y = option.position.y
-    this.width = option.width
-    this.height = option.height
-    this.icon = option.icon
+    eShape.call(this, option)
   }
   function Bar (option) {
-    eShape.call(this)
-    this.name = option.name
-    this.position.x = option.position.x
-    this.position.y = option.position.y
-    this.width = option.width
-    this.height = option.height
-    this.icon = option.icon
+    eShape.call(this, option)
     this.rightButton = option.rightButton
     this.render = function (drawContext) {
       if (!this.isDisplay) return
@@ -43,7 +24,31 @@ define([
       this.rightButton.render(drawContext)
     }
   }
-
+  function TextBlock (option) {
+    eShape.call(this, option)
+    this.textArray = []
+    this.setText = function (texts) {
+      if (!texts) return
+      this.clear()
+      this.append(texts)
+    }
+    this.clear = function (texts) {
+      this.textArray.length = 0
+    }
+    this.append = function (texts) {
+      if (!texts) return
+      if (texts instanceof Array) {
+        [].push.apply(this.textArray, texts)
+      }else {
+        this.textArray.push(texts.toString())
+      }
+    }
+    this.render = function (drawContext) {
+      for (var index = 0;index < this.textArray.length;index++) {
+        drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y)
+      }
+    }
+  }
   function Stage (stageConfig) {
     eShape.call(this)
     var that = this
@@ -118,13 +123,16 @@ define([
             oneShot.Hp--
             if (enemy.Hp <= 0) {
               enemy.isDie = true
-              var bullet = new shotObj.Bullet()
-              bullet.isDie = false
-              bullet.icon = resource.bullet
-              bullet.width = 8
-              bullet.height = 8
-              bullet.position.x = oneShot.position.x + oneShot.width / 2
-              bullet.position.y = oneShot.position.y
+              var bullet = new shotObj.Bullet({
+                isDie: false,
+                icon: resource.bullet,
+                width: 8,
+                height: 8,
+                position: {
+                  x: oneShot.position.x + oneShot.width / 2,
+                  y: oneShot.position.y
+                }
+              })
               bullets.push(bullet)
               setTimeout((function (enemy, bullet) {
                 return function () {
@@ -351,7 +359,7 @@ define([
       this.boss = boss
       this.enemies.push(boss)
     }
-    
+
     this.isStageTimeOut = function () {
       return (new Date() - this.startTime - this.stopInterval) / 1000 > this.time
     }
@@ -473,6 +481,7 @@ define([
     Stage: Stage,
     Button: Button,
     Bar: Bar,
+    TextBlock: TextBlock,
     StageManager: StageManager
   }
 })

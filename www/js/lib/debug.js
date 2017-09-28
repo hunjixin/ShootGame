@@ -1,4 +1,8 @@
-define(['context','util', 'resource'], function (context,util, resource) {
+define(function(require, exports, module) {
+  var util=require('util')
+  var resource=require('resource')
+  var context=require('context')
+
   function StateInfo () {
     this.enemies = {
       all: {},

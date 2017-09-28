@@ -1,4 +1,4 @@
-define(['util'], function (util) {
+define(function(require, exports, module) {
   var baseUrl=window&&window.baseUrl||"";
   var plain = new Image()
   plain.src =baseUrl+'img/2332.png'

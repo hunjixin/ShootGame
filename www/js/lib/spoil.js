@@ -1,10 +1,14 @@
-define(['util', 'eShape', 'resource'], function (util, eShape, resource) {
+define(function(require, exports, module) {
+  var eShape=require('eShape')
+  var util=require('util')
+  var resource=require('resource')
   function Spoil (obj, type) {
     eShape.call(this)
     this.speedY = 3
     this.spoiltype = type
     this.width = 25
     this.height = 25
+    this.collisionArea=[{x:0,y:0,width:this.width,height:this.height}]
     this.position.x = obj.position.x
     this.position.y = obj.position.y
     this.Effect = function (targetPlayer) {}
@@ -27,7 +31,7 @@ define(['util', 'eShape', 'resource'], function (util, eShape, resource) {
         }
       }
 
-      targetPlayer.setShotInterVal(4)
+      targetPlayer.setShotInterVal(2)
     }
   }
   function GzShotSpoil (object) {

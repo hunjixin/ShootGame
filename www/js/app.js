@@ -49,31 +49,33 @@ angular.module('starter', ['ionic'])
     requirejs.config({
       baseUrl: window.baseUrl+'js',
       paths: {
-        engne: 'engne',
-        event: 'event',
+        context:'context',
+        Debug:'lib/debug',
         util: 'util',
+        resource: 'resource',
+        event: 'lib/event',
+        eShape: 'lib/eShape',
         spoil: 'lib/spoil',
         shot: 'lib/shot',
         plain: 'lib/plain',
-        eShape: 'lib/eShape',
-        Debug:'lib/debug',
-        context:'context',
         uiComonent: 'lib/uiComonent',
-        resource: 'resource'
-      }
+        engne: 'engne',
+        lodash: 'https://cdn.bootcss.com/lodash.js/4.17.4/lodash',
+      },
+      shim: {
+       
+       }
     })
 
     requirejs(['engne'], function (Engine) {
-      setTimeout(function () {
-        var en = new Engine()
-        en.Create({
-          id: 'myCanvas',
-          attachEvent: $scope,
-          showConsoleView:showConsoleView,
-          initConsoleView:initConsoleView
-        })
-        en.Start()
-      }, 1000)
+      var en = new Engine()
+      en.Create({
+        id: 'myCanvas',
+        attachEvent: $scope,
+        showConsoleView:showConsoleView,
+        initConsoleView:initConsoleView
+      })
+      en.Start()
     })
 
   }])

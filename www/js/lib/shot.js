@@ -1,4 +1,9 @@
-define(['util', 'eShape', 'resource','context'], function (util, eShape, resource,context) {
+define(function(require, exports, module) {
+  var eShape=require('eShape')
+  var util=require('util')
+  var resource=require('resource')
+  var context=require('context')
+
   var shotTypes=['umShot','gzShot','common']
   function ShotorFactory () {
     this.CreateShot = function (ePlayer) {
@@ -27,7 +32,7 @@ define(['util', 'eShape', 'resource','context'], function (util, eShape, resourc
         shot.icon = resource.shot
         shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
         shot.position.y = ePlayer.position.y+ePlayer.height-15
-
+        shot.collisionArea=[{x:0,y:0,width:shot.width,height:shot.height}]
         shot.speedY = sp * Math.sin(rotate * i)
         shot.speedX = sp * Math.cos(rotate * i)
         shots.push(shot)
@@ -45,7 +50,7 @@ define(['util', 'eShape', 'resource','context'], function (util, eShape, resourc
       shot.icon = resource.gz
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
       shot.position.y = 0
-
+      shot.collisionArea=[{x:0,y:0,width:shot.width,height:shot.height}]
       shot.speedY = 0
       shot.speedX = 0
       var shotCount = 100
@@ -79,7 +84,7 @@ define(['util', 'eShape', 'resource','context'], function (util, eShape, resourc
       shot.speedY = sp
       shot.icon = resource.shot
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
-     
+      shot.collisionArea=[{x:0,y:0,width:shot.width,height:shot.height}]
 
       return [shot]
     }
@@ -93,14 +98,16 @@ define(['util', 'eShape', 'resource','context'], function (util, eShape, resourc
       shot.speedY = (Math.abs(enemy.speedY) + 8) *Math.sign(enemy.speedY)
       shot.position.x = enemy.position.x + enemy.width / 2 - shot.width / 2
       shot.position.y = enemy.position.y+enemy.height-15
+      shot.collisionArea=[{x:0,y:0,width:shot.width,height:shot.height}]
       return [shot]
     }
   }
   /**
        * 爆炸
        */
-  function Bullet () {
-    eShape.call(this)
+  function Bullet (option) {
+    eShape.call(this,option)
+    this.collisionArea=[{x:0,y:0,width:this.width,height:this.height}]
   }
   /**
    * 子弹

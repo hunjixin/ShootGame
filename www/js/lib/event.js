@@ -1,4 +1,8 @@
-define(['context','util'], function (context,util) {
+define(function(require, exports, module) {
+
+  var Util=require('util')
+  var context=require('context')
+
   function MyEvent () {
     var that=this
     // Do setup work here
@@ -9,7 +13,7 @@ define(['context','util'], function (context,util) {
       mouseUp: [],
       mouseMove: [],
       // 附加事件中 object-action-callback
-      attachEvet: function (target, action, callback) {
+      attachEvent: function (target, action, callback) {
         var eventMsg = {target: target,callback: callback}
         var funcs = this[action]
         if (!funcs) throw new Error('not support event')
@@ -45,7 +49,7 @@ define(['context','util'], function (context,util) {
       var evnetInfo = {
         position: {x: 0,y: 0}
       }
-      if (util.isAndroid()) {
+      if (Util.isAndroid()) {
         evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
         evnetInfo.position.y = event.gesture.center.pageY, context.option,context.headOffset
       }else {
@@ -60,7 +64,7 @@ define(['context','util'], function (context,util) {
         position: {x: 0,y: 0}
       }
 
-      if (util.isAndroid()) {
+      if (Util.isAndroid()) {
         evnetInfo.position.x = event.pageX - event.target.offsetLeft
         evnetInfo.position.y = event.pageY,context.option, context.headOffset
       }else {
@@ -102,7 +106,7 @@ define(['context','util'], function (context,util) {
       move: moveFunc
     }
     this.init = function (_option) {
-      if (util.isAndroid) {
+      if (Util.isAndroid) {
         _option.attachEvent.click = this.EventInput.click
         _option.attachEvent.move = this.EventInput.move
         _option.attachEvent.mouseDown = this.EventInput.mouseDown

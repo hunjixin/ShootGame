@@ -1,4 +1,10 @@
-define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape, resource, shotObj,context) {
+define(function(require, exports, module) {
+  var eShape=require('eShape')
+  var util=require('util')
+  var resource=require('resource')
+  var context=require('context')
+  var shotObj=require('shot')
+  
   var createEnemy = function (type) {
     // 1 大飞机  2,3,4 小飞机
     if (type == 1) {
@@ -7,11 +13,11 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
       enemy.position.x = context.stageManager.stage.width * Math.random()
       enemy.position.y = 0 - enemy.width/2
       enemy.speedY = util.randInt(3,6)
-  
       enemy.icon = resource.enes[type - 1]
       enemy.width = 40
       enemy.height = 60
       enemy.Hp = 20 + 10 * Math.random()
+      enemy.collisionArea=[{x:0,y:0,width:enemy.width,height:enemy.height}]
       return enemy
     }else if(type == 2||type ==3||type == 4) {
       var enemy = new Enemy(context, true)
@@ -24,6 +30,7 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
       enemy.width = 20
       enemy.height = 30
       enemy.Hp = 2 + 5 * Math.random()
+      enemy.collisionArea=[{x:0,y:0,width:enemy.width,height:enemy.height}]
       return enemy
     }else {
         return new Boss();
@@ -104,6 +111,7 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
     this.height = this.width*0.6
     this.position.x = context.option.ctxWidth *0.5
     this.position.y = 0
+    this.collisionArea=[{x:0,y:0,width:this.width,height:this.height}]
     this.speedY=0
     this.icon = resource.enes[1]
     this.Hp = 200 + 200 * Math.random()
@@ -138,6 +146,7 @@ define(['util', 'eShape', 'resource', 'shot','context'], function (util, eShape,
     this.Hp = this.AllHp
     this.position.x = (context.stageManager.stage.width - this.width) / 2
     this.position.y = (context.stageManager.stage.height - this.height)
+    this.collisionArea=[{x:0,y:0,width:this.width,height:this.height}]
     this.enableShot = true
     this.speedY = -1
     this.shotType = {
