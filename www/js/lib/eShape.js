@@ -92,6 +92,7 @@ define(function (require, exports, module) {
 
           drawContext.moveTo(rec.x, rec.y + rec.height)
           drawContext.lineTo(rec.x, rec.y)
+          drawContext.strokeStyle="blue";
           drawContext.stroke()
         }
       }

@@ -93,12 +93,7 @@ define(function (require, exports, module) {
     // 检测碰撞
     this.checkCollection = function () {
       var player = context.player
-      var plainRect = {
-        x: player.position.x,
-        y: player.position.y,
-        width: player.width,
-        height: player.height
-      }
+      var plainRect = player.getAbsoluteCollisionArea()[0]
       var enemies = this.enemies
       var shots = this.shots
       var bullets = this.bullets
@@ -107,63 +102,25 @@ define(function (require, exports, module) {
       for (var i = enemies.length - 1;i > -1;i--) {
         var enemy = enemies[i]
         if (enemy.isDie) continue
-        var enemyRect = {
-          x: enemy.position.x,
-          y: enemy.position.y,
-          width: enemy.width,
-          height: enemy.height
-        }
+        var enemyRect = enemy.getAbsoluteCollisionArea()[0]
         // 检查子弹和飞机的碰撞
         for (var j = shots.length - 1;j > -1;j--) {
           var oneShot = shots[j]
           if (oneShot.isDie) continue
-          var shotRect = {x: oneShot.position.x,y: oneShot.position.y,width: oneShot.width,height: oneShot.height}
+          var shotRect = oneShot.getAbsoluteCollisionArea()[0]
           if (player.Oid == oneShot.belong && util.isChonghe(shotRect, enemyRect)) {
             enemy.Hp = enemy.Hp - oneShot.attack * player.shotEx
             oneShot.Hp--
             if (enemy.Hp <= 0) {
-              enemy.isDie = true
-              var bullet = new shotObj.Bullet({
-                isDie: false,
-                icon: resource.bullet,
-                width: 8,
-                height: 8,
-                position: {
-                  x: oneShot.position.x + oneShot.width / 2,
-                  y: oneShot.position.y
-                }
-              })
-              bullets.push(bullet)
-              setTimeout((function (enemy, bullet) {
-                return function () {
-                  util.removeArr(enemies, enemy)
-                  util.removeArr(bullets, bullet)
-                }
-              })(enemy, bullet), 500)
-              // 判断是否产生战利品
-              var spoil = context.spoilManager.createSpoil(enemy)
-              if (spoil) {
-                if (context.stateInfo.spoils.all[spoil.type])
-                  context.stateInfo.spoils.all[spoil.type]++
-                else context.stateInfo.spoils.all[spoil.type] = 0
-                spoils.push(spoil)
-              }
-              if (context.stateInfo.enemies.resolve[enemy.type])
-                context.stateInfo.enemies.resolve[enemy.type]++
-              else
-                context.stateInfo.enemies.resolve[enemy.type] = 1
+              enemyDie(enemy)
             }
             // 子弹生命  穿甲弹
             if (oneShot.Hp <= 0) {
               oneShot.isDie = true
-              setTimeout((function (shot) {
-                return function () {
-                  if (context.stateInfo.emitShot.resolve[shot.type])
-                    context.stateInfo.emitShot.resolve[shot.type]++
-                  else context.stateInfo.emitShot.resolve[shot.type] = 1
-                  util.removeArr(shots, shot)
-                }
-              })(oneShot), 500)
+              if (context.stateInfo.emitShot.resolve[oneShot.type])
+                context.stateInfo.emitShot.resolve[oneShot.type]++
+              else context.stateInfo.emitShot.resolve[oneShot.type] = 1
+              util.removeArr(shots, oneShot)
             }
           }
         }
@@ -174,9 +131,7 @@ define(function (require, exports, module) {
           util.isChonghe(plainRect, enemyRect)
           if (enemy.Hp <= 0) {
             enemy.isDie = true
-            setTimeout(function () {
-              enemies = enemies.slice(0, i).concat(enemies.slice(i + 1, enemies.length))
-            }, 100)
+            util.removeArr(enemies, enemy)
           }
         }
       }
@@ -185,7 +140,6 @@ define(function (require, exports, module) {
       for (var j = shots.length - 1;j > -1;j--) {
         var oneShot = shots[j]
         if (oneShot.isDie) continue
-
         if (player.Oid != oneShot.belong && util.inArea({x: oneShot.position.x + oneShot.width / 2,y: oneShot.position.y}, plainRect)) {
           var ene = findEnemyByOid(oneShot.belong)
           var shotEx = ene ? ene.shotEx : 1
@@ -193,11 +147,7 @@ define(function (require, exports, module) {
           oneShot.Hp--
           if (oneShot.Hp <= 0) {
             oneShot.isDie = true
-            setTimeout((function (shot) {
-              return function () {
-                util.removeArr(shots, shot)
-              }
-            })(oneShot), 500)
+            util.removeArr(shots, oneShot)
           }
         }
       }
@@ -205,22 +155,57 @@ define(function (require, exports, module) {
       for (var j = spoils.length - 1;j > -1;j--) {
         var oneSpoil = spoils[j]
         if (oneSpoil.isDie) continue
-        var spoilRect = {x: oneSpoil.position.x,y: oneSpoil.position.y,width: oneSpoil.width,height: oneSpoil.height}
+        var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0]
         if (util.isChonghe(spoilRect, plainRect)) {
+          oneSpoil.isDie = true
+          util.removeArr(spoils, oneSpoil)
+          oneSpoil.Effect(player)
           if (context.stateInfo.spoils.resolve[oneSpoil.type])
             context.stateInfo.spoils.resolve[oneSpoil.type]++
           else context.stateInfo.spoils.resolve[oneSpoil.type] = 1
-          oneSpoil.isDie = true
-          oneSpoil.Effect(player)
-          util.removeArr(spoils, oneSpoil)
         }
       }
 
       if (player.Hp <= 0) {
         this.stop()
-        resetButton.show()
+        this.resetButton.show()
       }
     }
+
+    var enemyDie = (function (enemy) {
+      var self = this
+      enemy.isDie = true
+      var bullet = new shotObj.Bullet({
+        isDie: false,
+        icon: resource.bullet,
+        width: 8,
+        height: 8,
+        position: {
+          x: (enemy.position.x + enemy.width) / 2,
+          y: (enemy.position.y + enemy.height) / 2
+        }
+      })
+      self.bullets.push(bullet)
+      setTimeout((function (enemy, bullet) {
+        return function () {
+          util.removeArr(self.enemies, enemy)
+          util.removeArr(self.bullets, bullet)
+        }
+      })(enemy, bullet), 500)
+      // 判断是否产生战利品
+      var spoil = context.spoilManager.createSpoil(enemy)
+      if (spoil) {
+        if (context.stateInfo.spoils.all[spoil.type])
+          context.stateInfo.spoils.all[spoil.type]++
+        else context.stateInfo.spoils.all[spoil.type] = 0
+        self.spoils.push(spoil)
+      }
+
+      if (context.stateInfo.enemies.resolve[enemy.type])
+        context.stateInfo.enemies.resolve[enemy.type]++
+      else
+        context.stateInfo.enemies.resolve[enemy.type] = 1
+    }).bind(this)
     /**
      * 对象移动
      */
