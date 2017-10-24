@@ -22,7 +22,8 @@ angular.module('gameDem',['ionic'])
         Debug:'lib/debug',
         context:'context',
         uiComonent: 'lib/uiComonent',
-        resource: 'resource'
+        resource: 'resource',
+        lodash: 'https://cdn.bootcss.com/lodash.js/4.17.4/lodash',
       }
     })
 
