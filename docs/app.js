@@ -13,7 +13,7 @@ angular.module('gameDem',['ionic'])
       baseUrl: window.baseUrl+'js',
       paths: {
         engne: 'engne',
-        event: 'event',
+        event: 'lib/event',
         util: 'util',
         spoil: 'lib/spoil',
         shot: 'lib/shot',
