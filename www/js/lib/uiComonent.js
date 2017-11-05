@@ -63,18 +63,20 @@ define(function (require, exports, module) {
     // boss
     // 关卡时长
     // 组件
+
     this.resetButton = new Button({
       name: 'reset',
       position: {
         x: this.width / 4,
-        y: this.height / 2
+        y: this.height / 2+this.position.y
       },
       width: this.width / 2,
       height: 40,
       icon: resource.button
     })
-
+  
     this.resetButton.on('click', function (eventInfo) {
+     
       that.resetButton.hide()
       that.start()
     })

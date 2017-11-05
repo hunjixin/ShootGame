@@ -59,17 +59,17 @@ define(function(require, exports, module) {
       return evnetInfo
     }
     // 包装单击事件
-    this.pacakgeClick = function (event,) {
+    this.pacakgeClick = function (event) {
       var evnetInfo = {
         position: {x: 0,y: 0}
       }
-
+   
       if (Util.isAndroid()) {
         evnetInfo.position.x = event.pageX - event.target.offsetLeft
-        evnetInfo.position.y = event.pageY,context.option, context.headOffset
+        evnetInfo.position.y = event.y
       }else {
         evnetInfo.position.x = event.offsetX
-        evnetInfo.position.y = event.offsetY,context.option, context.headOffset
+        evnetInfo.position.y = event.offsetY
       }
       return evnetInfo
     }

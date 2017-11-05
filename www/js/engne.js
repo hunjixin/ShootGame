@@ -27,8 +27,8 @@ define(function (require, exports, module) {
       var canvas = document.getElementById(_option.id)
       drawContext = canvas.getContext('2d')
 
-      option.ctxWidth = canvas.width = window.screen.width
-      option.ctxHeight = canvas.height = window.screen.height
+      option.ctxWidth = canvas.width = window.document.body.clientWidth
+      option.ctxHeight = canvas.height = window.document.body.clientHeight
       Object.assign(context, {
         headOffset: 20,
         currentOid: 0,
