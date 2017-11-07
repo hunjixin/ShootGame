@@ -9,24 +9,6 @@ angular.module('gameDem',['ionic'])
 
   }).controller('crash', ['$scope',
   function ($scope) {
-    requirejs.config({
-      baseUrl: window.baseUrl+'js',
-      paths: {
-        engne: 'engne',
-        event: 'lib/event',
-        util: 'util',
-        spoil: 'lib/spoil',
-        shot: 'lib/shot',
-        plain: 'lib/plain',
-        eShape: 'lib/eShape',
-        Debug:'lib/debug',
-        context:'context',
-        uiComonent: 'lib/uiComonent',
-        resource: 'resource',
-        lodash: 'https://cdn.bootcss.com/lodash.js/4.17.4/lodash',
-      }
-    })
-
     requirejs(['engne'], function (Engine) {
       setTimeout(function () {
         var en = new Engine()
