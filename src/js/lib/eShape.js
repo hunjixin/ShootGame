@@ -104,4 +104,4 @@
     }
   }
 
-  export default eShape
+  module.exports = eShape

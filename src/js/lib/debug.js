@@ -89,7 +89,7 @@ function DebugSetting () {
   }
 }
 
-export default {
+module.exports ={
   StateInfo: StateInfo,
   DebugSetting: DebugSetting
 }

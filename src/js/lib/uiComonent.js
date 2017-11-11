@@ -463,7 +463,7 @@ function StageManager () {
     this.stage = stage
   }
 }
-export default {
+module.exports = {
   Stage: Stage,
   Button: Button,
   Bar: Bar,

@@ -1,5 +1,3 @@
-hooks
+.vscode
 node_modules
-platforms
-plugins
-src/node_modules
+lib

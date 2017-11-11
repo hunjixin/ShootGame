@@ -2,11 +2,14 @@ var express = require('express')
 var fs = require('fs')
 var app = new express()
 
-app.use(express.static('/home/hunjixin/CodeSpace/CrashDownApp/CrashDownApp/docs'))
+app.use(express.static(__dirname))
 
 app.get('/', function (req, res) {
-  var html = fs.readFileSync('/index.html')
+  var html = fs.readFileSync('/test/simple/index.html')
   res.send(html)
 })
-app.listen(3000)
+
+app.listen(3000,function(){
+  console.log("start http://127.0.0.1:3000/test/simple/index.html")
+})
 

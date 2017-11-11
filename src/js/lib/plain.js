@@ -165,7 +165,7 @@ function Player () {
     this.setShotInterVal(5)
   }
 }
-export default {
+module.exports = {
   createEnemy: createEnemy,
   Plain: Plain,
   Enemy: Enemy,

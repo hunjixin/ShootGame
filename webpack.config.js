@@ -15,7 +15,7 @@ let requireModule = {
     },
     {
       test: /\.(png|jpg|jpeg|gif)$/,
-      loader: 'url-loader?limit=8192&name=images/[name].[ext]'
+      loader: 'url-loader?limit=8192&name=/image/[name].[ext]'
     }
   ]
 }
@@ -23,14 +23,20 @@ let requireModule = {
 module.exports = [
   {
     name: 'lib',
-    devtool: devtool,
+  //  devtool: devtool,
     entry: [
-      './src/js/engne.js'
+      './src/js/engine.js'
     ],
     output: {
       path: publishPath,
-      filename: 'engne.js'
+      filename: 'engine.js',
+      libraryTarget: "var",
+      library: "Engine"
     },
+      externals: {
+ 
+      },
+
     module: requireModule,
     resolve: { },
     devServer: { contentBase: './js'}

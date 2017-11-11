@@ -22,7 +22,7 @@ import context from '../context.js'
         var funcs = this[action]
         for (var i = 0;i < funcs.length;i++) {
           if (funcs[i].target == target) {
-            Util.removeArr(funcs, funcs[i])
+            util.removeArr(funcs, funcs[i])
           }
         }
       },
@@ -35,7 +35,7 @@ import context from '../context.js'
         //  }
         if (!funcs) throw new Error('not support event')
         for (var i = 0;i < funcs.length;i++) {
-          if (funcs[i].target.isDisplay && Util.isEffect(funcs[i].target, action, eventInfo)) {
+          if (funcs[i].target.isDisplay && util.isEffect(funcs[i].target, action, eventInfo)) {
             funcs[i].callback(funcs[i].target, eventInfo)
           }
         }
@@ -48,7 +48,7 @@ import context from '../context.js'
       var evnetInfo = {
         position: {x: 0,y: 0}
       }
-      if (Util.isAndroid()) {
+      if (util.isAndroid()) {
         evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
         evnetInfo.position.y = event.gesture.center.pageY, context.option,context.headOffset
       }else {
@@ -63,7 +63,7 @@ import context from '../context.js'
         position: {x: 0,y: 0}
       }
    
-      if (Util.isAndroid()) {
+      if (util.isAndroid()) {
         evnetInfo.position.x = event.pageX - event.target.offsetLeft
         evnetInfo.position.y = event.y
       }else {
@@ -105,7 +105,7 @@ import context from '../context.js'
       move: moveFunc
     }
     this.init = function (_option) {
-      if (Util.isAndroid) {
+      if (util.isAndroid) {
         _option.attachEvent.click = this.EventInput.click
         _option.attachEvent.move = this.EventInput.move
         _option.attachEvent.mouseDown = this.EventInput.mouseDown
@@ -119,4 +119,4 @@ import context from '../context.js'
     }
   }
 
-  export default MyEvent
+  module.exports = MyEvent

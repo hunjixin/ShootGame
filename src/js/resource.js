@@ -1,55 +1,55 @@
 
-var baseUrl = window && window.baseUrl || ''
+var baseUrl =''
 var plain = new Image()
-plain.src = baseUrl + '../../img/2332.png'
+plain.src = baseUrl  + require( '../../image/2332.png')
 
 var shot = new Image()
-shot.src = baseUrl + '../img/shot.png'
+shot.src = baseUrl  + require( '../../image/shot.png')
 
 var eshot = new Image()
-eshot.src = baseUrl + '../img/eshot.png'
+eshot.src = baseUrl  + require( '../../image/eshot.png')
 
 var bg1 = new Image()
-bg1.src = baseUrl + '../img/bg1.jpg'
+bg1.src = baseUrl  + require( '../../image/bg1.jpg')
 
 var bg2 = new Image()
-bg2.src = baseUrl + '../img/bg2.png'
+bg2.src = baseUrl  + require( '../../image/bg2.png')
 
 var bg3 = new Image()
-bg3.src = baseUrl + '../img/bg3.jpg'
+bg3.src = baseUrl  + require( '../../image/bg3.jpg')
 
 var head = new Image()
-head.src = baseUrl + '../img/head.png'
+head.src = baseUrl  + require( '../../image/head.png')
 
 var hp = new Image()
-hp.src = baseUrl + '../img/hp.png'
+hp.src = baseUrl  + require( '../../image/hp.png')
 
 var ene1 = new Image()
-ene1.src = baseUrl + '../img/ene1.png'
+ene1.src = baseUrl  + require( '../../image/ene1.png')
 var ene2 = new Image()
-ene2.src = baseUrl + '../img/ene2.png'
+ene2.src = baseUrl  + require( '../../image/ene2.png')
 var ene3 = new Image()
-ene3.src = baseUrl + '../img/ene3.png'
+ene3.src = baseUrl  + require( '../../image/ene3.png')
 var ene4 = new Image()
-ene4.src = baseUrl + '../img/ene4.png'
+ene4.src = baseUrl  + require( '../../image/ene4.png')
 
 var bullet = new Image()
-bullet.src = baseUrl + '../img/bullet.png'
+bullet.src = baseUrl  + require( '../../image/bullet.png')
 
 var button = new Image()
-button.src = baseUrl + '../img/button.png'
+button.src = baseUrl  + require( '../../image/button.png')
 
 var gz = new Image()
-gz.src = baseUrl + '../img/gz.png'
+gz.src = baseUrl  + require( '../../image/gz.png')
 
 var u = new Image()
-u.src = baseUrl + '../img/u.png'
+u.src = baseUrl  + require( '../../image/u.png')
 
 var g = new Image()
-g.src = baseUrl + '../img/g.png'
+g.src = baseUrl  + require( '../../image/g.png')
 
 var setting = new Image()
-setting.src = baseUrl + '../img/setting.png'
+setting.src = baseUrl  + require( '../../image/setting.png')
 
 var resource = {
   shot: shot,

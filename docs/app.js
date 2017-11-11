@@ -9,17 +9,14 @@ angular.module('gameDem',['ionic'])
 
   }).controller('crash', ['$scope',
   function ($scope) {
-    requirejs(['engne'], function (Engine) {
-      setTimeout(function () {
-        var en = new Engine()
-        en.Create({
-          id: 'myCanvas',
-          attachEvent: $scope,
-          showConsoleView:function(){console.log('not support')},
-          initConsoleView:function(){console.log('not support')}
-        })
-        en.Start()
-      }, 1000)
+ 
+    var en = new Engine()
+    en.Create({
+      id: 'myCanvas',
+      attachEvent: $scope,
+      showConsoleView:function(){console.log('not support')},
+      initConsoleView:function(){console.log('not support')}
     })
+    en.Start()
 
   }])

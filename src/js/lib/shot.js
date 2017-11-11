@@ -117,9 +117,9 @@ function Shot () {
   this.speedX = 0
   this.type = 'common'
   this.attack = 1 // 攻击力
-  belong = 0
+  this.belong = 0
 }
-export default {
+module.exports = {
   shotTypes: shotTypes,
   ShotorFactory: ShotorFactory,
   Bullet: Bullet,

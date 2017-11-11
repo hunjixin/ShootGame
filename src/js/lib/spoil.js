@@ -90,7 +90,7 @@ SpoilManager.spoilType = {
   gzShot: 'gzShot',
   addHp: 'addHp'
 }
-export default {
-  Spoil: Spoil,
-  SpoilManager: SpoilManager
+module.exports = {
+  Spoil,
+  SpoilManager
 }
