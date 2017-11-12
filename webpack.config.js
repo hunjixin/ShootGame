@@ -25,7 +25,7 @@ module.exports = [
     name: 'lib',
   //  devtool: devtool,
     entry: [
-      './src/js/engine.js'
+      './src/engine.js'
     ],
     output: {
       path: publishPath,
