@@ -4,11 +4,12 @@ import context from './context.js'
 import { Spoil, SpoilManager } from './lib/spoil.js'
 import MyEvent from './lib/event.js'
 import eShape from './lib/eShape.js'
+import Modal from './lib/modal.js'
 import { Player } from './lib/plain.js'
 import { shotTypes, ShotorFactory, Bullet, Shot } from './lib/shot.js'
 import { Stage, Button, Bar, TextBlock, StageManager } from './lib/uiComonent.js'
 import { StateInfo, DebugSetting } from './lib/debug.js'
-console.log(StateInfo)
+
 function Engine () {
   var option = {  }
 
@@ -18,10 +19,11 @@ function Engine () {
   }
 
   var player
-  var bar
   var stageManager
   var textBlock
   var drawContext
+  var bar
+  var viewRoot=[]
   this.Create = function (_option) {
     // canvas context
     var canvas = document.getElementById(_option.id)
@@ -40,7 +42,7 @@ function Engine () {
       setting: new DebugSetting(),
       spoilManager: new SpoilManager()
     })
-
+    
     // events
     context.myevent.init(_option)
     // stage
@@ -61,9 +63,25 @@ function Engine () {
     })
     settingButton.on('click', function (eventInfo) {
       stageManager.stage.stop()
-      _option.showConsoleView(function () {
-        stageManager.stage.restart()
+      var modal=new Modal({
+        title: '设置页面',
+        position: {
+          x:10,
+          y:context.option.ctxHeight/4
+        },
+        width: context.option.ctxWidth-20,
+        height: context.option.ctxHeight/2,
+        icon: resource.setting,
+        zIndex:2,
+        confirm:function(){
+          stageManager.stage.restart()
+        },
+        cancel:function(){
+          stageManager.stage.restart()
+          util.removeArr(viewRoot,modal)
+        }
       })
+      viewRoot.push(modal)
     })
     // bar
     bar = new Bar({
@@ -140,6 +158,9 @@ function Engine () {
     if (context.setting.isDebug.value) {
       textBlock.setText(context.stateInfo.getDebugArray())
       textBlock.render(drawContext)
+    }
+    for(var i=0;i<viewRoot.length;i++){
+      viewRoot[i].render(drawContext)
     }
   }
   /**

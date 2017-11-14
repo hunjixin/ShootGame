@@ -2,6 +2,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
+const babel=require('babel-polyfill')
 
 let publishPath = path.join(__dirname, 'lib')
 let devtool = 'source-map'
@@ -23,7 +24,7 @@ let requireModule = {
 module.exports = [
   {
     name: 'lib',
-  //  devtool: devtool,
+    devtool: devtool,
     entry: [
       './src/engine.js'
     ],

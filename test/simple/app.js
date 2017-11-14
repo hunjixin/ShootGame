@@ -8,6 +8,11 @@ angular.module('gameDem',['ionic'])
 
   }).controller('crash', ['$scope',
   function ($scope) {
+    document.onkeyup=function(param){
+      $scope.keyUp(param)
+    }
+
+    $scope.keyUp=document.keyUp;
     console.log(Engine)
     var en = new Engine()
     en.Create({
