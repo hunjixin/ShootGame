@@ -2,7 +2,7 @@
   "name": "ildasm",
   "version": "1.0.0",
   "description": "MSIL VIEW",
-  "main": "pub/js/main.js",
+  "main": "dist/main.js",
   "scripts": {
     "start": "electron --debug-brk=5858 .",
     "webpack": "webpack --progress --colors"
@@ -18,8 +18,7 @@
     "electron": "~1.6.2",
     "html-loader": "^0.4.5",
     "jquery": "^3.2.1",
-    "webpack": "^3.3.0",
-    "webpack-dev-server": "^2.5.1"
+    "webpack": "^3.3.0"
   },
   "dependencies": {
     "autoprefixer": "^7.1.2",

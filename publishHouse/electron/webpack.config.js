@@ -4,19 +4,16 @@ const path = require('path')
 const webpack=require('webpack')
 const autoprefixer = require('autoprefixer')
 
-// const ExtractCss = new ExtractTextPlugin('style/[name]_[hash:8].css')
-// const ExtractLess = new ExtractTextPlugin('style/[name]_[hash:8].css')
 
 module.exports = {
   devtool: 'source-map',
   entry: {
-    main: './dev/main.js',
-    index: './dev/index.js'
+    main: './src/main.js',
+    index: './src/index.js'
   },
   output: {
-    path: path.resolve(__dirname, 'pub'),
-    publicPath: '/pub/',
-    filename: 'js/[name].js'
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js'
   },
   module: {
     rules: [
@@ -58,25 +55,21 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      jQuery: 'jquery',
-      $: 'jquery'
-    }),
     new htmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
       inject: 'body',
-      title: 'Ilasm',
+      title: 'gameShell',
       chunks: ['index']
     }),
-       new ExtractTextPlugin('style/[name]_[hash:8].css'),
+    new ExtractTextPlugin('style/[name]_[hash:8].css'),
     new webpack.DefinePlugin({
       'process.env.NODE.ENV': 'development'
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
-    contentBase: __dirname + '/pub'
+    contentBase: __dirname + '/dist'
   },
   target: 'electron'
 }
