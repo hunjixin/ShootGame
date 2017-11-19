@@ -21,61 +21,14 @@ angular.module('starter', ['ionic'])
         StatusBar.styleDefault()
       }
     })
-  }).controller('crash', ['$scope','$ionicModal' ,
-  function ($scope,$ionicModal) {
-
-    function initConsoleView(context)
-    {
-      $scope.context=context
-      $ionicModal.fromTemplateUrl('templates/modal.html', {
-        scope: $scope
-      }).then(function(modal) {
-        $scope.modal = modal;
-      });
-    }
-    
-    function showConsoleView(callback) { 
-      $scope.modal.show();
-      $scope.showCallback=callback
-    }
-    $scope.confirm=function(){
-
-    }
-    $scope.cancel=function(){
-      $scope.modal.hide();
-      $scope.showCallback.apply($scope.context)
-    }
-
-    requirejs.config({
-      baseUrl: window.baseUrl+'js',
-      paths: {
-        context:'context',
-        Debug:'lib/debug',
-        util: 'util',
-        resource: 'resource',
-        event: 'lib/event',
-        eShape: 'lib/eShape',
-        spoil: 'lib/spoil',
-        shot: 'lib/shot',
-        plain: 'lib/plain',
-        uiComonent: 'lib/uiComonent',
-        engne: 'engne',
-        lodash: 'https://cdn.bootcss.com/lodash.js/4.17.4/lodash',
-      },
-      shim: {
-       
-       }
+  }).controller('crash', ['$scope', '$ionicModal' ,
+  function ($scope, $ionicModal) {
+    var en = new Engine()
+    en.Create({
+      id: 'myCanvas',
+      attachEvent: $scope,
+      showConsoleView: showConsoleView,
+      initConsoleView: initConsoleView
     })
-
-    requirejs(['engne'], function (Engine) {
-      var en = new Engine()
-      en.Create({
-        id: 'myCanvas',
-        attachEvent: $scope,
-        showConsoleView:showConsoleView,
-        initConsoleView:initConsoleView
-      })
-      en.Start()
-    })
-
+    en.Start()
   }])

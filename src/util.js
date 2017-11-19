@@ -135,6 +135,13 @@ var util = {
       return false
     }
   },
+  isElectron: function () {
+    if ( (navigator.userAgent.match(/(Electron)/i))) {
+      return true
+    }else {
+      return false
+    }
+  },
   randInt: function (min, max) {
     if (min > max) return max
     return parseInt(Math.random() * (max - min)) + min

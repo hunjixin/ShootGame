@@ -13,7 +13,7 @@ angular.module('gameDem',['ionic'])
     }
 
     $scope.keyUp=document.keyUp;
-    console.log(Engine)
+
     var en = new Engine()
     en.Create({
       id: 'myCanvas',

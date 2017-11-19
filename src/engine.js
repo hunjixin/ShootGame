@@ -23,7 +23,7 @@ function Engine () {
   var textBlock
   var drawContext
   var bar
-  var viewRoot=[]
+  var viewRoot = []
   this.Create = function (_option) {
     // canvas context
     var canvas = document.getElementById(_option.id)
@@ -42,7 +42,7 @@ function Engine () {
       setting: new DebugSetting(),
       spoilManager: new SpoilManager()
     })
-    
+
     // events
     context.myevent.init(_option)
     // stage
@@ -63,21 +63,21 @@ function Engine () {
     })
     settingButton.on('click', function (eventInfo) {
       stageManager.stage.stop()
-      var modal=new Modal({
+      var modal = new Modal({
         title: '设置页面',
         position: {
-          x:10,
-          y:context.option.ctxHeight/4
+          x: 10,
+          y: context.option.ctxHeight / 4
         },
-        width: context.option.ctxWidth-20,
-        height: context.option.ctxHeight/2,
-        zIndex:2,
-        confirm:function(){
+        width: context.option.ctxWidth - 20,
+        height: context.option.ctxHeight / 2,
+        zIndex: 2,
+        confirm: function () {
           stageManager.stage.restart()
         },
-        cancel:function(){
+        cancel: function () {
           stageManager.stage.restart()
-          util.removeArr(viewRoot,modal)
+          util.removeArr(viewRoot, modal)
         }
       })
       viewRoot.push(modal)
@@ -115,63 +115,64 @@ function Engine () {
         player.position.y = eventInfo.position.y - player.height / 2 - context.headOffset
       }
     })
-    _option.initConsoleView(context)
   }
-
+  
   /**
-   * time
-   */
-  var clearTm
-  var drawTm
-  var moveTm
-  var checkTm
-  this.Start = function () {
-    // 拦截作用 必要时可以扩展出去
-    var before = function (callback) {
-      return function () {
-        if (stageManager.stage.isRunning == 1)  callback()
-      }
-    }
+  * time
+  */
+ var clearTm
+ var drawTm
+ var moveTm
+ var checkTm
+ this.Start = function () {
+   // 拦截作用 必要时可以扩展出去
+   var before = function (callback) {
+     return function () {
+       if (stageManager.stage.isRunning == 1)  callback()
+     }
+   }
 
-    drawTm = setInterval(draw, 50)
+   drawTm = setInterval(draw, 50)
 
-    checkTm = setInterval(before(function () {
-      stageManager.stage.checkCollection()
-    }), 50)
+   checkTm = setInterval(before(function () {
+     stageManager.stage.checkCollection()
+   }), 50)
 
-    moveTm = setInterval(before(function () {
-      stageManager.stage.objectMove()
-    }), 50)
+   moveTm = setInterval(before(function () {
+     stageManager.stage.objectMove()
+   }), 50)
 
-    clearTm = setInterval(before(function () {
-      stageManager.stage.clearObject()
-    }), 5000)
-  }
-  // 绘制
-  var draw = function () {
-    // stage
-    stageManager.stage.render(drawContext)
-    // head
-    bar.render(drawContext)
-    // 绘制文本
-    if (context.setting.isDebug.value) {
-      textBlock.setText(context.stateInfo.getDebugArray())
-      textBlock.render(drawContext)
-    }
-    for(var i=0;i<viewRoot.length;i++){
-      viewRoot[i].render(drawContext)
-    }
-  }
-  /**
-   * 清理函数
-   */
-  var destory = function () {
-    stageManager.stage.destroy()
-    clearInterval(clearTm)
-    clearInterval(drawTm)
-    clearInterval(moveTm)
-    clearInterval(checkTm)
-  }
+   clearTm = setInterval(before(function () {
+     stageManager.stage.clearObject()
+   }), 5000)
+ }
+ // 绘制
+ var draw = function () {
+   // stage
+   stageManager.stage.render(drawContext)
+   // head
+   bar.render(drawContext)
+   // 绘制文本
+   if (context.setting.isDebug.value) {
+     textBlock.setText(context.stateInfo.getDebugArray())
+     textBlock.render(drawContext)
+   }
+   for(var i=0;i<viewRoot.length;i++){
+     viewRoot[i].render(drawContext)
+   }
+ }
+ /**
+  * 清理函数
+  */
+ var destory = function () {
+   stageManager.stage.destroy()
+   clearInterval(clearTm)
+   clearInterval(drawTm)
+   clearInterval(moveTm)
+   clearInterval(checkTm)
+ }
 }
 
+export default Engine
 module.exports=Engine
+

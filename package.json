@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "webpack&node server.js",
-    "start": "node server.js"
+    "buildCore": "webpack -p"
   },
   "repository": {
     "type": "git",

@@ -31,15 +31,14 @@ module.exports = [
     output: {
       path: publishPath,
       filename: 'engine.js',
-      libraryTarget: "var",
+      libraryTarget: "commonjs2",
       library: "Engine"
     },
-      externals: {
- 
-      },
-
     module: requireModule,
-    resolve: { },
-    devServer: { contentBase: './js'}
+    devServer: { contentBase: './js'},
+    node: {
+      __dirname: false
+    }
   }
 ]
+
