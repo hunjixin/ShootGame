@@ -71,7 +71,6 @@ function Engine () {
         },
         width: context.option.ctxWidth-20,
         height: context.option.ctxHeight/2,
-        icon: resource.setting,
         zIndex:2,
         confirm:function(){
           stageManager.stage.restart()
