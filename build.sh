@@ -17,6 +17,12 @@ init(){
 }
 
 losBuild(){
+
+    androidPath="$basePath/build/android"
+    electronImageDir="$basePath/publishHouse/electron/dist/image/"
+    createDir $electronImageDir
+    createDir $androidPath
+
     echo "build core and copy file"
     node node_modules/webpack/bin/webpack.js
     
@@ -24,6 +30,8 @@ losBuild(){
 
     cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/electron/src/engine.js"  
     cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/ionic/www/js/engine.js" 
+
+    
 
     cp -f -R  "$basePath/image/."  "$basePath/publishHouse/ionic/www/img/"
     cp -f -R  "$basePath/image/."  "$basePath/publishHouse/electron/dist/image/"
@@ -35,13 +43,16 @@ losBuild(){
 
     cd ./publishHouse/ionic
     echo "ionic cordova build android"
-    #ionic cordova build android
+    ionic cordova build android
     cd ../..
+
+    cp -f -R  "$basePath/publishHouse/ionic/platforms/android/build/outputs/apk"  $androidPath
+
 
     cd ./publishHouse/electron
     
     echo "electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out=$basePath/build"
-    electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out="$basePath/build "
+    electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out="$basePath/build"
     cd ../..
 }
 clean(){
@@ -52,6 +63,7 @@ clean(){
 
     rm -f ./publishHouse/ionic/www/js/engine.js
     rm -rf ./publishHouse/ionic/www/img
+    rm -rf ./publishHouse/electron/dist
 }
 
 losHelp(){
@@ -60,6 +72,14 @@ losHelp(){
     echo "--clean  clean build files"
 }
 
+createDir(){
+    if [ ! -d $1 ]
+    then
+    /bin/mkdir -p $1 >/dev/null 2>&1 && echo "Directory $1 created." ||  echo "Error: Failed to create $1 directory."
+    else
+    echo  
+    fi
+}
 if [ "$1" = "$help" ] 
 then
     losHelp

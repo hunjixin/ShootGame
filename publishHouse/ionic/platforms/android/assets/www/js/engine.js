@@ -221,6 +221,13 @@ var util = {
       return false;
     }
   },
+  isElectron: function isElectron() {
+    if (navigator.userAgent.match(/(Electron)/i)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
   randInt: function randInt(min, max) {
     if (min > max) return max;
     return parseInt(Math.random() * (max - min)) + min;
@@ -1890,6 +1897,9 @@ function MyEvent() {
     if (_util2.default.isAndroid()) {
       evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft;
       evnetInfo.position.y = event.gesture.center.pageY, _context2.default.option, _context2.default.headOffset;
+    } else if (_util2.default.isElectron()) {
+      evnetInfo.position.x = event.pageX;
+      evnetInfo.position.y = event.pageY, _context2.default.option, _context2.default.headOffset;
     } else {
       evnetInfo.position.x = event.offsetX;
       evnetInfo.position.y = event.offsetY, _context2.default.option, _context2.default.headOffset;
@@ -1905,6 +1915,9 @@ function MyEvent() {
     if (_util2.default.isAndroid()) {
       evnetInfo.position.x = event.pageX - event.target.offsetLeft;
       evnetInfo.position.y = event.y;
+    } else if (_util2.default.isElectron()) {
+      evnetInfo.position.x = event.pageX;
+      evnetInfo.position.y = event.pageY;
     } else {
       evnetInfo.position.x = event.offsetX;
       evnetInfo.position.y = event.offsetY;
