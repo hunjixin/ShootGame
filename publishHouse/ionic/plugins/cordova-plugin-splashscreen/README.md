@@ -289,7 +289,7 @@ projectRoot
     plugins
     www
         css
-        img
+        image
         js
     res
         screen

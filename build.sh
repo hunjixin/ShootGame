@@ -6,6 +6,7 @@ help="--help"
 build="--build"
 init="--init"
 clean="--clean"
+package="--package"
 
 init(){
      npm install
@@ -20,26 +21,42 @@ losBuild(){
 
     androidPath="$basePath/build/android"
     electronImageDir="$basePath/publishHouse/electron/dist/image/"
+    testDir="$basePath/test/lib/engine.js"
     createDir $electronImageDir
     createDir $androidPath
+    createDir $testDir
 
     echo "build core and copy file"
     node node_modules/webpack/bin/webpack.js
-    
-   # python ./transformAmdToCmd.py
+
 
     cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/electron/src/engine.js"  
     cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/ionic/www/js/engine.js" 
-
-    
-
-    cp -f -R  "$basePath/image/."  "$basePath/publishHouse/ionic/www/img/"
+    cp -f  "$basePath/lib/engine.js"  $testDir
+   
+    cp -f -R  "$basePath/image/."  "$basePath/publishHouse/ionic/www/image/"
     cp -f -R  "$basePath/image/."  "$basePath/publishHouse/electron/dist/image/"
-    
+
+    python ./transformAmdToCmd.py
+
     echo "package electron"
     cd ./publishHouse/electron
     node node_modules/webpack/bin/webpack.js
     cd ../..
+}
+clean(){
+    rm -rf ./lib
+    rm -rf ./build
+    rm -f ./publishHouse/electron/src/engine.js
+    rm -rf ./publishHouse/electron/image
+
+    rm -f ./publishHouse/ionic/www/js/engine.js
+    rm -rf ./publishHouse/ionic/www/image
+    rm -rf ./publishHouse/electron/dist
+    rm -rf ./test/lib
+}
+
+package(){
 
     cd ./publishHouse/ionic
     echo "ionic cordova build android"
@@ -55,17 +72,6 @@ losBuild(){
     electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out="$basePath/build"
     cd ../..
 }
-clean(){
-    rm -rf ./lib
-    rm -rf ./build
-    rm -f ./publishHouse/electron/src/engine.js
-    rm -rf ./publishHouse/electron/image
-
-    rm -f ./publishHouse/ionic/www/js/engine.js
-    rm -rf ./publishHouse/ionic/www/img
-    rm -rf ./publishHouse/electron/dist
-}
-
 losHelp(){
     echo "--init   install all pacakge"
     echo "--build  build android/win/linux"
@@ -86,6 +92,9 @@ then
 elif  [ "$1" = "$build" ]
 then
     losBuild
+elif  [ "$1" = "$package" ] 
+then
+    package
 elif  [ "$1" = "$init" ] 
 then
        init
