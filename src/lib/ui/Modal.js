@@ -1,10 +1,10 @@
 
-import eShape from './eShape.js'
-import context from '../context.js'
-import resource from '../resource.js'
-import {Button, Bar, TextBlock, StageManager } from './uiComonent.js'
+import EObject from '../EObject.js'
+import context from '../../context.js'
+import resource from '../../resource.js'
+import { Bar,Button,TextBlock} from './UiControl.js'
 
-class Modal extends eShape
+class Modal extends EObject
 {
     constructor(option)
     {

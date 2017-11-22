@@ -4,7 +4,7 @@ import context from '../context.js'
 /**
  * 基类
  */
-class eShape {
+class EObject {
   constructor (option) {
     this.isDisplay = true
     this.Oid = ++context.currentOid // id
@@ -115,4 +115,4 @@ class eShape {
   }
 }
 
-module.exports = eShape
+module.exports = EObject

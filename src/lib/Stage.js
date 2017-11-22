@@ -1,72 +1,15 @@
-import eShape from './eShape.js'
+import EObject from './EObject.js'
 import util from '../util.js'
 import resource from '../resource.js'
 import { Boss, createEnemy } from './plain.js'
 import context from '../context.js'
 import { shotTypes, ShotorFactory, Bullet, Shot } from './shot.js'
 import TimeLine from './timeLine.js'
+import { Player } from './plain.js'
+import { Bar,Button,TextBlock} from './ui/UiControl.js'
 
-class Button extends eShape {
-  constructor (option) {
-    super(option)
-    this.text=option.text
-  }
-  render(drawContext){
-    super.render(drawContext)
-    if(!this.text)return
-    drawContext.save()
-    drawContext.font=this.height+"px Arial";
-    drawContext.fillText(this.text,this.position.x,this.position.y);
-    drawContext.restore()
-  }
-}
-class Bar extends eShape {
-  constructor (option) {
-    super(option)
-    this.rightButton = option.rightButton
-    this.render = function (drawContext) {
-      if (!this.isDisplay) return
-      drawContext.drawImage(this.icon, this.position.x , this.position.y, this.width, this.height)
-      // hp
-      for (var index = 0;index < context.player.Hp;index++) {
-        var width = (resource.hp.width - 15) * index
-        drawContext.drawImage(resource.hp, width, 0, 20, context.headOffset)
-      }
-      // rightbutton
-      this.rightButton.render(drawContext)
-    }
-  }
 
-}
-class TextBlock extends eShape {
-  constructor (option) {
-    super(option)
-    this.textArray = []
-    this.setText = function (texts) {
-      if (!texts) return
-      this.clear()
-      this.append(texts)
-    }
-    this.clear = function (texts) {
-      this.textArray.length = 0
-    }
-    this.append = function (texts) {
-      if (!texts) return
-      if (texts instanceof Array) {
-        [].push.apply(this.textArray, texts)
-      }else {
-        this.textArray.push(texts.toString())
-      }
-    }
-    this.render = function (drawContext) {
-      for (var index = 0;index < this.textArray.length;index++) {
-        drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y)
-      }
-    }
-  }
-}
-
-class Stage extends eShape {
+class Stage extends EObject {
   constructor (stageConfig) {
     super(stageConfig)
 
@@ -94,9 +37,34 @@ class Stage extends eShape {
 
     this.resetButton.on('click',(eventInfo)=> {
       this.resetButton.hide()
-      this.start()
+      if(this.player.hp>0) {
+        this.start()
+      }else{
+        this.restart()
+      }
     })
-
+    var plainMoveState = {
+      isMouseDown: false,
+      position: {x: 0,y: 0}
+    }
+    this.player = new Player(this)
+    this.player.setShotInterVal(1)
+    // 注册事件
+    // 玩家开始移动
+    this.player.on('mouseDown', eventInfo=> {
+      if ( this.isRunning == 1)  plainMoveState.isMouseDown = true
+    })
+    // 玩家停止移动
+    this.on('mouseUp', eventInfo=> {
+      if ( this.isRunning == 1)  plainMoveState.isMouseDown = false
+    })
+    // 玩家移动中
+    this.on('mouseMove',eventInfo=> {
+      if ( this.isRunning == 1 && plainMoveState.isMouseDown === true) {
+        this.player.position.x = eventInfo.position.x - this.player.width / 2
+        this.player.position.y = eventInfo.position.y - this.player.height / 2 - context.headOffset
+      }
+    })
     this.icon = stageConfig.icon
     this.boss
     this.time = 10
@@ -155,7 +123,6 @@ class Stage extends eShape {
      * 对象移动
      */
   objectMove () {
-    var player = context.player
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
@@ -164,7 +131,7 @@ class Stage extends eShape {
       context.stageManager.next()
     }
     // 生成新的个体
-    var pShots = player.getShot()
+    var pShots = this.player.getShot()
     if (pShots) {
       shots.push.apply(shots, pShots)
       for (var i = 0;i < pShots.length;i++) {
@@ -175,7 +142,7 @@ class Stage extends eShape {
     }
     this.update()
 
-    player.update()
+    this.player.update()
     // 报告
     context.stateInfo.currentShotNum = this.shots.length
     context.stateInfo.currentEnemyNum = this.enemies.length
@@ -248,7 +215,7 @@ class Stage extends eShape {
       shot.render(drawContext)
     }
     // 飞机
-    context.player.render(drawContext)
+    this.player.render(drawContext)
     // 敌军
     for (var index in this.enemies) {
       var enemy = enemies[index]
@@ -354,8 +321,7 @@ class Stage extends eShape {
   }
   // 检测碰撞
   checkCollection () {
-    var player = context.player
-    var plainRect = player.getAbsoluteCollisionArea()[0]
+    var plainRect = this.player.getAbsoluteCollisionArea()[0]
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
@@ -370,8 +336,8 @@ class Stage extends eShape {
         var oneShot = shots[j]
         if (oneShot.isDie) continue
         var shotRect = oneShot.getAbsoluteCollisionArea()[0]
-        if (player.Oid == oneShot.belong && util.isChonghe(shotRect, enemyRect)) {
-          enemy.Hp = enemy.Hp - oneShot.attack * player.shotEx
+        if (this.player.Oid == oneShot.belong && util.isChonghe(shotRect, enemyRect)) {
+          enemy.Hp = enemy.Hp - oneShot.attack * this.player.shotEx
           oneShot.Hp--
           if (enemy.Hp <= 0) {
             this.enemyDie(enemy)
@@ -389,7 +355,7 @@ class Stage extends eShape {
       // 检查玩家和飞机的碰撞
       if (util.isChonghe(plainRect, enemyRect)) {
         enemy.Hp--
-        player.Hp--
+        this.player.Hp--
         util.isChonghe(plainRect, enemyRect)
         if (enemy.Hp <= 0) {
           enemy.isDie = true
@@ -402,10 +368,10 @@ class Stage extends eShape {
     for (var j = shots.length - 1;j > -1;j--) {
       var oneShot = shots[j]
       if (oneShot.isDie) continue
-      if (player.Oid != oneShot.belong && util.inArea({x: oneShot.position.x + oneShot.width / 2,y: oneShot.position.y}, plainRect)) {
+      if (this.player.Oid != oneShot.belong && util.inArea({x: oneShot.position.x + oneShot.width / 2,y: oneShot.position.y}, plainRect)) {
         var ene = this.findEnemyByOid(oneShot.belong)
         var shotEx = ene ? ene.shotEx : 1
-        player.Hp = player.Hp - oneShot.attack * shotEx
+        this.player.Hp = this.player.Hp - oneShot.attack * shotEx
         oneShot.Hp--
         if (oneShot.Hp <= 0) {
           oneShot.isDie = true
@@ -421,14 +387,14 @@ class Stage extends eShape {
       if (util.isChonghe(spoilRect, plainRect)) {
         oneSpoil.isDie = true
         util.removeArr(spoils, oneSpoil)
-        oneSpoil.Effect(player)
+        oneSpoil.Effect(this.player)
         if (context.stateInfo.spoils.resolve[oneSpoil.type])
           context.stateInfo.spoils.resolve[oneSpoil.type]++
         else context.stateInfo.spoils.resolve[oneSpoil.type] = 1
       }
     }
 
-    if (player.Hp <= 0) {
+    if (this.player.Hp <= 0) {
       this.stop()
       this.resetButton.show()
     }

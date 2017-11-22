@@ -1,70 +1,74 @@
-import eShape from './eShape.js'
+import EObject from './EObject.js'
 import util from '../util.js'
 import resource from '../resource.js'
 import context from '../context.js'
 
-class Spoil extends eShape {
+class Spoil extends EObject {
   constructor (obj, type) {
-    super(obj)
+    super({})
     this.speedY = 3
+    this.isDie=false
     this.spoiltype = type
     this.width = 25
     this.height = 25
     this.collisionArea = [{x: 0,y: 0,width: this.width,height: this.height}]
     this.position.x = obj.position.x
     this.position.y = obj.position.y
-    this.Effect = function (targetPlayer) {}
+  }
+  Effect(targetPlayer) {}
+  update(){
+    super.update()
   }
 }
-class UmShotSpoil extends eShape {
+class UmShotSpoil extends Spoil {
   constructor (object) {
     super(object)
     this.spoiltype = 'umShot'
     this.icon = resource.u
-    this.Effect = function (targetPlayer) {
-      if (targetPlayer.shotType.type == SpoilManager.spoilType.umShot) {
-        if (targetPlayer.shotType.num > 7) {
-          targetPlayer.shotEx++
-        }else {
-          targetPlayer.shotType.num++
-        }
+  }
+  Effect(targetPlayer) {
+    if (targetPlayer.shotType.type == SpoilManager.spoilType.umShot) {
+      if (targetPlayer.shotType.num > 7) {
+        targetPlayer.shotEx++
       }else {
-        targetPlayer.shotType = {
-          type: SpoilManager.spoilType.umShot,
-          num: 1
-        }
+        targetPlayer.shotType.num++
       }
-
-      targetPlayer.setShotInterVal(2)
+    }else {
+      targetPlayer.shotType = {
+        type: SpoilManager.spoilType.umShot,
+        num: 1
+      }
     }
+
+    targetPlayer.setShotInterVal(2)
   }
 }
-class GzShotSpoil extends eShape {
+class GzShotSpoil extends Spoil {
   constructor (object) {
     super(object)
     this.spoiltype = 'gzShot'
     this.icon = resource.g
-    this.Effect = function (targetPlayer) {
-      if (targetPlayer.shotType.type == SpoilManager.spoilType.gzShot) {
-        targetPlayer.shotType.num++
-      }else {
-        targetPlayer.shotType = {
-          type: SpoilManager.spoilType.gzShot,
-          num: 1
-        }
+  }
+  Effect (targetPlayer) {
+    if (targetPlayer.shotType.type == SpoilManager.spoilType.gzShot) {
+      targetPlayer.shotType.num++
+    }else {
+      targetPlayer.shotType = {
+        type: SpoilManager.spoilType.gzShot,
+        num: 1
       }
-      targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2)
     }
+    targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2)
   }
 }
-class HpSpoil extends eShape {
+class HpSpoil extends Spoil {
   constructor (object) {
     super(object)
     this.spoiltype = 'addHp'
     this.icon = resource.hp
-    this.Effect = function (targetPlayer) {
-      if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++
-    }
+  }
+  Effect(targetPlayer) {
+    if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++
   }
 }
 class SpoilManager {

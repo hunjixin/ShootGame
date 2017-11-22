@@ -1,4 +1,4 @@
-import eShape from './eShape.js'
+import EObject from './EObject.js'
 import util from '../util.js'
 import resource from '../resource.js'
 import context from '../context.js'
@@ -36,7 +36,7 @@ var createEnemy = function (type) {
   }
 }
 
-class Plain extends eShape {
+class Plain extends EObject {
   constructor (enableShot) {
     super()
 
@@ -138,16 +138,17 @@ class Boss extends Plain {
  * @param {*玩家} isShot 
  */
 class Player extends Plain {
-  constructor () {
+  constructor (stage) {
     super(true)
+    this.stage=stage
     this.fixed.y = true
     this.icon = resource.plainImg
     this.width = 30
     this.height = 24
     this.AllHp = 12
     this.Hp = this.AllHp
-    this.position.x = (context.stageManager.stage.width - this.width) / 2
-    this.position.y = (context.stageManager.stage.height - this.height)
+    this.position.x = (this.stage.width - this.width) / 2
+    this.position.y = (this.stage.height - this.height)
     this.collisionArea = [{x: 0,y: 0,width: this.width,height: this.height}]
     this.enableShot = true
     this.speedY = -1
@@ -160,8 +161,8 @@ class Player extends Plain {
     }
     this.reset = function () {
       this.Hp = 3
-      this.position.x = (context.stageManager.stage.width - this.width) / 2
-      this.position.y = (context.stageManager.stage.height - this.height)
+      this.position.x = (this.stage.width - this.width) / 2
+      this.position.y = (this.stage.height - this.height)
       this.shotType = {
         type: 'umShot',
         num: 5

@@ -1,4 +1,4 @@
-import eShape from './eShape.js'
+import EObject from './EObject.js'
 import util from '../util.js'
 import resource from '../resource.js'
 import context from '../context.js'
@@ -104,7 +104,7 @@ function ShotorFactory () {
 /**
      * 爆炸
      */
-class Bullet extends eShape
+class Bullet extends EObject
 {
   constructor(option) {
     super(option)
@@ -114,7 +114,7 @@ class Bullet extends eShape
 /**
  * 子弹
  */
-class Shot  extends eShape
+class Shot  extends EObject
 {
   constructor(){
    super()

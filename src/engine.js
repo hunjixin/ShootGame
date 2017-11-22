@@ -3,22 +3,17 @@ import resource from './resource.js'
 import context from './context.js'
 import { Spoil, SpoilManager } from './lib/spoil.js'
 import MyEvent from './lib/event.js'
-import eShape from './lib/eShape.js'
-import Modal from './lib/modal.js'
-import { Player } from './lib/plain.js'
+import EObject from './lib/EObject.js'
+import Modal from './lib/ui/Modal.js'
+
 import { shotTypes, ShotorFactory, Bullet, Shot } from './lib/shot.js'
-import { Stage, Button, Bar, TextBlock, StageManager } from './lib/uiComonent.js'
+import { Bar,Button,TextBlock} from './lib/ui/UiControl.js'
+import { Stage, StageManager } from './lib/Stage.js'
 import { StateInfo, DebugSetting } from './lib/debug.js'
 
 function Engine () {
   var option = {  }
 
-  var plainMoveState = {
-    isMouseDown: false,
-    position: {x: 0,y: 0}
-  }
-
-  var player
   var stageManager
   var textBlock
   var drawContext
@@ -37,7 +32,6 @@ function Engine () {
       option: option,
       myevent: new MyEvent(),
       stateInfo: new StateInfo(),
-      plainMoveState: plainMoveState,
       shotType: shotTypes,
       setting: new DebugSetting(),
       spoilManager: new SpoilManager()
@@ -94,25 +88,6 @@ function Engine () {
       position: {
         x: 0,
         y: context.headOffset
-      }
-    })
-    player = new Player(true)
-    context.player = player
-    player.setShotInterVal(1)
-    // 注册事件
-    // 玩家开始移动
-    player.on('mouseDown', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1)  plainMoveState.isMouseDown = true
-    })
-    // 玩家停止移动
-    stageManager.stage.on('mouseUp', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1)  plainMoveState.isMouseDown = false
-    })
-    // 玩家移动中
-    stageManager.stage.on('mouseMove', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1 && plainMoveState.isMouseDown === true) {
-        player.position.x = eventInfo.position.x - player.width / 2
-        player.position.y = eventInfo.position.y - player.height / 2 - context.headOffset
       }
     })
   }
