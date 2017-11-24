@@ -1,16 +1,19 @@
-import util from './util.js'
-import resource from './resource.js'
-import context from './context.js'
-import { Spoil, SpoilManager } from './lib/spoil.js'
+import util from './lib/common/util.js'
+import resource from './lib/common/resource.js'
+import context from './lib/common/context.js'
+
 import MyEvent from './lib/event.js'
 import EObject from './lib/EObject.js'
-import Modal from './lib/ui/Modal.js'
-
-import { shotTypes, ShotorFactory, Bullet, Shot } from './lib/shot.js'
-import { Bar,Button,TextBlock} from './lib/ui/UiControl.js'
+import { ShotTypes } from './lib/shotGame/shot/'
+import { Spoil, SpoilManager } from './lib/shotGame/spoil/'
+import { Bar,Button,Modal,TextBlock} from './lib/ui/'
 import { Stage, StageManager } from './lib/Stage.js'
 import { StateInfo, DebugSetting } from './lib/debug.js'
+console.log(Spoil)
 
+console.log(SpoilManager)
+
+console.log(ShotTypes)
 function Engine () {
   var option = {  }
 
@@ -32,7 +35,7 @@ function Engine () {
       option: option,
       myevent: new MyEvent(),
       stateInfo: new StateInfo(),
-      shotType: shotTypes,
+      shotType: ShotTypes,
       setting: new DebugSetting(),
       spoilManager: new SpoilManager()
     })

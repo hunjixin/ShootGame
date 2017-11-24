@@ -1,6 +1,5 @@
 
 var baseUrl =__dirname
-console.log(baseUrl)
 var plain = new Image()
 plain.src = baseUrl  + '/image/2332.png'
 

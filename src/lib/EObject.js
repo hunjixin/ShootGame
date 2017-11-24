@@ -1,6 +1,7 @@
-import util from '../util.js'
+import util from './common/util.js'
+import context from './common/context.js'
+
 import lodash from 'lodash'
-import context from '../context.js'
 /**
  * 基类
  */

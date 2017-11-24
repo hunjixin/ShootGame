@@ -1,6 +1,6 @@
-import util from '../util.js'
-import resource from '../resource.js'
-import context from '../context.js'
+import util from './common/util.js'
+import resource from './common/resource.js'
+import context from './common/context.js'
 
 function StateInfo () {
   this.enemies = {

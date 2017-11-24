@@ -1,8 +1,9 @@
 
 import EObject from '../EObject.js'
-import context from '../../context.js'
-import resource from '../../resource.js'
-import { Bar,Button,TextBlock} from './UiControl.js'
+import util from '../common/util.js'
+import resource from '../common/resource.js'
+import context from '../common/context.js'
+import { Bar,Button,TextBlock} from './'
 
 class Modal extends EObject
 {

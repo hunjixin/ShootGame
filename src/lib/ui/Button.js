@@ -1,8 +1,7 @@
 import EObject from '../EObject.js'
-import util from '../../util.js'
-import resource from '../../resource.js'
-import context from '../../context.js'
-
+import util from '../common/util.js'
+import resource from '../common/resource.js'
+import context from '../common/context.js'
 class Button extends EObject {
     constructor (option) {
       super(option)

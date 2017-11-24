@@ -1,5 +1,5 @@
-import util from '../util.js'
-import context from '../context.js'
+import util from './common/util.js'
+import context from './common/context.js'
 
 
   function MyEvent () {

@@ -1,12 +1,12 @@
 import EObject from './EObject.js'
-import util from '../util.js'
-import resource from '../resource.js'
-import { Boss, createEnemy } from './plain.js'
-import context from '../context.js'
-import { shotTypes, ShotorFactory, Bullet, Shot } from './shot.js'
-import TimeLine from './timeLine.js'
-import { Player } from './plain.js'
-import { Bar,Button,TextBlock} from './ui/UiControl.js'
+import util from './common/util.js'
+import context from './common/context.js'
+import resource from './common/resource.js'
+
+import TimeLine from './TimeLine.js'
+import { Boss,Player, createEnemy } from './shotGame/'
+import { ShotorFactory, Bullet, Shot } from './shotGame/shot/'
+import { Bar,Button,TextBlock} from './ui/'
 
 
 class Stage extends EObject {
