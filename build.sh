@@ -11,7 +11,7 @@ package="--package"
 init(){
      npm install
      cd publishHouse/electron
-     npm install
+     npm install 
      cd ../ionic
      npm install 
      cd ../..
@@ -21,7 +21,7 @@ losBuild(){
 
     androidPath="$basePath/build/android"
     electronImageDir="$basePath/publishHouse/electron/dist/image/"
-    testDir="$basePath/test/lib/engine.js"
+    testDir="$basePath/test"
     createDir $electronImageDir
     createDir $androidPath
     createDir $testDir
@@ -32,12 +32,12 @@ losBuild(){
 
     cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/electron/src/engine.js"  
     cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/ionic/www/js/engine.js" 
-    cp -f  "$basePath/lib/engine.js"  $testDir
+    cp -f -R "$basePath/lib"  $testDir
    
     cp -f -R  "$basePath/image/."  "$basePath/publishHouse/ionic/www/image/"
     cp -f -R  "$basePath/image/."  "$basePath/publishHouse/electron/dist/image/"
 
-    python ./transformAmdToCmd.py
+   # python ./transformAmdToCmd.py
 
     echo "package electron"
     cd ./publishHouse/electron

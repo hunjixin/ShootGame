@@ -35,7 +35,7 @@ module.exports = [
       library: "Engine"
     },
     module: requireModule,
-    devServer: { contentBase: './js'},
+    devServer: { contentBase: './src'},
     node: {
       __dirname: false
     }

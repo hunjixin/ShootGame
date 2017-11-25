@@ -1,9 +1,9 @@
-import EObject from '../EObject.js'
+import Control from './Control.js'
 import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
 
-class Bar extends EObject {
+class Bar extends Control {
     constructor (option) {
       super(option)
       this.rightButton = option.rightButton
@@ -18,6 +18,7 @@ class Bar extends EObject {
         // rightbutton
         this.rightButton.render(drawContext)
       }
+      this.registerControl(this.rightButton)
     }
   
   }

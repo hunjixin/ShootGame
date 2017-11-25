@@ -13,7 +13,7 @@ class Stage extends EObject {
   constructor (stageConfig) {
     super(stageConfig)
 
-    this.isRunning = 2, // 三种状态 1 预备/2 进行 /3 结束
+    this.isRunning = 2 // 三种状态 1 预备/2 进行 /3 结束
     this.position.x = 0
     this.position.y = context.headOffset
     this.width = context.option.ctxWidth
@@ -233,7 +233,11 @@ class Stage extends EObject {
     }
     return canvas
   }
-  destroy () {}
+  destroy () {
+    this.player.off('mouseDown')
+    this.off('mouseUp')
+    this.off('mouseMove')
+  }
   reset () {
     this.timeLine.reset()
     this.shots.length = 0
@@ -425,28 +429,34 @@ function StageManager () {
     return -1 === isBossEsixt && this.stage.isStageTimeOut() && this.stage.hasCreateBoss == true
   }
   this.init = function () {
+    if(this.stage) this.stage.destroy()
+    util.removeArr(context.uiRoot,this.stage)
     var stage = new Stage(this.stagesConfig[0])
     stage.isRunning = 0
     this.stage = stage
+    context.uiRoot.push(stage)
   }
   this.next = function () {
     this.currentStageIndex++
     if (this.stagesConfig.length > this.currentStageIndex) {
       this.stage.destroy()
+      if(this.stage) this.stage.destroy()
+      util.removeArr(context.uiRoot,this.stage)
       var stage = new Stage(this.stagesConfig[this.currentStageIndex])
       this.stage = stage
+      context.uiRoot.push(stage)
     }
   }
   this.reset = function () {
     this.currentStageIndex = 0
+    if(this.stage) this.stage.destroy()
+    util.removeArr(context.uiRoot,this.stage)
     var stage = new Stage(this.stagesConfig[this.currentStageIndex])
     this.stage = stage
+    context.uiRoot.push(stage)
   }
 }
 module.exports = {
   Stage: Stage,
-  Button: Button,
-  Bar: Bar,
-  TextBlock: TextBlock,
   StageManager: StageManager
 }

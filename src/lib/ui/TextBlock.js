@@ -1,9 +1,9 @@
-import EObject from '../EObject.js'
+import Control from './Control.js'
 import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
 
-class TextBlock extends EObject {
+class TextBlock extends Control {
     constructor (option) {
       super(option)
       this.textArray = []

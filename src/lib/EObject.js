@@ -109,10 +109,28 @@ class EObject {
       }
     }
   }
-  on (evnetName, callback) {
-    context.myevent.eventRelative.attachEvent(this, evnetName, (obj, eventInfo)=>  {
+  on (eventName, callback) {
+    var func=(obj,eventInfo)=>  {
       if (callback)  callback.call(this, eventInfo)
-    })
+    }
+    if(!this[eventName])
+    {
+      this[eventName]=[]
+      context.losEvent.attachEvent(this, eventName,this[eventName])
+    }
+    this[eventName].push(func)
+  }
+  off(eventName,callack){
+    context.losEvent.detachEvent(this, eventName,callack)
+  }
+  getEvent(eventName){
+    return  context.losEvent[eventName]
+  }
+  registerControl(childControl){
+    this.children.push(childControl)
+  }
+  cancelControl(childControl){
+    util.removeArr(this.children,childControl)
   }
 }
 

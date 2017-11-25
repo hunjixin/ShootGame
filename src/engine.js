@@ -2,18 +2,14 @@ import util from './lib/common/util.js'
 import resource from './lib/common/resource.js'
 import context from './lib/common/context.js'
 
-import MyEvent from './lib/event.js'
+import LosEvent from './lib/LosEvent.js'
 import EObject from './lib/EObject.js'
 import { ShotTypes } from './lib/shotGame/shot/'
 import { Spoil, SpoilManager } from './lib/shotGame/spoil/'
 import { Bar,Button,Modal,TextBlock} from './lib/ui/'
 import { Stage, StageManager } from './lib/Stage.js'
-import { StateInfo, DebugSetting } from './lib/debug.js'
-console.log(Spoil)
+import { StateInfo, DebugSetting } from './lib/Debug.js'
 
-console.log(SpoilManager)
-
-console.log(ShotTypes)
 function Engine () {
   var option = {  }
 
@@ -21,7 +17,6 @@ function Engine () {
   var textBlock
   var drawContext
   var bar
-  var viewRoot = []
   this.Create = function (_option) {
     // canvas context
     var canvas = document.getElementById(_option.id)
@@ -33,15 +28,12 @@ function Engine () {
       headOffset: 20,
       currentOid: 0,
       option: option,
-      myevent: new MyEvent(),
+      losEvent: new LosEvent(_option),
       stateInfo: new StateInfo(),
       shotType: ShotTypes,
       setting: new DebugSetting(),
       spoilManager: new SpoilManager()
     })
-
-    // events
-    context.myevent.init(_option)
     // stage
     stageManager = new StageManager()
     stageManager.init()
@@ -74,10 +66,10 @@ function Engine () {
         },
         cancel: function () {
           stageManager.stage.restart()
-          util.removeArr(viewRoot, modal)
+          util.removeArr(context.uiRoot, modal)
         }
       })
-      viewRoot.push(modal)
+      context.uiRoot.push(modal)
     })
     // bar
     bar = new Bar({
@@ -93,6 +85,8 @@ function Engine () {
         y: context.headOffset
       }
     })
+    context.uiRoot.push(bar)
+    context.uiRoot.push(textBlock)
   }
   
   /**
@@ -126,18 +120,15 @@ function Engine () {
  }
  // 绘制
  var draw = function () {
-   // stage
-   stageManager.stage.render(drawContext)
-   // head
-   bar.render(drawContext)
    // 绘制文本
-   if (context.setting.isDebug.value) {
+   /*if (context.setting.isDebug.value) {
      textBlock.setText(context.stateInfo.getDebugArray())
      textBlock.render(drawContext)
-   }
-   for(var i=0;i<viewRoot.length;i++){
-     viewRoot[i].render(drawContext)
-   }
+   }*/
+   
+   context.uiRoot.forEach((item)=>{
+     item.render(drawContext)
+   });
  }
  /**
   * 清理函数
