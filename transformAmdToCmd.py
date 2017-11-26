@@ -20,3 +20,7 @@ fsock.close()
 fsock = open("./test/lib/engine.js", "w")
 fsock.writelines(allLines)
 fsock.close()
+
+fsock = open("./publishHouse/web/engine.js", "w")
+fsock.writelines(allLines)
+fsock.close()

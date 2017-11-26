@@ -2,11 +2,23 @@ echo "$1"
 echo "command args [ $1 ]"
 
 basePath=$(cd "$(dirname "$0")"; pwd)
+buildDir="$basePath/build"
 help="--help"
 build="--build"
 init="--init"
 clean="--clean"
 package="--package"
+
+electronRootDir="$basePath/publishHouse/electron"
+electronImageDir="$electronRootDir/dist/image"
+
+ionicRootDir="$basePath/publishHouse/ionic/www" 
+ionicImageDir="$ionicRootDir/image" 
+
+webRootDir="$basePath/publishHouse/web"
+webImageDir="$basePath/publishHouse/web/image"
+
+testDir="$basePath/test"
 
 init(){
      npm install
@@ -18,51 +30,65 @@ init(){
 }
 
 losBuild(){
-
-    androidPath="$basePath/build/android"
-    electronImageDir="$basePath/publishHouse/electron/dist/image/"
-    testDir="$basePath/test"
     createDir $electronImageDir
-    createDir $androidPath
+    createDir $ionicImageDir
     createDir $testDir
 
     echo "build core and copy file"
     node node_modules/webpack/bin/webpack.js
 
+    #electron
+    echo "copy electron file"
+    cp -f  "$basePath/lib/engine.js"  "$electronRootDir/src/engine.js"  
+    cp -f -R  "$basePath/image/."  "$electronRootDir/dist/image/"
 
-    cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/electron/src/engine.js"  
-    cp -f  "$basePath/lib/engine.js"  "$basePath/publishHouse/ionic/www/js/engine.js" 
+    #ionic
+    echo "copy ionic file" 
+    cp -f  "$basePath/lib/engine.js"  "$ionicRootDir/js/engine.js" 
+    cp -f -R  "$basePath/image/."  $ionicImageDir
+    
+    #web
+    echo "copy web file"
+    cp -f  "$basePath/lib/engine.js"  "$webRootDir/engine.js"  
+    cp -f -R  "$basePath/image/."  $webImageDir
+
+    # test
     cp -f -R "$basePath/lib"  $testDir
    
-    cp -f -R  "$basePath/image/."  "$basePath/publishHouse/ionic/www/image/"
-    cp -f -R  "$basePath/image/."  "$basePath/publishHouse/electron/dist/image/"
+    echo "transform lib for browser environment"
+    python ./transformAmdToCmd.py
 
-   # python ./transformAmdToCmd.py
-
-    echo "package electron"
+    echo "build electron"
     cd ./publishHouse/electron
     node node_modules/webpack/bin/webpack.js
     cd ../..
 }
 clean(){
-    rm -rf ./lib
-    rm -rf ./build
-    rm -f ./publishHouse/electron/src/engine.js
-    rm -rf ./publishHouse/electron/image
+    rm -rf "$basePath/lib"
+    rm -rf "$basePath/build"
 
-    rm -f ./publishHouse/ionic/www/js/engine.js
-    rm -rf ./publishHouse/ionic/www/image
-    rm -rf ./publishHouse/electron/dist
-    rm -rf ./test/lib
+    rm -f  "$electronRootDir/src/engine.js"  
+    rm -rf "$electronRootDir/dist"
+
+    rm -f  "$ionicRootDir/js/engine.js" 
+    rm -rf  $ionicImageDir
+
+    rm -rf "$basePath/test/lib"
+
+    rm -r  "$webRootDir/engine.js"  
+    rm -rf  $webImageDir
 }
 
 package(){
+    androidPath="$buildDir/android"
+    webPublist="$buildDir/web"
+    createDir $androidPath
 
     cd ./publishHouse/ionic
-    echo "ionic cordova build android"
+    echo "ionic cordova build android" 
+
     ionic cordova build android
     cd ../..
-
     cp -f -R  "$basePath/publishHouse/ionic/platforms/android/build/outputs/apk"  $androidPath
 
 
@@ -71,6 +97,10 @@ package(){
     echo "electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out=$basePath/build"
     electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out="$basePath/build"
     cd ../..
+
+    cd ./publishHouse/web
+
+    cp -f -R $webRootDir $webPublist
 }
 losHelp(){
     echo "--init   install all pacakge"

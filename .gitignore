@@ -1,6 +1,7 @@
 .vscode
 node_modules
+package-lock.json
 ./lib
 ./build
 ./shotdown-win32-x64
-./publishHouse/ionic/platforms
+./publish/ionic/platforms

@@ -1,3 +1,6 @@
+var module={}
+var exports={}
+var __dirname=''
 module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -64,23 +67,11 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = { root: [] };
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -237,6 +228,62 @@ var util = {
 };exports.default = util;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ShapeElementManager = function () {
+    function ShapeElementManager() {
+        _classCallCheck(this, ShapeElementManager);
+
+        this.uiRoot = [];
+    }
+
+    _createClass(ShapeElementManager, [{
+        key: 'addElement',
+        value: function addElement(element) {
+            this.uiRoot.push(element);
+        }
+    }, {
+        key: 'removeElement',
+        value: function removeElement(element) {
+            if (!element) return;
+            element.destroy();
+            _util2.default.removeArr(this.uiRoot, element);
+        }
+    }, {
+        key: 'forEach',
+        value: function forEach(func) {
+            for (var index = 0; index < this.uiRoot.length; index++) {
+                func(this.uiRoot[index]);
+            }
+        }
+    }]);
+
+    return ShapeElementManager;
+}();
+
+exports.default = {
+    objectManager: new ShapeElementManager()
+};
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -248,7 +295,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var baseUrl = __dirname;
-console.log(baseUrl);
 var plain = new Image();
 plain.src = baseUrl + '/image/2332.png';
 
@@ -330,17 +376,17 @@ exports.default = resource;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _lodash = __webpack_require__(13);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
+
+var _lodash = __webpack_require__(11);
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -349,31 +395,45 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * 基类
  */
-var eShape = function () {
-  function eShape(option) {
-    _classCallCheck(this, eShape);
+var EObject = function () {
+  function EObject(option) {
+    var _this = this;
 
-    this.isDisplay = true;
+    _classCallCheck(this, EObject);
+
+    this.isDisplay = true; //is show
     this.Oid = ++_context2.default.currentOid; // id
-    this.backgroundColor;
-    this.icon; // 图片
-    this.name = '';
-    this.width = 0; // 宽度
-    this.height = 0; // 高度
-    this.speedY = 5; // Y速度
-    this.speedX = 0; // X速度
-    this.fixed = { x: false, y: false };
-    this.position = { x: 0, y: 0 // 位置
-    };this.collisionArea = [];
-    this.children = [];
-    this.zIndex = 0;
+    this.backgroundColor; //background color
+    this.icon; //background image
+    this.name = ''; //name
+    this.width = 0; // width
+    this.height = 0; // height
+    this.speedY = 5; // Y speed
+    this.speedX = 0; // X speed
+    this.fixed = { x: false, y: false //x,y position constraint
+    };this.position = { x: 0, y: 0 //position
+    };this.collisionArea = []; //collision area
+    this.children = []; //child element
+    this.zIndex = 0; //layer index
+    this.borderColor = "black"; //border color
+    this.borderSize = 1; //border size
+    //property above can be override
     _lodash2.default.merge(this, option);
-    this._xpath;
-    this._ypath;
-    this.moveTick = 0;
+    //property below can't be override
+    this._xpath; //x position function
+    this._ypath; //x position function 
+    this._moveTick = 0; //tick
+
+    if (option && option.event) {
+      Object.keys(option.event).forEach(function (actionName) {
+        if (option.event[actionName] instanceof Function) {
+          _this.on(actionName, option.event[actionName]);
+        }
+      });
+    }
   }
 
-  _createClass(eShape, [{
+  _createClass(EObject, [{
     key: 'move',
     value: function move() {
       this.moveY();
@@ -402,12 +462,12 @@ var eShape = function () {
   }, {
     key: 'getAbsoluteCollisionArea',
     value: function getAbsoluteCollisionArea() {
-      var _this = this;
+      var _this2 = this;
 
       return _lodash2.default.map(this.collisionArea, function (area) {
         return {
-          x: _this.position.x + area.x,
-          y: _this.position.y + area.y,
+          x: _this2.position.x + area.x,
+          y: _this2.position.y + area.y,
           width: area.width,
           height: area.height
         };
@@ -427,7 +487,7 @@ var eShape = function () {
     key: 'update',
     value: function update() {
       this.move();
-      this.moveTick++;
+      this._moveTick++;
     }
   }, {
     key: 'show',
@@ -442,16 +502,21 @@ var eShape = function () {
   }, {
     key: 'render',
     value: function render(drawContext) {
+      if (!this.isDisplay) return;
       if (this.backgroundColor) {
         drawContext.save();
+
+        var radis = Math.floor(Math.min(this.width, this.height) * 0.08);
+        this.polygon(drawContext, this.position.x, this.position.y, this.width + 1, this.height + 1, radis);
+
         drawContext.fillStyle = this.backgroundColor;
-        drawContext.fillRect(this.position.x, this.position.y, this.width, this.height);
+        drawContext.fill();
         drawContext.restore();
       }
 
-      if (!this.isDisplay) return;
+      this.drawBordor(drawContext);
       if (this.icon) {
-        drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
+        this.drawBakcgroundImage(drawContext);
       }
 
       if (_context2.default.setting.isDebug.value) {
@@ -473,22 +538,112 @@ var eShape = function () {
           drawContext.stroke();
         }
       }
+      this.drawText(drawContext);
+      if (this.children) {
+        this.children.forEach(function (control) {
+          control.render(drawContext);
+        });
+      }
+    }
+  }, {
+    key: 'drawBordor',
+    value: function drawBordor(drawContext) {
+      if (this.borderColor && this.borderSize > 0) {
+        drawContext.save();
+        var radis = Math.floor(Math.min(this.width, this.height) * 0.08);
+        this.polygon(drawContext, this.position.x - 1, this.position.y - 1, this.width + 1, this.height + 1, radis);
+        drawContext.strokeStyle = this.borderColor;
+        drawContext.stroke();
+        drawContext.restore();
+      }
+    }
+  }, {
+    key: 'drawBakcgroundImage',
+    value: function drawBakcgroundImage(drawContext) {
+      if (this.icon) {
+        drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height), 0, 0, this.icon.width, this.icon.height;
+      }
+    }
+  }, {
+    key: 'polygon',
+    value: function polygon(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x, y + radius);
+      ctx.lineTo(x, y + height - radius);
+      ctx.quadraticCurveTo(x, y + height, x + radius, y + height);
+      ctx.lineTo(x + width - radius, y + height);
+      ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+      ctx.lineTo(x + width, y + radius);
+      ctx.quadraticCurveTo(x + width, y, x + width - radius, y);
+      ctx.lineTo(x + radius, y);
+      ctx.quadraticCurveTo(x, y, x, y + radius);
+      ctx.closePath();
+    }
+  }, {
+    key: 'drawText',
+    value: function drawText(drawContext) {
+      if (!this.text) return;
+      drawContext.save();
+
+      drawContext.font = this.height * 0.6 + "px Arial";
+      var offsetToButton = this.height * 0.2;
+      var requireWidth = drawContext.measureText(this.text);
+      var leftOffset = (this.width - requireWidth.width) / 2;
+      drawContext.fillText(this.text, this.position.x + (leftOffset >= 0 ? leftOffset : 0), this.position.y + this.height - offsetToButton, this.width);
+      drawContext.restore();
     }
   }, {
     key: 'on',
-    value: function on(evnetName, callback) {
-      var _this2 = this;
+    value: function on(eventName, callback) {
+      var _this3 = this;
 
-      _context2.default.myevent.eventRelative.attachEvent(this, evnetName, function (obj, eventInfo) {
-        if (callback) callback.call(_this2, eventInfo);
-      });
+      if (!callback || !eventName) return;
+      var func = function func(obj, eventInfo) {
+        if (callback) callback.call(_this3, eventInfo);
+      };
+      if (!this[eventName]) {
+        this[eventName] = [];
+        _context2.default.losEvent.attachEvent(this, eventName, this[eventName]);
+      }
+      this[eventName].push(func);
+    }
+  }, {
+    key: 'off',
+    value: function off(eventName, callack) {
+      _context2.default.losEvent.deAttchEvent(this, eventName, callack);
+    }
+  }, {
+    key: 'getEvent',
+    value: function getEvent(eventName) {
+      return _context2.default.losEvent[eventName];
+    }
+  }, {
+    key: 'registerControl',
+    value: function registerControl(childControl) {
+      if (childControl.zIndex < this.zIndex) childControl.zIndex = this.zIndex + 1;
+      this.children.push(childControl);
+    }
+  }, {
+    key: 'cancelControl',
+    value: function cancelControl(childControl) {
+      _util2.default.removeArr(this.children, childControl);
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      _context2.default.losEvent.deAttchEvent(this);
+      if (this.children) {
+        this.children.forEach(function (element) {
+          element.destroy();
+        });
+      }
     }
   }]);
 
-  return eShape;
+  return EObject;
 }();
 
-module.exports = eShape;
+module.exports = EObject;
 
 /***/ }),
 /* 4 */
@@ -497,11 +652,19 @@ module.exports = eShape;
 "use strict";
 
 
-var _eShape3 = __webpack_require__(3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _eShape4 = _interopRequireDefault(_eShape3);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -509,9 +672,11 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
+
+var _shot = __webpack_require__(8);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -521,7 +686,238 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var shotTypes = ['umShot', 'gzShot', 'common'];
+var BasePlain = function (_EObject) {
+  _inherits(BasePlain, _EObject);
+
+  function BasePlain(enableShot) {
+    _classCallCheck(this, BasePlain);
+
+    var _this = _possibleConstructorReturn(this, (BasePlain.__proto__ || Object.getPrototypeOf(BasePlain)).call(this));
+
+    _this.borderColor = null;
+    _this.AllHp = 1; // 总HP
+    _this.Hp = 1; // 当前Hp
+    _this.isDie = false; // 是否死亡
+    _this.shotInterVal = 10; // 发射周期
+    _this.enableShot = enableShot; // 是否发射
+    _this.shotor = new _shot.ShotorFactory();
+    _this.shotSpeedFactor = 1;
+    _this.shots = [];
+    _this.shotEx = 1;
+    _this.shotTick = 0;
+    return _this;
+  }
+
+  _createClass(BasePlain, [{
+    key: 'setShotInterVal',
+    value: function setShotInterVal(val, minVal) {
+      if (minVal < 1) minVal = 1;
+      if (val < minVal) val = minVal;
+      this.shotInterVal = val;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      _get(BasePlain.prototype.__proto__ || Object.getPrototypeOf(BasePlain.prototype), 'update', this).call(this);
+      if (this.shotTick <= this.shotInterVal) {
+        this.shotTick++;
+      } else {
+        if (this.shots && this.shots.length > 0) return;
+        this.shots.push.apply(this.shots, this.shotFactory());
+        this.shotTick = 0;
+      }
+    }
+  }, {
+    key: 'getShot',
+    value: function getShot() {
+      if (this.shots && this.shots.length > 0) {
+        var shotes = this.shots.concat([]);
+        this.shots.length = 0;
+        return shotes;
+      } else {
+        return undefined;
+      }
+    }
+  }, {
+    key: 'getPositionAbsolute',
+    value: function getPositionAbsolute() {
+      return {
+        x: this.position.x,
+        y: this.position.y + _context2.default.headOffset
+      };
+    }
+  }]);
+
+  return BasePlain;
+}(_EObject3.default);
+
+exports.default = BasePlain;
+
+module.exports = BasePlain;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Spoil = function (_EObject) {
+  _inherits(Spoil, _EObject);
+
+  function Spoil(obj, type) {
+    _classCallCheck(this, Spoil);
+
+    var _this = _possibleConstructorReturn(this, (Spoil.__proto__ || Object.getPrototypeOf(Spoil)).call(this, {}));
+
+    _this.speedY = 3;
+    _this.isDie = false;
+    _this.spoiltype = type;
+    _this.width = 25;
+    _this.height = 25;
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    _this.position.x = obj.position.x;
+    _this.position.y = obj.position.y;
+    return _this;
+  }
+
+  _createClass(Spoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {}
+  }, {
+    key: 'update',
+    value: function update() {
+      _get(Spoil.prototype.__proto__ || Object.getPrototypeOf(Spoil.prototype), 'update', this).call(this);
+    }
+  }]);
+
+  return Spoil;
+}(_EObject3.default);
+
+exports.default = Spoil;
+
+module.exports = Spoil;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+    umShot: 'umShot',
+    gzShot: 'gzShot',
+    addHp: 'addHp'
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Control = function (_EObject) {
+    _inherits(Control, _EObject);
+
+    function Control(option) {
+        _classCallCheck(this, Control);
+
+        var _this = _possibleConstructorReturn(this, (Control.__proto__ || Object.getPrototypeOf(Control)).call(this, option));
+
+        _this.on('click', function (params) {
+            // option.cancel()
+        });
+        return _this;
+    }
+
+    return Control;
+}(_EObject3.default);
+
+module.exports = Control;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _EObject = __webpack_require__(3);
+
+var _EObject2 = _interopRequireDefault(_EObject);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Bullet = __webpack_require__(21);
+
+var _Bullet2 = _interopRequireDefault(_Bullet);
+
+var _Shot = __webpack_require__(22);
+
+var _Shot2 = _interopRequireDefault(_Shot);
+
+var _ShotTypes = __webpack_require__(23);
+
+var _ShotTypes2 = _interopRequireDefault(_ShotTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function ShotorFactory() {
   this.CreateShot = function (ePlayer) {
     // ePlayer.shots.
@@ -535,7 +931,7 @@ function ShotorFactory() {
     var rotate = Math.PI / (split + 1);
     var shots = [];
     for (var i = 1; i <= split; i++) {
-      var shot = new Shot();
+      var shot = new _Shot2.default();
       shot.belong = ePlayer.Oid;
       shot.Hp = 1;
       shot.width = 5;
@@ -553,7 +949,7 @@ function ShotorFactory() {
   var gzShot = function gzShot(ePlayer) {
     var spy = ePlayer.speedY === 0 ? 1 : ePlayer.speedY;
     var sp = 10 * ePlayer.shotSpeedFactor * Math.sign(spy) * Math.abs(spy) * Math.sign(spy);
-    var shot = new Shot();
+    var shot = new _Shot2.default();
     shot.belong = ePlayer.Oid;
     shot.Hp = 100000000;
     shot.width = 100;
@@ -587,7 +983,7 @@ function ShotorFactory() {
   var commonShot = function commonShot(ePlayer) {
     var spy = ePlayer.speedY === 0 ? 1 : ePlayer.speedY;
     var sp = 10 * ePlayer.shotSpeedFactor * Math.sign(spy) * Math.abs(spy);
-    var shot = new Shot();
+    var shot = new _Shot2.default();
     shot.belong = ePlayer.Oid;
     shot.Hp = 1;
     shot.width = 8;
@@ -600,7 +996,7 @@ function ShotorFactory() {
     return [shot];
   };
   var enemyShot = function enemyShot(enemy) {
-    var shot = new Shot();
+    var shot = new _Shot2.default();
     shot.belong = enemy.Oid;
     shot.Hp = 1;
     shot.width = 5;
@@ -613,70 +1009,26 @@ function ShotorFactory() {
     return [shot];
   };
 }
-/**
-     * 爆炸
-     */
-
-var Bullet = function (_eShape) {
-  _inherits(Bullet, _eShape);
-
-  function Bullet(option) {
-    _classCallCheck(this, Bullet);
-
-    var _this = _possibleConstructorReturn(this, (Bullet.__proto__ || Object.getPrototypeOf(Bullet)).call(this, option));
-
-    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
-    return _this;
-  }
-
-  return Bullet;
-}(_eShape4.default);
-/**
- * 子弹
- */
-
-
-var Shot = function (_eShape2) {
-  _inherits(Shot, _eShape2);
-
-  function Shot() {
-    _classCallCheck(this, Shot);
-
-    var _this2 = _possibleConstructorReturn(this, (Shot.__proto__ || Object.getPrototypeOf(Shot)).call(this));
-
-    _this2.speedX = 0;
-    _this2.type = 'common';
-    _this2.attack = 1; // 攻击力
-    _this2.belong = 0;
-    return _this2;
-  }
-
-  return Shot;
-}(_eShape4.default);
 
 module.exports = {
-  shotTypes: shotTypes,
-  ShotorFactory: ShotorFactory,
-  Bullet: Bullet,
-  Shot: Shot
+  Bullet: _Bullet2.default,
+  Shot: _Shot2.default,
+  ShotTypes: _ShotTypes2.default,
+  ShotorFactory: ShotorFactory
 };
 
 /***/ }),
-/* 5 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _Control2 = __webpack_require__(7);
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+var _Control3 = _interopRequireDefault(_Control2);
 
-var _eShape2 = __webpack_require__(3);
-
-var _eShape3 = _interopRequireDefault(_eShape2);
-
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -684,11 +1036,9 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
-
-var _shot = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -698,269 +1048,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var createEnemy = function createEnemy(type) {
-  // 1 大飞机  2,3,4 小飞机
-  if (type == 1) {
-    var enemy = new Enemy(true);
-    enemy.setShotInterVal(_util2.default.randInt(5, 15));
-    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
-    enemy.position.y = 0 - enemy.width / 2;
-    enemy.speedY = _util2.default.randInt(3, 6);
-    enemy.icon = _resource2.default.enes[type - 1];
-    enemy.width = 40;
-    enemy.height = 60;
-    enemy.Hp = 20 + 10 * Math.random();
-    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
-    return enemy;
-  } else if (type == 2 || type == 3 || type == 4) {
-    var enemy = new Enemy(_context2.default, true);
-    enemy.setShotInterVal(_util2.default.randInt(5, 15));
-    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
-    enemy.position.y = 0 - enemy.width / 2;
-    enemy.speedY = _util2.default.randInt(3, 6);
-
-    enemy.icon = _resource2.default.enes[type - 1];
-    enemy.width = 20;
-    enemy.height = 30;
-    enemy.Hp = 2 + 5 * Math.random();
-    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
-    return enemy;
-  } else {
-    return new Boss();
-  }
-};
-
-var Plain = function (_eShape) {
-  _inherits(Plain, _eShape);
-
-  function Plain(enableShot) {
-    _classCallCheck(this, Plain);
-
-    var _this = _possibleConstructorReturn(this, (Plain.__proto__ || Object.getPrototypeOf(Plain)).call(this));
-
-    _this.AllHp = 1; // 总HP
-    _this.Hp = 1; // 当前Hp
-    _this.isDie = false; // 是否死亡
-    _this.shotInterVal = 10; // 发射周期
-    _this.enableShot = enableShot; // 是否发射
-    _this.shotor = new _shot.ShotorFactory();
-    _this.shotSpeedFactor = 1;
-    _this.shots = [];
-    _this.shotEx = 1;
-    _this.shotTick = 0;
-    return _this;
-  }
-
-  _createClass(Plain, [{
-    key: 'setShotInterVal',
-    value: function setShotInterVal(val, minVal) {
-      if (minVal < 1) minVal = 1;
-      if (val < minVal) val = minVal;
-      this.shotInterVal = val;
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      _get(Plain.prototype.__proto__ || Object.getPrototypeOf(Plain.prototype), 'update', this).call(this);
-      if (this.shotTick <= this.shotInterVal) {
-        this.shotTick++;
-      } else {
-        if (this.shots && this.shots.length > 0) return;
-        this.shots.push.apply(this.shots, this.shotFactory());
-        this.shotTick = 0;
-      }
-    }
-  }, {
-    key: 'getShot',
-    value: function getShot() {
-      if (this.shots && this.shots.length > 0) {
-        var shotes = this.shots.concat([]);
-        this.shots.length = 0;
-        return shotes;
-      } else {
-        return undefined;
-      }
-    }
-  }, {
-    key: 'getPositionAbsolute',
-    value: function getPositionAbsolute() {
-      return {
-        x: this.position.x,
-        y: this.position.y + _context2.default.headOffset
-      };
-    }
-  }]);
-
-  return Plain;
-}(_eShape3.default);
-/**
- * 敌军
- * @param {*是否发射} isShot 
- */
-
-
-var Enemy = function (_Plain) {
-  _inherits(Enemy, _Plain);
-
-  function Enemy(isShot) {
-    _classCallCheck(this, Enemy);
-
-    var _this2 = _possibleConstructorReturn(this, (Enemy.__proto__ || Object.getPrototypeOf(Enemy)).call(this));
-
-    _this2.type = 'common';
-    _this2.speedX = 0;
-    _this2.shotSpeedFactor = 0.6;
-    _this2.shotType = {
-      type: 'enemyShot',
-      num: 1
-    };
-    _this2.shotFactory = function () {
-      return this.shotor.CreateShot(this);
-    };
-    return _this2;
-  }
-
-  return Enemy;
-}(Plain);
-
-var Boss = function (_Plain2) {
-  _inherits(Boss, _Plain2);
-
-  function Boss() {
-    _classCallCheck(this, Boss);
-
-    var _this3 = _possibleConstructorReturn(this, (Boss.__proto__ || Object.getPrototypeOf(Boss)).call(this, true));
-
-    _this3.type = 'boss';
-    _this3.fixed.y = true;
-    _this3.setShotInterVal(_util2.default.randInt(10, 20));
-    _this3.width = _context2.default.option.ctxWidth * 0.6;
-    _this3.height = _this3.width * 0.6;
-    _this3.position.x = _context2.default.option.ctxWidth * 0.5;
-    _this3.position.y = 0;
-    _this3.collisionArea = [{ x: 0, y: 0, width: _this3.width, height: _this3.height }];
-    _this3.speedY = 0;
-    _this3.icon = _resource2.default.enes[1];
-    _this3.Hp = 200 + 200 * Math.random();
-    _this3.shotSpeedFactor = 0.1;
-    var factor = 5 * Math.random();
-    _this3.setXPath(function (x) {
-      return factor * Math.cos(this.moveTick / 15);
-    });
-
-    _this3.shotType = {
-      type: 'umShot',
-      num: 4
-    };
-    _this3.shotFactory = function () {
-      return this.shotor.CreateShot(this);
-    };
-    return _this3;
-  }
-
-  return Boss;
-}(Plain);
-
-/**
- * @param {*玩家} isShot 
- */
-
-
-var Player = function (_Plain3) {
-  _inherits(Player, _Plain3);
-
-  function Player() {
-    _classCallCheck(this, Player);
-
-    var _this4 = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, true));
-
-    _this4.fixed.y = true;
-    _this4.icon = _resource2.default.plainImg;
-    _this4.width = 30;
-    _this4.height = 24;
-    _this4.AllHp = 12;
-    _this4.Hp = _this4.AllHp;
-    _this4.position.x = (_context2.default.stageManager.stage.width - _this4.width) / 2;
-    _this4.position.y = _context2.default.stageManager.stage.height - _this4.height;
-    _this4.collisionArea = [{ x: 0, y: 0, width: _this4.width, height: _this4.height }];
-    _this4.enableShot = true;
-    _this4.speedY = -1;
-    _this4.shotType = {
-      type: 'umShot',
-      num: 5
-    };
-    _this4.shotFactory = function () {
-      return this.shotor.CreateShot(this);
-    };
-    _this4.reset = function () {
-      this.Hp = 3;
-      this.position.x = (_context2.default.stageManager.stage.width - this.width) / 2;
-      this.position.y = _context2.default.stageManager.stage.height - this.height;
-      this.shotType = {
-        type: 'umShot',
-        num: 5
-      };
-      this.setShotInterVal(5);
-    };
-    return _this4;
-  }
-
-  return Player;
-}(Plain);
-
-module.exports = {
-  createEnemy: createEnemy,
-  Plain: Plain,
-  Enemy: Enemy,
-  Player: Player,
-  Boss: Boss
-};
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _eShape5 = __webpack_require__(3);
-
-var _eShape6 = _interopRequireDefault(_eShape5);
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _plain = __webpack_require__(5);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-var _shot = __webpack_require__(4);
-
-var _timeLine = __webpack_require__(12);
-
-var _timeLine2 = _interopRequireDefault(_timeLine);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Button = function (_eShape) {
-  _inherits(Button, _eShape);
+var Button = function (_Control) {
+  _inherits(Button, _Control);
 
   function Button(option) {
     _classCallCheck(this, Button);
@@ -971,1008 +1060,10 @@ var Button = function (_eShape) {
     return _this;
   }
 
-  _createClass(Button, [{
-    key: 'render',
-    value: function render(drawContext) {
-      _get(Button.prototype.__proto__ || Object.getPrototypeOf(Button.prototype), 'render', this).call(this, drawContext);
-      if (!this.text) return;
-      drawContext.save();
-      drawContext.font = this.height + "px Arial";
-      drawContext.fillText(this.text, this.position.x, this.position.y);
-      drawContext.restore();
-    }
-  }]);
-
   return Button;
-}(_eShape6.default);
+}(_Control3.default);
 
-var Bar = function (_eShape2) {
-  _inherits(Bar, _eShape2);
-
-  function Bar(option) {
-    _classCallCheck(this, Bar);
-
-    var _this2 = _possibleConstructorReturn(this, (Bar.__proto__ || Object.getPrototypeOf(Bar)).call(this, option));
-
-    _this2.rightButton = option.rightButton;
-    _this2.render = function (drawContext) {
-      if (!this.isDisplay) return;
-      drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
-      // hp
-      for (var index = 0; index < _context2.default.player.Hp; index++) {
-        var width = (_resource2.default.hp.width - 15) * index;
-        drawContext.drawImage(_resource2.default.hp, width, 0, 20, _context2.default.headOffset);
-      }
-      // rightbutton
-      this.rightButton.render(drawContext);
-    };
-    return _this2;
-  }
-
-  return Bar;
-}(_eShape6.default);
-
-var TextBlock = function (_eShape3) {
-  _inherits(TextBlock, _eShape3);
-
-  function TextBlock(option) {
-    _classCallCheck(this, TextBlock);
-
-    var _this3 = _possibleConstructorReturn(this, (TextBlock.__proto__ || Object.getPrototypeOf(TextBlock)).call(this, option));
-
-    _this3.textArray = [];
-    _this3.setText = function (texts) {
-      if (!texts) return;
-      this.clear();
-      this.append(texts);
-    };
-    _this3.clear = function (texts) {
-      this.textArray.length = 0;
-    };
-    _this3.append = function (texts) {
-      if (!texts) return;
-      if (texts instanceof Array) {
-        [].push.apply(this.textArray, texts);
-      } else {
-        this.textArray.push(texts.toString());
-      }
-    };
-    _this3.render = function (drawContext) {
-      for (var index = 0; index < this.textArray.length; index++) {
-        drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y);
-      }
-    };
-    return _this3;
-  }
-
-  return TextBlock;
-}(_eShape6.default);
-
-var Stage = function (_eShape4) {
-  _inherits(Stage, _eShape4);
-
-  function Stage(stageConfig) {
-    _classCallCheck(this, Stage);
-
-    var _this4 = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this, stageConfig));
-
-    _this4.isRunning = 2, // 三种状态 1 预备/2 进行 /3 结束
-    _this4.position.x = 0;
-    _this4.position.y = _context2.default.headOffset;
-    _this4.width = _context2.default.option.ctxWidth;
-    _this4.height = _context2.default.option.ctxHeight - _context2.default.headOffset;
-    // 背景图片
-    // 敌军种类  自动配置敌军
-    // boss
-    // 关卡时长
-    // 组件
-
-    _this4.resetButton = new Button({
-      name: 'reset',
-      position: {
-        x: _this4.width / 4,
-        y: _this4.height / 2 + _this4.position.y
-      },
-      width: _this4.width / 2,
-      height: 40,
-      icon: _resource2.default.button
-    });
-
-    _this4.resetButton.on('click', function (eventInfo) {
-      _this4.resetButton.hide();
-      _this4.start();
-    });
-
-    _this4.icon = stageConfig.icon;
-    _this4.boss;
-    _this4.time = 10;
-
-    _this4.timeLine = new _timeLine2.default();
-
-    _this4.shots = [];
-    _this4.enemies = [];
-    _this4.bullets = [];
-    _this4.spoils = [];
-
-    _this4.hasCreateBoss = false;
-    var checkTm = setInterval(function () {
-      if (_this4.isStageTimeOut()) {
-        clearInterval(checkTm);
-        _this4.createBoss();
-        _this4.hasCreateBoss = true;
-      }
-    }, 100);
-    return _this4;
-  }
-
-  _createClass(Stage, [{
-    key: 'enemyDie',
-    value: function enemyDie(enemy) {
-      var self = this;
-      enemy.isDie = true;
-      var bullet = new _shot.Bullet({
-        isDie: false,
-        icon: _resource2.default.bullet,
-        width: 8,
-        height: 8,
-        position: {
-          x: (enemy.position.x + enemy.width) / 2,
-          y: (enemy.position.y + enemy.height) / 2
-        }
-      });
-      self.bullets.push(bullet);
-      setTimeout(function (enemy, bullet) {
-        return function () {
-          _util2.default.removeArr(self.enemies, enemy);
-          _util2.default.removeArr(self.bullets, bullet);
-        };
-      }(enemy, bullet), 500);
-      // 判断是否产生战利品
-      var spoil = _context2.default.spoilManager.createSpoil(enemy);
-      if (spoil) {
-        if (_context2.default.stateInfo.spoils.all[spoil.type]) _context2.default.stateInfo.spoils.all[spoil.type]++;else _context2.default.stateInfo.spoils.all[spoil.type] = 0;
-        self.spoils.push(spoil);
-      }
-
-      if (_context2.default.stateInfo.enemies.resolve[enemy.type]) _context2.default.stateInfo.enemies.resolve[enemy.type]++;else _context2.default.stateInfo.enemies.resolve[enemy.type] = 1;
-    }
-    /**
-       * 对象移动
-       */
-
-  }, {
-    key: 'objectMove',
-    value: function objectMove() {
-      var player = _context2.default.player;
-      var enemies = this.enemies;
-      var shots = this.shots;
-      var bullets = this.bullets;
-      var spoils = this.spoils;
-      if (_context2.default.stageManager.canGoNextStage()) {
-        _context2.default.stageManager.next();
-      }
-      // 生成新的个体
-      var pShots = player.getShot();
-      if (pShots) {
-        shots.push.apply(shots, pShots);
-        for (var i = 0; i < pShots.length; i++) {
-          if (_context2.default.stateInfo.emitShot.all[pShots[i].type]) _context2.default.stateInfo.emitShot.all[pShots[i].type]++;else _context2.default.stateInfo.emitShot.all[pShots[i].type] = 1;
-        }
-      }
-      this.update();
-
-      player.update();
-      // 报告
-      _context2.default.stateInfo.currentShotNum = this.shots.length;
-      _context2.default.stateInfo.currentEnemyNum = this.enemies.length;
-    }
-    // 对象清理
-
-  }, {
-    key: 'clearObject',
-    value: function clearObject() {
-      var enemies = this.enemies;
-      var shots = this.shots;
-      var bullets = this.bullets;
-      var spoils = this.spoils;
-      // 删除越界的对象  
-      for (var i = shots.length - 1; i > -1; i--) {
-        var oneShot = shots[i];
-        if (oneShot.isDie || !_util2.default.inArea(oneShot.position, { x: -10, y: -10, width: this.width + 10, height: this.height + 10 })) {
-          _util2.default.removeArr(shots, oneShot);
-        }
-      }
-
-      for (var i = enemies.length - 1; i > -1; i--) {
-        var enemy = enemies[i];
-        if (enemy.isDie) {
-          _util2.default.removeArr(enemies, enemy);
-          continue;
-        }
-        if (!_util2.default.inArea(enemy.position, { x: -100, y: -100, width: this.width + 100, height: this.height + 100 })) {
-          _util2.default.removeArr(enemies, enemy);
-        }
-      }
-
-      for (var i = spoils.length - 1; i > -1; i--) {
-        var spoil = spoils[i];
-        if (spoil.isDie) {
-          _util2.default.removeArr(spoils, spoil);
-          continue;
-        }
-        // if (!util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
-        //   util.removeArr(spoils, spoil)
-        // }
-      }
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      this.timeLine.stop();
-      this.isRunning = 2;
-    }
-  }, {
-    key: 'restart',
-    value: function restart() {
-      this.timeLine.start();
-      this.isRunning = 1;
-    }
-  }, {
-    key: 'start',
-    value: function start() {
-      this.timeLine.start();
-      this.isRunning = 1;
-    }
-  }, {
-    key: 'drawScene',
-    value: function drawScene() {
-      var enemies = this.enemies;
-      var shots = this.shots;
-      var bullets = this.bullets;
-      var spoils = this.spoils;
-
-      var canvas = document.createElement('canvas');
-      var drawContext = canvas.getContext('2d');
-      canvas.height = this.height;
-      canvas.width = this.width;
-      // 背景
-      drawContext.drawImage(this.icon, 0, 0, this.width, this.height);
-      // 子弹
-      for (var index in this.shots) {
-        var shot = shots[index];
-        shot.render(drawContext);
-      }
-      // 飞机
-      _context2.default.player.render(drawContext);
-      // 敌军
-      for (var index in this.enemies) {
-        var enemy = enemies[index];
-        enemy.render(drawContext);
-      }
-      // 战利品
-      for (var index in this.spoils) {
-        var spoil = spoils[index];
-        spoil.render(drawContext);
-      }
-      // 死亡
-      for (var index in this.bullets) {
-        var bullet = bullets[index];
-        bullet.render(drawContext);
-      }
-      return canvas;
-    }
-  }, {
-    key: 'destroy',
-    value: function destroy() {}
-  }, {
-    key: 'reset',
-    value: function reset() {
-      this.timeLine.reset();
-      this.shots.length = 0;
-      this.enemies.length = 0;
-      this.bullets.length = 0;
-      this.spoils.length = 0;
-      this.isRunning = 0;
-    }
-  }, {
-    key: 'createBoss',
-    value: function createBoss() {
-      var boss = new _plain.Boss();
-      this.boss = boss;
-      this.enemies.push(boss);
-    }
-  }, {
-    key: 'isStageTimeOut',
-    value: function isStageTimeOut() {
-      return this.timeLine.getRunningTime() / 1000 > this.time;
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      var enemies = this.enemies;
-      var shots = this.shots;
-      var bullets = this.bullets;
-      var spoils = this.spoils;
-
-      if (Math.random() < 0.07) // 百分之七生成敌军
-        {
-          var rad = Math.random() * 3 + '';
-          var newEmeny = (0, _plain.createEnemy)(parseInt(rad.charAt(0)) + 2);
-          if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
-          enemies.push(newEmeny);
-        }
-
-      if (Math.random() < 0.01) // 百分之一生成强力敌军
-        {
-          var newEmeny = (0, _plain.createEnemy)(1);
-          if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
-          enemies.push(newEmeny);
-        }
-
-      for (var index in shots) {
-        if (shots[index].isDie) continue;
-        var shot = shots[index];
-        shot.update();
-      }
-
-      for (var index in spoils) {
-        if (spoils[index].isDie) continue;
-        var spoil = spoils[index];
-        spoil.update();
-      }
-
-      for (var index in enemies) {
-        if (enemies[index].isDie) continue;
-        var enemy = enemies[index];
-
-        var eShots = enemy.getShot();
-        if (eShots) {
-          shots.push.apply(shots, eShots);
-        }
-        enemy.update();
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(drawContext) {
-      var canvas = this.drawScene();
-      drawContext.drawImage(canvas, // 绘制
-      0, 0, canvas.width, canvas.height, this.position.x, this.position.y, this.width, this.height);
-      this.resetButton.render(drawContext);
-    }
-    /**
-     * 根据id查找敌人
-     * @param {*敌人id} oid 
-     */
-
-  }, {
-    key: 'findEnemyByOid',
-    value: function findEnemyByOid(oid) {
-      var enemies = this.enemies;
-      if (enemies) {
-        for (var i = 0; i < enemies.length; i++) {
-          if (enemies[i].Oid == oid) {
-            return enemies[i];
-          }
-        }
-      }
-    }
-    // 检测碰撞
-
-  }, {
-    key: 'checkCollection',
-    value: function checkCollection() {
-      var player = _context2.default.player;
-      var plainRect = player.getAbsoluteCollisionArea()[0];
-      var enemies = this.enemies;
-      var shots = this.shots;
-      var bullets = this.bullets;
-      var spoils = this.spoils;
-
-      for (var i = enemies.length - 1; i > -1; i--) {
-        var enemy = enemies[i];
-        if (enemy.isDie) continue;
-        var enemyRect = enemy.getAbsoluteCollisionArea()[0];
-        // 检查子弹和飞机的碰撞
-        for (var j = shots.length - 1; j > -1; j--) {
-          var oneShot = shots[j];
-          if (oneShot.isDie) continue;
-          var shotRect = oneShot.getAbsoluteCollisionArea()[0];
-          if (player.Oid == oneShot.belong && _util2.default.isChonghe(shotRect, enemyRect)) {
-            enemy.Hp = enemy.Hp - oneShot.attack * player.shotEx;
-            oneShot.Hp--;
-            if (enemy.Hp <= 0) {
-              this.enemyDie(enemy);
-            }
-            // 子弹生命  穿甲弹
-            if (oneShot.Hp <= 0) {
-              oneShot.isDie = true;
-              if (_context2.default.stateInfo.emitShot.resolve[oneShot.type]) _context2.default.stateInfo.emitShot.resolve[oneShot.type]++;else _context2.default.stateInfo.emitShot.resolve[oneShot.type] = 1;
-              _util2.default.removeArr(shots, oneShot);
-            }
-          }
-        }
-        // 检查玩家和飞机的碰撞
-        if (_util2.default.isChonghe(plainRect, enemyRect)) {
-          enemy.Hp--;
-          player.Hp--;
-          _util2.default.isChonghe(plainRect, enemyRect);
-          if (enemy.Hp <= 0) {
-            enemy.isDie = true;
-            _util2.default.removeArr(enemies, enemy);
-          }
-        }
-      }
-
-      // 检查玩家是否被击中
-      for (var j = shots.length - 1; j > -1; j--) {
-        var oneShot = shots[j];
-        if (oneShot.isDie) continue;
-        if (player.Oid != oneShot.belong && _util2.default.inArea({ x: oneShot.position.x + oneShot.width / 2, y: oneShot.position.y }, plainRect)) {
-          var ene = this.findEnemyByOid(oneShot.belong);
-          var shotEx = ene ? ene.shotEx : 1;
-          player.Hp = player.Hp - oneShot.attack * shotEx;
-          oneShot.Hp--;
-          if (oneShot.Hp <= 0) {
-            oneShot.isDie = true;
-            _util2.default.removeArr(shots, oneShot);
-          }
-        }
-      }
-      // 检查玩家是否获取战利品
-      for (var j = spoils.length - 1; j > -1; j--) {
-        var oneSpoil = spoils[j];
-        if (oneSpoil.isDie) continue;
-        var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0];
-        if (_util2.default.isChonghe(spoilRect, plainRect)) {
-          oneSpoil.isDie = true;
-          _util2.default.removeArr(spoils, oneSpoil);
-          oneSpoil.Effect(player);
-          if (_context2.default.stateInfo.spoils.resolve[oneSpoil.type]) _context2.default.stateInfo.spoils.resolve[oneSpoil.type]++;else _context2.default.stateInfo.spoils.resolve[oneSpoil.type] = 1;
-        }
-      }
-
-      if (player.Hp <= 0) {
-        this.stop();
-        this.resetButton.show();
-      }
-    }
-  }]);
-
-  return Stage;
-}(_eShape6.default);
-
-function StageManager() {
-  this.stagesConfig = [{
-    icon: _resource2.default.bg.bg1
-  }, {
-    icon: _resource2.default.bg.bg2
-  }, {
-    icon: _resource2.default.bg.bg3
-  }];
-  this.currentStageIndex = 0;
-  /**
-   * 判断关卡是否超时   单位s
-   */
-  this.isStageTimeOut = function () {
-    return this.stage.isStageTimeOut();
-  };
-  this.canGoNextStage = function () {
-    var isBossEsixt = this.stage.enemies.indexOf(this.stage.boss);
-    return -1 === isBossEsixt && this.stage.isStageTimeOut() && this.stage.hasCreateBoss == true;
-  };
-  this.init = function () {
-    var stage = new Stage(this.stagesConfig[0]);
-    stage.isRunning = 0;
-    this.stage = stage;
-  };
-  this.next = function () {
-    this.currentStageIndex++;
-    if (this.stagesConfig.length > this.currentStageIndex) {
-      this.stage.destroy();
-      var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
-      this.stage = stage;
-    }
-  };
-  this.reset = function () {
-    this.currentStageIndex = 0;
-    var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
-    this.stage = stage;
-  };
-}
-module.exports = {
-  Stage: Stage,
-  Button: Button,
-  Bar: Bar,
-  TextBlock: TextBlock,
-  StageManager: StageManager
-};
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-var _spoil = __webpack_require__(11);
-
-var _event = __webpack_require__(9);
-
-var _event2 = _interopRequireDefault(_event);
-
-var _eShape = __webpack_require__(3);
-
-var _eShape2 = _interopRequireDefault(_eShape);
-
-var _modal = __webpack_require__(10);
-
-var _modal2 = _interopRequireDefault(_modal);
-
-var _plain = __webpack_require__(5);
-
-var _shot = __webpack_require__(4);
-
-var _uiComonent = __webpack_require__(6);
-
-var _debug = __webpack_require__(8);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function Engine() {
-  var option = {};
-
-  var plainMoveState = {
-    isMouseDown: false,
-    position: { x: 0, y: 0 }
-  };
-
-  var player;
-  var stageManager;
-  var textBlock;
-  var drawContext;
-  var bar;
-  var viewRoot = [];
-  this.Create = function (_option) {
-    // canvas context
-    var canvas = document.getElementById(_option.id);
-    drawContext = canvas.getContext('2d');
-
-    option.ctxWidth = canvas.width = window.document.body.clientWidth;
-    option.ctxHeight = canvas.height = window.document.body.clientHeight;
-    Object.assign(_context2.default, {
-      headOffset: 20,
-      currentOid: 0,
-      option: option,
-      myevent: new _event2.default(),
-      stateInfo: new _debug.StateInfo(),
-      plainMoveState: plainMoveState,
-      shotType: _shot.shotTypes,
-      setting: new _debug.DebugSetting(),
-      spoilManager: new _spoil.SpoilManager()
-    });
-
-    // events
-    _context2.default.myevent.init(_option);
-    // stage
-    stageManager = new _uiComonent.StageManager();
-    stageManager.init();
-    _context2.default.stageManager = stageManager;
-
-    // 设置按钮
-    var settingButton = new _uiComonent.Button({
-      name: 'setting',
-      position: {
-        x: _context2.default.option.ctxWidth - _context2.default.headOffset,
-        y: 2
-      },
-      width: _context2.default.headOffset,
-      height: _context2.default.headOffset - 4,
-      icon: _resource2.default.setting
-    });
-    settingButton.on('click', function (eventInfo) {
-      stageManager.stage.stop();
-      var modal = new _modal2.default({
-        title: '设置页面',
-        position: {
-          x: 10,
-          y: _context2.default.option.ctxHeight / 4
-        },
-        width: _context2.default.option.ctxWidth - 20,
-        height: _context2.default.option.ctxHeight / 2,
-        zIndex: 2,
-        confirm: function confirm() {
-          stageManager.stage.restart();
-        },
-        cancel: function cancel() {
-          stageManager.stage.restart();
-          _util2.default.removeArr(viewRoot, modal);
-        }
-      });
-      viewRoot.push(modal);
-    });
-    // bar
-    bar = new _uiComonent.Bar({
-      icon: _resource2.default.head,
-      position: { x: -5, y: 0 },
-      width: option.ctxWidth + 10,
-      height: _context2.default.headOffset,
-      rightButton: settingButton
-    });
-    textBlock = new _uiComonent.TextBlock({
-      position: {
-        x: 0,
-        y: _context2.default.headOffset
-      }
-    });
-    player = new _plain.Player(true);
-    _context2.default.player = player;
-    player.setShotInterVal(1);
-    // 注册事件
-    // 玩家开始移动
-    player.on('mouseDown', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1) plainMoveState.isMouseDown = true;
-    });
-    // 玩家停止移动
-    stageManager.stage.on('mouseUp', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1) plainMoveState.isMouseDown = false;
-    });
-    // 玩家移动中
-    stageManager.stage.on('mouseMove', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1 && plainMoveState.isMouseDown === true) {
-        player.position.x = eventInfo.position.x - player.width / 2;
-        player.position.y = eventInfo.position.y - player.height / 2 - _context2.default.headOffset;
-      }
-    });
-  };
-
-  /**
-  * time
-  */
-  var clearTm;
-  var drawTm;
-  var moveTm;
-  var checkTm;
-  this.Start = function () {
-    // 拦截作用 必要时可以扩展出去
-    var before = function before(callback) {
-      return function () {
-        if (stageManager.stage.isRunning == 1) callback();
-      };
-    };
-
-    drawTm = setInterval(draw, 50);
-
-    checkTm = setInterval(before(function () {
-      stageManager.stage.checkCollection();
-    }), 50);
-
-    moveTm = setInterval(before(function () {
-      stageManager.stage.objectMove();
-    }), 50);
-
-    clearTm = setInterval(before(function () {
-      stageManager.stage.clearObject();
-    }), 5000);
-  };
-  // 绘制
-  var draw = function draw() {
-    // stage
-    stageManager.stage.render(drawContext);
-    // head
-    bar.render(drawContext);
-    // 绘制文本
-    if (_context2.default.setting.isDebug.value) {
-      textBlock.setText(_context2.default.stateInfo.getDebugArray());
-      textBlock.render(drawContext);
-    }
-    for (var i = 0; i < viewRoot.length; i++) {
-      viewRoot[i].render(drawContext);
-    }
-  };
-  /**
-   * 清理函数
-   */
-  var destory = function destory() {
-    stageManager.stage.destroy();
-    clearInterval(clearTm);
-    clearInterval(drawTm);
-    clearInterval(moveTm);
-    clearInterval(checkTm);
-  };
-}
-
-exports.default = Engine;
-
-module.exports = Engine;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function StateInfo() {
-  this.enemies = {
-    all: {},
-    resolve: {}
-  };
-  this.emitShot = {
-    all: {},
-    resolve: {}
-  };
-  this.spoils = {
-    all: {},
-    resolve: {}
-  };
-  this.currentShotNum = 0;
-  this.currentEnemyNum = 0;
-  this.getDebugArray = function () {
-    var sumLog = function sumLog(obj) {
-      var keys = Object.keys(obj);
-      var sum = 0;
-      for (var i = 0; i < keys.length; i++) {
-        sum += obj[keys[i]];
-      }
-      return sum;
-    };
-    var arr = [];
-
-    var allKillEmemies = sumLog(this.enemies.resolve);
-    var allEnemies = sumLog(this.enemies.all);
-    arr.push('杀敌总数量：' + allKillEmemies + '\r\n');
-    arr.push('敌人总数：' + allEnemies + '\r\n');
-    arr.push('击杀比：' + allKillEmemies / allEnemies + '\r\n');
-
-    var allTargetShots = sumLog(this.emitShot.resolve);
-    var allShots = sumLog(this.emitShot.all);
-    arr.push('命中弹药' + allTargetShots + '\r\n');
-    arr.push('发射弹药总量：' + allShots + '\r\n');
-    arr.push('命中比：' + allTargetShots / allShots + '\r\n');
-
-    arr.push('子弹数量：' + this.currentShotNum + '\r\n');
-    arr.push('敌人数量：' + this.currentEnemyNum + '\r\n');
-    return arr;
-  };
-  this.reset = function () {
-    this.enemies.all = {};
-    this.enemies.resolve = {};
-
-    this.emitShot.all = {};
-    this.emitShot.resolve = {};
-
-    this.spoils.all = {};
-    this.spoils.resolve = {};
-
-    this.currentShotNum = 0;
-    this.currentEnemyNum = 0;
-  };
-}
-function DebugSetting() {
-  this.isDebug = {
-    message: '显示调试信息',
-    value: true
-  };
-  this.stageTime = {
-    message: '关卡时长',
-    value: 20 // unit ms
-  };
-  this.spoilRate = {
-    message: '战利品几率',
-    value: 0.5
-  };
-  this.enemyRemoveRate = {
-    message: '敌军移动速率',
-    value: 0.5
-  };
-  this.enemyShotRate = {
-    message: '敌军射速',
-    value: 0.5
-  };
-  this.playerShotRate = {
-    message: '玩家射速度',
-    value: 20
-  };
-  this.spoilRate = {
-    message: '战利品几率',
-    value: 0.5
-  };
-}
-
-module.exports = {
-  StateInfo: StateInfo,
-  DebugSetting: DebugSetting
-};
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function MyEvent() {
-  var that = this;
-  // Do setup work here
-  // 此类型用于事件转换
-  this.eventRelative = {
-    click: [],
-    mouseDown: [],
-    mouseUp: [],
-    mouseMove: [],
-    keyUp: [],
-    // 附加事件中 object-action-callback
-    attachEvent: function attachEvent(target, action, callback) {
-      var eventMsg = { target: target, callback: callback };
-      var funcs = this[action];
-      if (!funcs) throw new Error('not support event');
-
-      if (funcs.length == 0) {
-        funcs.push(eventMsg);
-      } else {
-        for (var i = 0; i < funcs.length; i++) {
-          if (eventMsg.target.zIndex >= funcs[i].target.zIndex) {
-            funcs.splice(i, 0, eventMsg); // 
-            return;
-          }
-        }
-      }
-    },
-    detachEvent: function detachEvent(target, action) {
-      var funcs = this[action];
-      for (var i = 0; i < funcs.length; i++) {
-        if (funcs[i].target == target) {
-          _util2.default.removeArr(funcs, funcs[i]);
-        }
-      }
-    },
-    // 触发事件中 action-eventInfo
-    triggerEvent: function triggerEvent(action, eventInfo) {
-      var funcs = this[action];
-      if (!funcs) throw new Error('not support event');
-      for (var i = 0; i < funcs.length; i++) {
-        if (funcs[i].target.isDisplay && _util2.default.isEffect(funcs[i].target, action, eventInfo)) {
-          funcs[i].callback(funcs[i].target, eventInfo);
-          return;
-        }
-      }
-    },
-    triggerKeyEvent: function triggerKeyEvent(action, eventInfo) {
-      var funcs = this[action];
-      if (!funcs) throw new Error('not support event');
-      for (var i = 0; i < funcs.length; i++) {
-        if (funcs[i].target.isDisplay) {
-          funcs[i].callback(funcs[i].target, eventInfo);
-        }
-      }
-    }
-
-    // 外部事件转内部事件驱动  
-    // 包装按键按下，抬起，移动事件
-  };this.pacakgeEvent = function (event) {
-    var evnetInfo = {
-      position: { x: 0, y: 0 }
-    };
-    if (_util2.default.isAndroid()) {
-      evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft;
-      evnetInfo.position.y = event.gesture.center.pageY, _context2.default.option, _context2.default.headOffset;
-    } else if (_util2.default.isElectron()) {
-      evnetInfo.position.x = event.pageX;
-      evnetInfo.position.y = event.pageY, _context2.default.option, _context2.default.headOffset;
-    } else {
-      evnetInfo.position.x = event.offsetX;
-      evnetInfo.position.y = event.offsetY, _context2.default.option, _context2.default.headOffset;
-    }
-    return evnetInfo;
-  };
-  // 包装单击事件
-  this.pacakgeClick = function (event) {
-    var evnetInfo = {
-      position: { x: 0, y: 0 }
-    };
-
-    if (_util2.default.isAndroid()) {
-      evnetInfo.position.x = event.pageX - event.target.offsetLeft;
-      evnetInfo.position.y = event.y;
-    } else if (_util2.default.isElectron()) {
-      evnetInfo.position.x = event.pageX;
-      evnetInfo.position.y = event.pageY;
-    } else {
-      evnetInfo.position.x = event.offsetX;
-      evnetInfo.position.y = event.offsetY;
-    }
-    return evnetInfo;
-  };
-
-  // 移动事件
-  var moveFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('mouseMove', that.pacakgeEvent(arguments[0]));
-    };
-  }();
-  // 按下事件
-  var moveDownFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('mouseDown', that.pacakgeEvent(arguments[0]));
-    };
-  }();
-  // 抬起事件
-  var moveUpFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('mouseUp', that.pacakgeEvent(arguments[0]));
-    };
-  }();
-  // 点击事件
-  var clickFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('click', that.pacakgeClick(arguments[0]));
-    };
-  }();
-  //点击事件
-  var keyUpFunc = function () {
-    return function () {
-      that.eventRelative.triggerKeyEvent('keyUp', arguments[0]);
-    };
-  }();
-  // 事件输入
-  this.EventInput = {
-    mouseDown: moveDownFunc,
-    mouseUp: moveUpFunc,
-    click: clickFunc,
-    move: moveFunc,
-    keyUp: keyUpFunc
-  };
-  this.init = function (_option) {
-    _option.attachEvent.click = this.EventInput.click;
-    _option.attachEvent.move = this.EventInput.move;
-    _option.attachEvent.mouseDown = this.EventInput.mouseDown;
-    _option.attachEvent.mouseUp = this.EventInput.mouseUp;
-    _option.attachEvent.keyUp = this.EventInput.keyUp;
-  };
-}
-
-module.exports = MyEvent;
+module.exports = Button;
 
 /***/ }),
 /* 10 */
@@ -1981,335 +1072,28 @@ module.exports = MyEvent;
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _Bar = __webpack_require__(28);
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+var _Bar2 = _interopRequireDefault(_Bar);
 
-var _eShape2 = __webpack_require__(3);
+var _Modal = __webpack_require__(29);
 
-var _eShape3 = _interopRequireDefault(_eShape2);
+var _Modal2 = _interopRequireDefault(_Modal);
 
-var _context = __webpack_require__(0);
+var _Button = __webpack_require__(9);
 
-var _context2 = _interopRequireDefault(_context);
+var _Button2 = _interopRequireDefault(_Button);
 
-var _resource = __webpack_require__(2);
+var _TextBlock = __webpack_require__(30);
 
-var _resource2 = _interopRequireDefault(_resource);
-
-var _uiComonent = __webpack_require__(6);
+var _TextBlock2 = _interopRequireDefault(_TextBlock);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Modal = function (_eShape) {
-    _inherits(Modal, _eShape);
-
-    function Modal(option) {
-        _classCallCheck(this, Modal);
-
-        option.backgroundColor = "silver";
-
-        var _this = _possibleConstructorReturn(this, (Modal.__proto__ || Object.getPrototypeOf(Modal)).call(this, option));
-
-        _this.on('keyUp', function (params) {
-            option.cancel();
-        });
-        _this.on('click', function (params) {
-            // option.cancel()
-        });
-        _this.confirmBtn = new _uiComonent.Button({
-            text: 'confirm',
-            position: {
-                x: _this.position.x + (_this.width - 30) / 4,
-                y: _this.position.y + _this.height - 10
-            },
-            width: 90,
-            height: 30
-            // icon: resource.setting
-        });
-        _this.cancelBtn = new _uiComonent.Button({
-            text: 'cancel',
-            position: {
-                x: _this.position.x + _this.width / 2 + (_this.width - 30) / 4,
-                y: _this.position.y + _this.height - 10
-            },
-            width: 90,
-            height: 30
-            // icon: resource.setting
-        });
-        return _this;
-    }
-
-    _createClass(Modal, [{
-        key: 'render',
-        value: function render(drawContext) {
-            _get(Modal.prototype.__proto__ || Object.getPrototypeOf(Modal.prototype), 'render', this).call(this, drawContext);
-            //画边框
-
-            //画按钮 
-            this.confirmBtn.render(drawContext);
-            this.cancelBtn.render(drawContext);
-            //画
-        }
-    }]);
-
-    return Modal;
-}(_eShape3.default);
-
-module.exports = Modal;
+module.exports = { Modal: _Modal2.default, Bar: _Bar2.default, Button: _Button2.default, TextBlock: _TextBlock2.default };
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _eShape5 = __webpack_require__(3);
-
-var _eShape6 = _interopRequireDefault(_eShape5);
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Spoil = function (_eShape) {
-  _inherits(Spoil, _eShape);
-
-  function Spoil(obj, type) {
-    _classCallCheck(this, Spoil);
-
-    var _this = _possibleConstructorReturn(this, (Spoil.__proto__ || Object.getPrototypeOf(Spoil)).call(this, obj));
-
-    _this.speedY = 3;
-    _this.spoiltype = type;
-    _this.width = 25;
-    _this.height = 25;
-    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
-    _this.position.x = obj.position.x;
-    _this.position.y = obj.position.y;
-    _this.Effect = function (targetPlayer) {};
-    return _this;
-  }
-
-  return Spoil;
-}(_eShape6.default);
-
-var UmShotSpoil = function (_eShape2) {
-  _inherits(UmShotSpoil, _eShape2);
-
-  function UmShotSpoil(object) {
-    _classCallCheck(this, UmShotSpoil);
-
-    var _this2 = _possibleConstructorReturn(this, (UmShotSpoil.__proto__ || Object.getPrototypeOf(UmShotSpoil)).call(this, object));
-
-    _this2.spoiltype = 'umShot';
-    _this2.icon = _resource2.default.u;
-    _this2.Effect = function (targetPlayer) {
-      if (targetPlayer.shotType.type == SpoilManager.spoilType.umShot) {
-        if (targetPlayer.shotType.num > 7) {
-          targetPlayer.shotEx++;
-        } else {
-          targetPlayer.shotType.num++;
-        }
-      } else {
-        targetPlayer.shotType = {
-          type: SpoilManager.spoilType.umShot,
-          num: 1
-        };
-      }
-
-      targetPlayer.setShotInterVal(2);
-    };
-    return _this2;
-  }
-
-  return UmShotSpoil;
-}(_eShape6.default);
-
-var GzShotSpoil = function (_eShape3) {
-  _inherits(GzShotSpoil, _eShape3);
-
-  function GzShotSpoil(object) {
-    _classCallCheck(this, GzShotSpoil);
-
-    var _this3 = _possibleConstructorReturn(this, (GzShotSpoil.__proto__ || Object.getPrototypeOf(GzShotSpoil)).call(this, object));
-
-    _this3.spoiltype = 'gzShot';
-    _this3.icon = _resource2.default.g;
-    _this3.Effect = function (targetPlayer) {
-      if (targetPlayer.shotType.type == SpoilManager.spoilType.gzShot) {
-        targetPlayer.shotType.num++;
-      } else {
-        targetPlayer.shotType = {
-          type: SpoilManager.spoilType.gzShot,
-          num: 1
-        };
-      }
-      targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2);
-    };
-    return _this3;
-  }
-
-  return GzShotSpoil;
-}(_eShape6.default);
-
-var HpSpoil = function (_eShape4) {
-  _inherits(HpSpoil, _eShape4);
-
-  function HpSpoil(object) {
-    _classCallCheck(this, HpSpoil);
-
-    var _this4 = _possibleConstructorReturn(this, (HpSpoil.__proto__ || Object.getPrototypeOf(HpSpoil)).call(this, object));
-
-    _this4.spoiltype = 'addHp';
-    _this4.icon = _resource2.default.hp;
-    _this4.Effect = function (targetPlayer) {
-      if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++;
-    };
-    return _this4;
-  }
-
-  return HpSpoil;
-}(_eShape6.default);
-
-var SpoilManager = function SpoilManager() {
-  _classCallCheck(this, SpoilManager);
-
-  this.createSpoil = function (obj) {
-    if (Math.random() < 0.5) return undefined;
-    var types = Object.values(SpoilManager.spoilType);
-    var t = types[(Math.random() * types.length).toString().charAt(0) - '0'];
-    var spoil;
-    switch (t) {
-      case SpoilManager.spoilType.umShot:
-        spoil = new UmShotSpoil(obj);
-        break;
-      case SpoilManager.spoilType.gzShot:
-        spoil = new GzShotSpoil(obj);
-        break;
-      case SpoilManager.spoilType.addHp:
-        spoil = new HpSpoil(obj);
-        break;
-    }
-    var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5);
-    spoil.setXPath(function (x) {
-      return factor * (Math.cos(this.moveTick / 15) + Math.random() - 0.5);
-    });
-    return spoil;
-  };
-};
-
-SpoilManager.spoilType = {
-  umShot: 'umShot',
-  gzShot: 'gzShot',
-  addHp: 'addHp'
-};
-module.exports = {
-  Spoil: Spoil,
-  SpoilManager: SpoilManager };
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TimeLine = function () {
-  function TimeLine() {
-    _classCallCheck(this, TimeLine);
-
-    this.timePoints = [];
-  }
-
-  _createClass(TimeLine, [{
-    key: 'getRunningTime',
-    value: function getRunningTime() {
-      var timeLong = 0;
-      for (var index = 0; index < this.timePoints.length;) {
-        var element = this.timePoints[index];
-        if (element.action == 'start') {
-          if (index != this.timePoints.length - 1) {
-            timeLong += this.timePoints[index + 1].time - element.time;
-          } else {
-            timeLong += new Date() - element.time;
-          }
-          index = index + 2;
-        }
-        index++;
-      }
-      return timeLong;
-    }
-  }, {
-    key: 'reset',
-    value: function reset() {
-      this.timePoints = [];
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      this.setAction('stop');
-    }
-  }, {
-    key: 'start',
-    value: function start() {
-      this.setAction('start');
-    }
-  }, {
-    key: 'setAction',
-    value: function setAction(actionName) {
-      if (this.timePoints.length == 0) {
-        this.timePoints.push({
-          action: actionName,
-          time: new Date()
-        });
-      } else {
-        var timePoint = this.timePoints[this.timePoints.length - 1];
-        if (timePoint.action == actionName) {} else {
-          timePoint.time = new Date();
-        }
-      }
-    }
-  }]);
-
-  return TimeLine;
-}();
-
-exports.default = TimeLine;
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -19398,10 +18182,2114 @@ exports.default = TimeLine;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31), __webpack_require__(32)(module)))
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _LosEvent = __webpack_require__(14);
+
+var _LosEvent2 = _interopRequireDefault(_LosEvent);
+
+var _EObject = __webpack_require__(3);
+
+var _EObject2 = _interopRequireDefault(_EObject);
+
+var _shot = __webpack_require__(8);
+
+var _spoil = __webpack_require__(27);
+
+var _ui = __webpack_require__(10);
+
+var _Stage = __webpack_require__(15);
+
+var _Debug = __webpack_require__(13);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Engine() {
+  var option = {};
+
+  var stageManager;
+  var textBlock;
+  var drawContext;
+  var bar;
+  this.Create = function (_option) {
+    // canvas context
+    var canvas = document.getElementById(_option.id);
+    drawContext = canvas.getContext('2d');
+
+    option.ctxWidth = canvas.width = window.document.body.clientWidth;
+    option.ctxHeight = canvas.height = window.document.body.clientHeight;
+    Object.assign(_context2.default, {
+      headOffset: 20,
+      currentOid: 0,
+      option: option,
+      losEvent: new _LosEvent2.default(_option),
+      stateInfo: new _Debug.StateInfo(),
+      shotType: _shot.ShotTypes,
+      setting: new _Debug.DebugSetting(),
+      spoilManager: new _spoil.SpoilManager()
+    });
+    // stage
+    stageManager = new _Stage.StageManager();
+    stageManager.init();
+    _context2.default.stageManager = stageManager;
+
+    // 设置按钮
+    var settingButton = new _ui.Button({
+      name: 'setting',
+      position: {
+        x: _context2.default.option.ctxWidth - _context2.default.headOffset,
+        y: 2
+      },
+      width: _context2.default.headOffset,
+      height: _context2.default.headOffset - 4,
+      icon: _resource2.default.setting,
+      event: {
+        'click': function click(eventInfo) {
+          stageManager.stage.stop();
+          var modal = new _ui.Modal({
+            title: '设置页面',
+            position: {
+              x: 10,
+              y: _context2.default.option.ctxHeight / 4
+            },
+            width: _context2.default.option.ctxWidth - 20,
+            height: _context2.default.option.ctxHeight / 2,
+            zIndex: 2,
+            confirm: function confirm() {
+              stageManager.stage.restart();
+            },
+            cancel: function cancel() {
+              stageManager.stage.restart();
+              _context2.default.objectManager.removeElement(modal);
+            }
+          });
+          _context2.default.objectManager.addElement(modal);
+        }
+      }
+    });
+
+    // bar
+    bar = new _ui.Bar({
+      icon: _resource2.default.head,
+      position: { x: -5, y: 0 },
+      width: option.ctxWidth + 10,
+      height: _context2.default.headOffset,
+      rightButton: settingButton
+    });
+    textBlock = new _ui.TextBlock({
+      position: {
+        x: 0,
+        y: _context2.default.headOffset
+      }
+    });
+    _context2.default.objectManager.addElement(bar);
+    _context2.default.objectManager.addElement(textBlock);
+  };
+
+  /**
+  * time
+  */
+  var clearTm;
+  var drawTm;
+  var moveTm;
+  var checkTm;
+  this.Start = function () {
+    // 拦截作用 必要时可以扩展出去
+    var before = function before(callback) {
+      return function () {
+        if (stageManager.stage.isRunning == 1) callback();
+      };
+    };
+
+    drawTm = setInterval(draw, 50);
+
+    checkTm = setInterval(before(function () {
+      stageManager.stage.checkCollection();
+    }), 50);
+
+    moveTm = setInterval(before(function () {
+      stageManager.stage.objectMove();
+    }), 50);
+
+    clearTm = setInterval(before(function () {
+      stageManager.stage.clearObject();
+    }), 5000);
+  };
+  // 绘制
+  var draw = function draw() {
+    // 绘制文本
+    /*if (context.setting.isDebug.value) {
+      textBlock.setText(context.stateInfo.getDebugArray())
+      textBlock.render(drawContext)
+    }*/
+
+    _context2.default.objectManager.forEach(function (item) {
+      item.render(drawContext);
+    });
+  };
+  /**
+   * 清理函数
+   */
+  var destory = function destory() {
+    stageManager.stage.destroy();
+    clearInterval(clearTm);
+    clearInterval(drawTm);
+    clearInterval(moveTm);
+    clearInterval(checkTm);
+  };
+}
+
+exports.default = Engine;
+
+module.exports = Engine;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function StateInfo() {
+  this.enemies = {
+    all: {},
+    resolve: {}
+  };
+  this.emitShot = {
+    all: {},
+    resolve: {}
+  };
+  this.spoils = {
+    all: {},
+    resolve: {}
+  };
+  this.currentShotNum = 0;
+  this.currentEnemyNum = 0;
+  this.getDebugArray = function () {
+    var sumLog = function sumLog(obj) {
+      var keys = Object.keys(obj);
+      var sum = 0;
+      for (var i = 0; i < keys.length; i++) {
+        sum += obj[keys[i]];
+      }
+      return sum;
+    };
+    var arr = [];
+
+    var allKillEmemies = sumLog(this.enemies.resolve);
+    var allEnemies = sumLog(this.enemies.all);
+    arr.push('杀敌总数量：' + allKillEmemies + '\r\n');
+    arr.push('敌人总数：' + allEnemies + '\r\n');
+    arr.push('击杀比：' + allKillEmemies / allEnemies + '\r\n');
+
+    var allTargetShots = sumLog(this.emitShot.resolve);
+    var allShots = sumLog(this.emitShot.all);
+    arr.push('命中弹药' + allTargetShots + '\r\n');
+    arr.push('发射弹药总量：' + allShots + '\r\n');
+    arr.push('命中比：' + allTargetShots / allShots + '\r\n');
+
+    arr.push('子弹数量：' + this.currentShotNum + '\r\n');
+    arr.push('敌人数量：' + this.currentEnemyNum + '\r\n');
+    return arr;
+  };
+  this.reset = function () {
+    this.enemies.all = {};
+    this.enemies.resolve = {};
+
+    this.emitShot.all = {};
+    this.emitShot.resolve = {};
+
+    this.spoils.all = {};
+    this.spoils.resolve = {};
+
+    this.currentShotNum = 0;
+    this.currentEnemyNum = 0;
+  };
+}
+function DebugSetting() {
+  this.isDebug = {
+    message: '显示调试信息',
+    value: true
+  };
+  this.stageTime = {
+    message: '关卡时长',
+    value: 20 // unit ms
+  };
+  this.spoilRate = {
+    message: '战利品几率',
+    value: 0.5
+  };
+  this.enemyRemoveRate = {
+    message: '敌军移动速率',
+    value: 0.5
+  };
+  this.enemyShotRate = {
+    message: '敌军射速',
+    value: 0.5
+  };
+  this.playerShotRate = {
+    message: '玩家射速度',
+    value: 20
+  };
+  this.spoilRate = {
+    message: '战利品几率',
+    value: 0.5
+  };
+}
+
+module.exports = {
+  StateInfo: StateInfo,
+  DebugSetting: DebugSetting
+};
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _lodash = __webpack_require__(11);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LosEvent = function () {
+  function LosEvent(_option) {
+    _classCallCheck(this, LosEvent);
+
+    // super()
+    this.eventContainer = [];
+    this.init(_option);
+    this.focusTarget;
+    this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus'];
+  }
+
+  _createClass(LosEvent, [{
+    key: 'init',
+    value: function init(_option) {
+      _option.attachEvent.click = this.clickFunc();
+      _option.attachEvent.move = this.moveFunc();
+      _option.attachEvent.mouseDown = this.moveDownFunc();
+      _option.attachEvent.mouseUp = this.moveUpFunc();
+      _option.attachEvent.keyUp = this.keyUpFunc();
+    }
+  }, {
+    key: 'hasTarget',
+    value: function hasTarget(target) {
+      return _lodash2.default.filter(this.eventContainer, function (item) {
+        return item.target == target;
+      }).length > 0;
+    }
+  }, {
+    key: 'findTarget',
+    value: function findTarget(target) {
+      return _lodash2.default.filter(this.eventContainer, function (item) {
+        return item.target == target;
+      })[0];
+    }
+    // 附加事件中 object-action-callback
+
+  }, {
+    key: 'attachEvent',
+    value: function attachEvent(target, action, callback) {
+      if (!this.hasTarget(target)) this.eventContainer.push({ target: target, actions: [] });
+      var actions = this.findTarget(target).actions;
+      if (-1 === actions.indexOf(action)) actions.push(action);
+    }
+  }, {
+    key: 'deAttchEvent',
+    value: function deAttchEvent(target, action, funcs) {
+      var items = this.findTarget(target);
+
+      if (action) {
+        for (var i = 0; i < items.actions.length; i++) {
+          if (items.actions[i] == action) {
+            if (funcs) {
+              _util2.default.removeArr(items.target[action], funcs);
+            } else {
+              _util2.default.removeArr(items.actions, items.actions[i]);
+              return;
+            }
+          }
+        }
+      } else {
+        this.deAttchAllEvent(items);
+      }
+    }
+  }, {
+    key: 'deAttchAllEvent',
+    value: function deAttchAllEvent(target) {
+      _util2.default.removeArr(this.eventContainer, target);
+    }
+    // 触发事件中 action-eventInfo
+
+  }, {
+    key: 'triggerEvent',
+    value: function triggerEvent(action, eventInfo) {
+      var targets = _lodash2.default.filter(this.eventContainer, function (item) {
+        return item.target.isDisplay && _util2.default.isEffect(item.target, action, eventInfo) && item.actions.indexOf(action) > -1;
+      });
+
+      if (targets.length == 0) {
+        return;
+      } else if (targets.length > 1) {
+        targets.sort(function (a, b) {
+          return b.target.zIndex - a.target.zIndex;
+        });
+      }
+      this.invokeEventListiner(targets[0].target, action, eventInfo);
+
+      if (action == 'click') {
+        if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo);
+        this.focusTarget = targets[0].target;
+        this.invokeEventListiner(targets[0].target, 'focus', eventInfo);
+      }
+    }
+  }, {
+    key: 'invokeEventListiner',
+    value: function invokeEventListiner(target, action, eventInfo) {
+      if (target[action] && target[action] instanceof Array) {
+        target[action].forEach(function (func) {
+          if (func instanceof Function) {
+            func(target, eventInfo);
+          }
+        });
+      }
+    }
+  }, {
+    key: 'triggerKeyEvent',
+    value: function triggerKeyEvent(action, eventInfo) {
+      var _this = this;
+
+      var targets = _lodash2.default.filter(Object.keys(this.eventContainer), function (key) {
+        return _this.eventContainer[key].isDisplay && _this.eventContainer[key].indexOf(action) > -1;
+      });
+      targets[0][action].forEach(function (func) {
+        func(targets[0], eventInfo);
+      });
+    }
+
+    // 外部事件转内部事件驱动  
+    // 包装按键按下，抬起，移动事件
+
+  }, {
+    key: 'pacakgeEvent',
+    value: function pacakgeEvent(event) {
+      var evnetInfo = {
+        position: { x: 0, y: 0 }
+      };
+      if (_util2.default.isAndroid()) {
+        evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft;
+        evnetInfo.position.y = event.gesture.center.pageY, _context2.default.option, _context2.default.headOffset;
+      } else if (_util2.default.isElectron()) {
+        evnetInfo.position.x = event.pageX;
+        evnetInfo.position.y = event.pageY, _context2.default.option, _context2.default.headOffset;
+      } else {
+        evnetInfo.position.x = event.offsetX;
+        evnetInfo.position.y = event.offsetY, _context2.default.option, _context2.default.headOffset;
+      }
+      return evnetInfo;
+    }
+    // 包装单击事件
+
+  }, {
+    key: 'pacakgeClick',
+    value: function pacakgeClick(event) {
+      var evnetInfo = {
+        position: { x: 0, y: 0 }
+      };
+
+      if (_util2.default.isAndroid()) {
+        evnetInfo.position.x = event.pageX - event.target.offsetLeft;
+        evnetInfo.position.y = event.y;
+      } else if (_util2.default.isElectron()) {
+        evnetInfo.position.x = event.pageX;
+        evnetInfo.position.y = event.pageY;
+      } else {
+        evnetInfo.position.x = event.offsetX;
+        evnetInfo.position.y = event.offsetY;
+      }
+      return evnetInfo;
+    }
+
+    // 移动事件
+
+  }, {
+    key: 'moveFunc',
+    value: function moveFunc() {
+      var _this2 = this;
+
+      return function (eventInfo) {
+        _this2.triggerEvent('mouseMove', _this2.pacakgeEvent(eventInfo));
+      };
+    }
+    // 按下事件
+
+  }, {
+    key: 'moveDownFunc',
+    value: function moveDownFunc() {
+      var _this3 = this;
+
+      return function (eventInfo) {
+        _this3.triggerEvent('mouseDown', _this3.pacakgeEvent(eventInfo));
+      };
+    }
+    // 抬起事件
+
+  }, {
+    key: 'moveUpFunc',
+    value: function moveUpFunc() {
+      var _this4 = this;
+
+      return function (eventInfo) {
+        _this4.triggerEvent('mouseUp', _this4.pacakgeEvent(eventInfo));
+      };
+    }
+    // 点击事件
+
+  }, {
+    key: 'clickFunc',
+    value: function clickFunc() {
+      var _this5 = this;
+
+      return function (eventInfo) {
+        _this5.triggerEvent('click', _this5.pacakgeClick(eventInfo));
+      };
+    }
+    // 点击事件
+
+  }, {
+    key: 'keyUpFunc',
+    value: function keyUpFunc() {
+      var _this6 = this;
+
+      return function (eventInfo) {
+        _this6.triggerEvent('keyUp', eventInfo);
+      };
+    }
+  }]);
+
+  return LosEvent;
+}();
+
+module.exports = LosEvent;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _TimeLine = __webpack_require__(16);
+
+var _TimeLine2 = _interopRequireDefault(_TimeLine);
+
+var _shotGame = __webpack_require__(20);
+
+var _shot = __webpack_require__(8);
+
+var _ui = __webpack_require__(10);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Stage = function (_EObject) {
+  _inherits(Stage, _EObject);
+
+  function Stage(stageConfig) {
+    _classCallCheck(this, Stage);
+
+    var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this, stageConfig));
+
+    _this.isRunning = 2; // 三种状态 1 预备/2 进行 /3 结束
+    _this.position.x = 0;
+    _this.position.y = _context2.default.headOffset;
+    _this.width = _context2.default.option.ctxWidth;
+    _this.height = _context2.default.option.ctxHeight - _context2.default.headOffset;
+    // 背景图片
+    // 敌军种类  自动配置敌军
+    // boss
+    // 关卡时长
+    // 组件
+
+    _this.resetButton = new _ui.Button({
+      name: 'reset',
+      position: {
+        x: _this.width / 4,
+        y: _this.height / 2 + _this.position.y
+      },
+      width: _this.width / 2,
+      height: 40,
+      icon: _resource2.default.button,
+      borderSize: 0,
+      event: {
+        click: function click(eventInfo) {
+          _this.resetButton.hide();
+          if (_this.player.hp > 0) {
+            _this.start();
+          } else {
+            _this.restart();
+          }
+        }
+      }
+    });
+
+    var plainMoveState = {
+      isMouseDown: false,
+      position: { x: 0, y: 0 }
+    };
+    _this.player = new _shotGame.Player(_this);
+    _this.player.setShotInterVal(1);
+    // 注册事件
+    // 玩家开始移动
+    _this.player.on('mouseDown', function (eventInfo) {
+      if (_this.isRunning == 1) plainMoveState.isMouseDown = true;
+    });
+    // 玩家停止移动
+    _this.on('mouseUp', function (eventInfo) {
+      if (_this.isRunning == 1) plainMoveState.isMouseDown = false;
+    });
+    // 玩家移动中
+    _this.on('mouseMove', function (eventInfo) {
+      if (_this.isRunning == 1 && plainMoveState.isMouseDown === true) {
+        _this.player.position.x = eventInfo.position.x - _this.player.width / 2;
+        _this.player.position.y = eventInfo.position.y - _this.player.height / 2 - _context2.default.headOffset;
+      }
+    });
+    _this.icon = stageConfig.icon;
+    _this.boss;
+    _this.time = 10;
+
+    _this.timeLine = new _TimeLine2.default();
+
+    _this.shots = [];
+    _this.enemies = [];
+    _this.bullets = [];
+    _this.spoils = [];
+
+    _this.hasCreateBoss = false;
+    var checkTm = setInterval(function () {
+      if (_this.isStageTimeOut()) {
+        clearInterval(checkTm);
+        _this.createBoss();
+        _this.hasCreateBoss = true;
+      }
+    }, 100);
+    return _this;
+  }
+
+  _createClass(Stage, [{
+    key: 'enemyDie',
+    value: function enemyDie(enemy) {
+      var self = this;
+      enemy.isDie = true;
+      var bullet = new _shot.Bullet({
+        isDie: false,
+        icon: _resource2.default.bullet,
+        width: 8,
+        height: 8,
+        position: {
+          x: (enemy.position.x + enemy.width) / 2,
+          y: (enemy.position.y + enemy.height) / 2
+        }
+      });
+      self.bullets.push(bullet);
+      setTimeout(function (enemy, bullet) {
+        return function () {
+          _util2.default.removeArr(self.enemies, enemy);
+          _util2.default.removeArr(self.bullets, bullet);
+        };
+      }(enemy, bullet), 500);
+      // 判断是否产生战利品
+      var spoil = _context2.default.spoilManager.createSpoil(enemy);
+      if (spoil) {
+        if (_context2.default.stateInfo.spoils.all[spoil.type]) _context2.default.stateInfo.spoils.all[spoil.type]++;else _context2.default.stateInfo.spoils.all[spoil.type] = 0;
+        self.spoils.push(spoil);
+      }
+
+      if (_context2.default.stateInfo.enemies.resolve[enemy.type]) _context2.default.stateInfo.enemies.resolve[enemy.type]++;else _context2.default.stateInfo.enemies.resolve[enemy.type] = 1;
+    }
+    /**
+       * 对象移动
+       */
+
+  }, {
+    key: 'objectMove',
+    value: function objectMove() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+      if (_context2.default.stageManager.canGoNextStage()) {
+        _context2.default.stageManager.next();
+      }
+      // 生成新的个体
+      var pShots = this.player.getShot();
+      if (pShots) {
+        shots.push.apply(shots, pShots);
+        for (var i = 0; i < pShots.length; i++) {
+          if (_context2.default.stateInfo.emitShot.all[pShots[i].type]) _context2.default.stateInfo.emitShot.all[pShots[i].type]++;else _context2.default.stateInfo.emitShot.all[pShots[i].type] = 1;
+        }
+      }
+      this.update();
+
+      this.player.update();
+      // 报告
+      _context2.default.stateInfo.currentShotNum = this.shots.length;
+      _context2.default.stateInfo.currentEnemyNum = this.enemies.length;
+    }
+    // 对象清理
+
+  }, {
+    key: 'clearObject',
+    value: function clearObject() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+      // 删除越界的对象  
+      for (var i = shots.length - 1; i > -1; i--) {
+        var oneShot = shots[i];
+        if (oneShot.isDie || !_util2.default.inArea(oneShot.position, { x: -10, y: -10, width: this.width + 10, height: this.height + 10 })) {
+          _util2.default.removeArr(shots, oneShot);
+        }
+      }
+
+      for (var i = enemies.length - 1; i > -1; i--) {
+        var enemy = enemies[i];
+        if (enemy.isDie) {
+          _util2.default.removeArr(enemies, enemy);
+          continue;
+        }
+        if (!_util2.default.inArea(enemy.position, { x: -100, y: -100, width: this.width + 100, height: this.height + 100 })) {
+          _util2.default.removeArr(enemies, enemy);
+        }
+      }
+
+      for (var i = spoils.length - 1; i > -1; i--) {
+        var spoil = spoils[i];
+        if (spoil.isDie) {
+          _util2.default.removeArr(spoils, spoil);
+          continue;
+        }
+      }
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.timeLine.stop();
+      this.isRunning = 2;
+    }
+  }, {
+    key: 'restart',
+    value: function restart() {
+      this.timeLine.start();
+      this.isRunning = 1;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      this.timeLine.start();
+      this.isRunning = 1;
+    }
+  }, {
+    key: 'drawScene',
+    value: function drawScene() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+
+      var canvas = document.createElement('canvas');
+      var drawContext = canvas.getContext('2d');
+      canvas.height = this.height;
+      canvas.width = this.width;
+      // 背景
+      drawContext.drawImage(this.icon, 0, 0, this.width, this.height);
+      // 子弹
+      for (var index in this.shots) {
+        var shot = shots[index];
+        shot.render(drawContext);
+      }
+      // 飞机
+      this.player.render(drawContext);
+      // 敌军
+      for (var index in this.enemies) {
+        var enemy = enemies[index];
+        enemy.render(drawContext);
+      }
+      // 战利品
+      for (var index in this.spoils) {
+        var spoil = spoils[index];
+        spoil.render(drawContext);
+      }
+      // 死亡
+      for (var index in this.bullets) {
+        var bullet = bullets[index];
+        bullet.render(drawContext);
+      }
+      return canvas;
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.player.off('mouseDown');
+      this.off('mouseUp');
+      this.off('mouseMove');
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.timeLine.reset();
+      this.shots.length = 0;
+      this.enemies.length = 0;
+      this.bullets.length = 0;
+      this.spoils.length = 0;
+      this.isRunning = 0;
+    }
+  }, {
+    key: 'createBoss',
+    value: function createBoss() {
+      var boss = new _shotGame.Boss();
+      this.boss = boss;
+      this.enemies.push(boss);
+    }
+  }, {
+    key: 'isStageTimeOut',
+    value: function isStageTimeOut() {
+      return this.timeLine.getRunningTime() / 1000 > this.time;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+
+      if (Math.random() < 0.07) // 百分之七生成敌军
+        {
+          var rad = Math.random() * 3 + '';
+          var newEmeny = (0, _shotGame.createEnemy)(parseInt(rad.charAt(0)) + 2);
+          if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
+          enemies.push(newEmeny);
+        }
+
+      if (Math.random() < 0.01) // 百分之一生成强力敌军
+        {
+          var newEmeny = (0, _shotGame.createEnemy)(1);
+          if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
+          enemies.push(newEmeny);
+        }
+
+      for (var index in shots) {
+        if (shots[index].isDie) continue;
+        var shot = shots[index];
+        shot.update();
+      }
+
+      for (var index in spoils) {
+        if (spoils[index].isDie) continue;
+        var spoil = spoils[index];
+        spoil.update();
+      }
+
+      for (var index in enemies) {
+        if (enemies[index].isDie) continue;
+        var enemy = enemies[index];
+
+        var eShots = enemy.getShot();
+        if (eShots) {
+          shots.push.apply(shots, eShots);
+        }
+        enemy.update();
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(drawContext) {
+      var canvas = this.drawScene();
+      drawContext.drawImage(canvas, // 绘制
+      0, 0, canvas.width, canvas.height, this.position.x, this.position.y, this.width, this.height);
+      this.resetButton.render(drawContext);
+    }
+    /**
+     * 根据id查找敌人
+     * @param {*敌人id} oid 
+     */
+
+  }, {
+    key: 'findEnemyByOid',
+    value: function findEnemyByOid(oid) {
+      var enemies = this.enemies;
+      if (enemies) {
+        for (var i = 0; i < enemies.length; i++) {
+          if (enemies[i].Oid == oid) {
+            return enemies[i];
+          }
+        }
+      }
+    }
+    // 检测碰撞
+
+  }, {
+    key: 'checkCollection',
+    value: function checkCollection() {
+      var plainRect = this.player.getAbsoluteCollisionArea()[0];
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+
+      for (var i = enemies.length - 1; i > -1; i--) {
+        var enemy = enemies[i];
+        if (enemy.isDie) continue;
+        var enemyRect = enemy.getAbsoluteCollisionArea()[0];
+        // 检查子弹和飞机的碰撞
+        for (var j = shots.length - 1; j > -1; j--) {
+          var oneShot = shots[j];
+          if (oneShot.isDie) continue;
+          var shotRect = oneShot.getAbsoluteCollisionArea()[0];
+          if (this.player.Oid == oneShot.belong && _util2.default.isChonghe(shotRect, enemyRect)) {
+            enemy.Hp = enemy.Hp - oneShot.attack * this.player.shotEx;
+            oneShot.Hp--;
+            if (enemy.Hp <= 0) {
+              this.enemyDie(enemy);
+            }
+            // 子弹生命  穿甲弹
+            if (oneShot.Hp <= 0) {
+              oneShot.isDie = true;
+              if (_context2.default.stateInfo.emitShot.resolve[oneShot.type]) _context2.default.stateInfo.emitShot.resolve[oneShot.type]++;else _context2.default.stateInfo.emitShot.resolve[oneShot.type] = 1;
+              _util2.default.removeArr(shots, oneShot);
+            }
+          }
+        }
+        // 检查玩家和飞机的碰撞
+        if (_util2.default.isChonghe(plainRect, enemyRect)) {
+          enemy.Hp--;
+          this.player.Hp--;
+          _util2.default.isChonghe(plainRect, enemyRect);
+          if (enemy.Hp <= 0) {
+            enemy.isDie = true;
+            _util2.default.removeArr(enemies, enemy);
+          }
+        }
+      }
+
+      // 检查玩家是否被击中
+      for (var j = shots.length - 1; j > -1; j--) {
+        var oneShot = shots[j];
+        if (oneShot.isDie) continue;
+        if (this.player.Oid != oneShot.belong && _util2.default.inArea({ x: oneShot.position.x + oneShot.width / 2, y: oneShot.position.y }, plainRect)) {
+          var ene = this.findEnemyByOid(oneShot.belong);
+          var shotEx = ene ? ene.shotEx : 1;
+          this.player.Hp = this.player.Hp - oneShot.attack * shotEx;
+          oneShot.Hp--;
+          if (oneShot.Hp <= 0) {
+            oneShot.isDie = true;
+            _util2.default.removeArr(shots, oneShot);
+          }
+        }
+      }
+      // 检查玩家是否获取战利品
+      for (var j = spoils.length - 1; j > -1; j--) {
+        var oneSpoil = spoils[j];
+        if (oneSpoil.isDie) continue;
+        var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0];
+        if (_util2.default.isChonghe(spoilRect, plainRect)) {
+          oneSpoil.isDie = true;
+          _util2.default.removeArr(spoils, oneSpoil);
+          oneSpoil.Effect(this.player);
+          if (_context2.default.stateInfo.spoils.resolve[oneSpoil.type]) _context2.default.stateInfo.spoils.resolve[oneSpoil.type]++;else _context2.default.stateInfo.spoils.resolve[oneSpoil.type] = 1;
+        }
+      }
+
+      if (this.player.Hp <= 0) {
+        this.stop();
+        this.resetButton.show();
+      }
+    }
+  }]);
+
+  return Stage;
+}(_EObject3.default);
+
+function StageManager() {
+  this.stagesConfig = [{
+    icon: _resource2.default.bg.bg1
+  }, {
+    icon: _resource2.default.bg.bg2
+  }, {
+    icon: _resource2.default.bg.bg3
+  }];
+  this.currentStageIndex = 0;
+  /**
+   * 判断关卡是否超时   单位s
+   */
+  this.isStageTimeOut = function () {
+    return this.stage.isStageTimeOut();
+  };
+  this.canGoNextStage = function () {
+    var isBossEsixt = this.stage.enemies.indexOf(this.stage.boss);
+    return -1 === isBossEsixt && this.stage.isStageTimeOut() && this.stage.hasCreateBoss == true;
+  };
+  this.init = function () {
+    if (this.stage) this.stage.destroy();
+    _context2.default.objectManager.removeElement(this.stage);
+    var stage = new Stage(this.stagesConfig[0]);
+    stage.isRunning = 0;
+    this.stage = stage;
+    _context2.default.objectManager.addElement(stage);
+  };
+  this.next = function () {
+    this.currentStageIndex++;
+    if (this.stagesConfig.length > this.currentStageIndex) {
+      this.stage.destroy();
+      _context2.default.objectManager.removeElement(this.stage);
+      var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
+      this.stage = stage;
+      _context2.default.objectManager.addElement(stage);
+    }
+  };
+  this.reset = function () {
+    this.currentStageIndex = 0;
+    _context2.default.objectManager.removeElement(this.stage);
+    var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
+    this.stage = stage;
+    _context2.default.objectManager.addElement(stage);
+  };
+}
+module.exports = {
+  Stage: Stage,
+  StageManager: StageManager
+};
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TimeLine = function () {
+  function TimeLine() {
+    _classCallCheck(this, TimeLine);
+
+    this.timePoints = [];
+  }
+
+  _createClass(TimeLine, [{
+    key: 'getRunningTime',
+    value: function getRunningTime() {
+      var timeLong = 0;
+      for (var index = 0; index < this.timePoints.length;) {
+        var element = this.timePoints[index];
+        if (element.action == 'start') {
+          if (index != this.timePoints.length - 1) {
+            timeLong += this.timePoints[index + 1].time - element.time;
+          } else {
+            timeLong += new Date() - element.time;
+          }
+          index = index + 2;
+        }
+        index++;
+      }
+      return timeLong;
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.timePoints = [];
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.setAction('stop');
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      this.setAction('start');
+    }
+  }, {
+    key: 'setAction',
+    value: function setAction(actionName) {
+      if (this.timePoints.length == 0) {
+        this.timePoints.push({
+          action: actionName,
+          time: new Date()
+        });
+      } else {
+        var timePoint = this.timePoints[this.timePoints.length - 1];
+        if (timePoint.action == actionName) {} else {
+          timePoint.time = new Date();
+        }
+      }
+    }
+  }]);
+
+  return TimeLine;
+}();
+
+exports.default = TimeLine;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain2 = __webpack_require__(4);
+
+var _BasePlain3 = _interopRequireDefault(_BasePlain2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Boss
+ */
+var Boss = function (_BasePlain) {
+  _inherits(Boss, _BasePlain);
+
+  function Boss() {
+    _classCallCheck(this, Boss);
+
+    var _this = _possibleConstructorReturn(this, (Boss.__proto__ || Object.getPrototypeOf(Boss)).call(this, true));
+
+    _this.type = 'boss';
+    _this.fixed.y = true;
+    _this.setShotInterVal(_util2.default.randInt(10, 20));
+    _this.width = _context2.default.option.ctxWidth * 0.6;
+    _this.height = _this.width * 0.6;
+    _this.position.x = _context2.default.option.ctxWidth * 0.5;
+    _this.position.y = 0;
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    _this.speedY = 0;
+    _this.icon = _resource2.default.enes[1];
+    _this.Hp = 200 + 200 * Math.random();
+    _this.shotSpeedFactor = 0.1;
+    var factor = 5 * Math.random();
+    _this.setXPath(function (x) {
+      return factor * Math.cos(this.moveTick / 15);
+    });
+
+    _this.shotType = {
+      type: 'umShot',
+      num: 4
+    };
+    _this.shotFactory = function () {
+      return this.shotor.CreateShot(this);
+    };
+    return _this;
+  }
+
+  return Boss;
+}(_BasePlain3.default);
+
+exports.default = Boss;
+
+module.exports = Boss;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain2 = __webpack_require__(4);
+
+var _BasePlain3 = _interopRequireDefault(_BasePlain2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * 敌军
+ * @param {*是否发射} isShot 
+ */
+var Enemy = function (_BasePlain) {
+  _inherits(Enemy, _BasePlain);
+
+  function Enemy(isShot) {
+    _classCallCheck(this, Enemy);
+
+    var _this = _possibleConstructorReturn(this, (Enemy.__proto__ || Object.getPrototypeOf(Enemy)).call(this));
+
+    _this.type = 'common';
+    _this.speedX = 0;
+    _this.shotSpeedFactor = 0.6;
+    _this.shotType = {
+      type: 'enemyShot',
+      num: 1
+    };
+    _this.shotFactory = function () {
+      return this.shotor.CreateShot(this);
+    };
+    return _this;
+  }
+
+  return Enemy;
+}(_BasePlain3.default);
+
+exports.default = Enemy;
+
+module.exports = Enemy;
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain2 = __webpack_require__(4);
+
+var _BasePlain3 = _interopRequireDefault(_BasePlain2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @param {*玩家} isShot 
+ */
+var Player = function (_BasePlain) {
+  _inherits(Player, _BasePlain);
+
+  function Player(stage) {
+    _classCallCheck(this, Player);
+
+    var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, true));
+
+    _this.stage = stage;
+    _this.fixed.y = true;
+    _this.icon = _resource2.default.plainImg;
+    _this.width = 30;
+    _this.height = 24;
+    _this.AllHp = 12;
+    _this.Hp = _this.AllHp;
+    _this.position.x = (_this.stage.width - _this.width) / 2;
+    _this.position.y = _this.stage.height - _this.height;
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    _this.enableShot = true;
+    _this.speedY = -1;
+    _this.shotType = {
+      type: 'umShot',
+      num: 5
+    };
+    _this.shotFactory = function () {
+      return this.shotor.CreateShot(this);
+    };
+    _this.reset = function () {
+      this.Hp = 3;
+      this.position.x = (this.stage.width - this.width) / 2;
+      this.position.y = this.stage.height - this.height;
+      this.shotType = {
+        type: 'umShot',
+        num: 5
+      };
+      this.setShotInterVal(5);
+    };
+    return _this;
+  }
+
+  return Player;
+}(_BasePlain3.default);
+
+exports.default = Player;
+
+module.exports = Player;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain = __webpack_require__(4);
+
+var _BasePlain2 = _interopRequireDefault(_BasePlain);
+
+var _Boss = __webpack_require__(17);
+
+var _Boss2 = _interopRequireDefault(_Boss);
+
+var _Enemy = __webpack_require__(18);
+
+var _Enemy2 = _interopRequireDefault(_Enemy);
+
+var _Player = __webpack_require__(19);
+
+var _Player2 = _interopRequireDefault(_Player);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var createEnemy = function createEnemy(type) {
+  // 1 大飞机  2,3,4 小飞机
+  if (type == 1) {
+    var enemy = new _Enemy2.default(true);
+    enemy.setShotInterVal(_util2.default.randInt(5, 15));
+    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
+    enemy.position.y = 0 - enemy.width / 2;
+    enemy.speedY = _util2.default.randInt(3, 6);
+    enemy.icon = _resource2.default.enes[type - 1];
+    enemy.width = 40;
+    enemy.height = 60;
+    enemy.Hp = 20 + 10 * Math.random();
+    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
+    return enemy;
+  } else if (type == 2 || type == 3 || type == 4) {
+    var enemy = new _Enemy2.default(_context2.default, true);
+    enemy.setShotInterVal(_util2.default.randInt(5, 15));
+    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
+    enemy.position.y = 0 - enemy.width / 2;
+    enemy.speedY = _util2.default.randInt(3, 6);
+
+    enemy.icon = _resource2.default.enes[type - 1];
+    enemy.width = 20;
+    enemy.height = 30;
+    enemy.Hp = 2 + 5 * Math.random();
+    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
+    return enemy;
+  } else {
+    return new _Boss2.default();
+  }
+};
+
+module.exports = { createEnemy: createEnemy, BasePlain: _BasePlain2.default, Boss: _Boss2.default, Enemy: _Enemy2.default, Player: _Player2.default };
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bullet = function (_EObject) {
+  _inherits(Bullet, _EObject);
+
+  function Bullet(option) {
+    _classCallCheck(this, Bullet);
+
+    var _this = _possibleConstructorReturn(this, (Bullet.__proto__ || Object.getPrototypeOf(Bullet)).call(this, option));
+
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    return _this;
+  }
+
+  return Bullet;
+}(_EObject3.default);
+
+exports.default = Bullet;
+
+module.exports = Bullet;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * 子弹
+ */
+var Shot = function (_EObject) {
+  _inherits(Shot, _EObject);
+
+  function Shot() {
+    _classCallCheck(this, Shot);
+
+    var _this = _possibleConstructorReturn(this, (Shot.__proto__ || Object.getPrototypeOf(Shot)).call(this));
+
+    _this.speedX = 0;
+    _this.type = 'common';
+    _this.attack = 1; // 攻击力
+    _this.belong = 0;
+    return _this;
+  }
+
+  return Shot;
+}(_EObject3.default);
+
+exports.default = Shot;
+
+module.exports = Shot;
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _EObject = __webpack_require__(3);
+
+var _EObject2 = _interopRequireDefault(_EObject);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var shotTypes = ['umShot', 'gzShot', 'common'];
+
+module.exports = shotTypes;
+exports.default = shotTypes;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Spoil2 = __webpack_require__(5);
+
+var _Spoil3 = _interopRequireDefault(_Spoil2);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GzShotSpoil = function (_Spoil) {
+  _inherits(GzShotSpoil, _Spoil);
+
+  function GzShotSpoil(object) {
+    _classCallCheck(this, GzShotSpoil);
+
+    var _this = _possibleConstructorReturn(this, (GzShotSpoil.__proto__ || Object.getPrototypeOf(GzShotSpoil)).call(this, object));
+
+    _this.spoiltype = _SpoilType2.default.gzShot;
+    _this.icon = _resource2.default.g;
+    return _this;
+  }
+
+  _createClass(GzShotSpoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {
+      if (targetPlayer.shotType.type == _SpoilType2.default.gzShot) {
+        targetPlayer.shotType.num++;
+      } else {
+        targetPlayer.shotType = {
+          type: _SpoilType2.default.gzShot,
+          num: 1
+        };
+      }
+      targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2);
+    }
+  }]);
+
+  return GzShotSpoil;
+}(_Spoil3.default);
+
+exports.default = GzShotSpoil;
+
+module.exports = GzShotSpoil;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Spoil2 = __webpack_require__(5);
+
+var _Spoil3 = _interopRequireDefault(_Spoil2);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var HpSpoil = function (_Spoil) {
+  _inherits(HpSpoil, _Spoil);
+
+  function HpSpoil(object) {
+    _classCallCheck(this, HpSpoil);
+
+    var _this = _possibleConstructorReturn(this, (HpSpoil.__proto__ || Object.getPrototypeOf(HpSpoil)).call(this, object));
+
+    _this.spoiltype = _SpoilType2.default.addHp;
+    _this.icon = _resource2.default.hp;
+    return _this;
+  }
+
+  _createClass(HpSpoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {
+      if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++;
+    }
+  }]);
+
+  return HpSpoil;
+}(_Spoil3.default);
+
+exports.default = HpSpoil;
+
+module.exports = HpSpoil;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Spoil2 = __webpack_require__(5);
+
+var _Spoil3 = _interopRequireDefault(_Spoil2);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UmShotSpoil = function (_Spoil) {
+  _inherits(UmShotSpoil, _Spoil);
+
+  function UmShotSpoil(object) {
+    _classCallCheck(this, UmShotSpoil);
+
+    var _this = _possibleConstructorReturn(this, (UmShotSpoil.__proto__ || Object.getPrototypeOf(UmShotSpoil)).call(this, object));
+
+    _this.spoiltype = _SpoilType2.default.umShot;
+    _this.icon = _resource2.default.u;
+    return _this;
+  }
+
+  _createClass(UmShotSpoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {
+      if (targetPlayer.shotType.type == _SpoilType2.default.umShot) {
+        if (targetPlayer.shotType.num > 7) {
+          targetPlayer.shotEx++;
+        } else {
+          targetPlayer.shotType.num++;
+        }
+      } else {
+        targetPlayer.shotType = {
+          type: _SpoilType2.default.umShot,
+          num: 1
+        };
+      }
+
+      targetPlayer.setShotInterVal(2);
+    }
+  }]);
+
+  return UmShotSpoil;
+}(_Spoil3.default);
+
+exports.default = UmShotSpoil;
+
+module.exports = UmShotSpoil;
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _GzShotSpoil = __webpack_require__(24);
+
+var _GzShotSpoil2 = _interopRequireDefault(_GzShotSpoil);
+
+var _HpSpoil = __webpack_require__(25);
+
+var _HpSpoil2 = _interopRequireDefault(_HpSpoil);
+
+var _Spoil = __webpack_require__(5);
+
+var _Spoil2 = _interopRequireDefault(_Spoil);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+var _UmShotSpoil = __webpack_require__(26);
+
+var _UmShotSpoil2 = _interopRequireDefault(_UmShotSpoil);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SpoilManager = function () {
+  function SpoilManager() {
+    _classCallCheck(this, SpoilManager);
+  }
+
+  _createClass(SpoilManager, [{
+    key: 'createSpoil',
+    value: function createSpoil(obj) {
+      if (Math.random() < 0.5) return undefined;
+      var types = Object.values(_SpoilType2.default);
+      var t = types[(Math.random() * types.length).toString().charAt(0) - '0'];
+      var spoil;
+      switch (t) {
+        case _SpoilType2.default.umShot:
+          spoil = new _UmShotSpoil2.default(obj);
+          break;
+        case _SpoilType2.default.gzShot:
+          spoil = new _GzShotSpoil2.default(obj);
+          break;
+        case _SpoilType2.default.addHp:
+          spoil = new _HpSpoil2.default(obj);
+          break;
+      }
+      var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5);
+      spoil.setXPath(function (x) {
+        return factor * (Math.cos(this.moveTick / 15) + Math.random() - 0.5);
+      });
+      return spoil;
+    }
+  }]);
+
+  return SpoilManager;
+}();
+
+module.exports = {
+  Spoil: _Spoil2.default,
+  GzShotSpoil: _GzShotSpoil2.default,
+  HpSpoil: _HpSpoil2.default,
+  SpoilType: _SpoilType2.default,
+  UmShotSpoil: _UmShotSpoil2.default,
+  SpoilManager: SpoilManager };
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Control2 = __webpack_require__(7);
+
+var _Control3 = _interopRequireDefault(_Control2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bar = function (_Control) {
+  _inherits(Bar, _Control);
+
+  function Bar(option) {
+    _classCallCheck(this, Bar);
+
+    var _this = _possibleConstructorReturn(this, (Bar.__proto__ || Object.getPrototypeOf(Bar)).call(this, option));
+
+    _this.rightButton = option.rightButton;
+    _this.render = function (drawContext) {
+      if (!this.isDisplay) return;
+      drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
+      // hp
+      for (var index = 0; index < _context2.default.stageManager.stage.player.Hp; index++) {
+        var width = (_resource2.default.hp.width - 15) * index;
+        drawContext.drawImage(_resource2.default.hp, width, 0, 20, _context2.default.headOffset);
+      }
+      // rightbutton
+      this.rightButton.render(drawContext);
+    };
+    _this.registerControl(_this.rightButton);
+    return _this;
+  }
+
+  return Bar;
+}(_Control3.default);
+
+module.exports = Bar;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Control2 = __webpack_require__(7);
+
+var _Control3 = _interopRequireDefault(_Control2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Button = __webpack_require__(9);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Modal = function (_Control) {
+  _inherits(Modal, _Control);
+
+  function Modal(option) {
+    _classCallCheck(this, Modal);
+
+    option.backgroundColor = 'silver';
+
+    var _this = _possibleConstructorReturn(this, (Modal.__proto__ || Object.getPrototypeOf(Modal)).call(this, option));
+
+    _this.cancel = option.cancel;
+    _this.confirmBtn = option.confirmBtn;
+    _this.on('keyUp', function (params) {
+      option.cancel();
+    });
+    _this.on('click', function (params) {
+      // option.cancel()
+    });
+    _this.confirmBtn = new _Button2.default({
+      text: '确定',
+      position: {
+        x: _this.position.x + (_this.width - 180) / 4,
+        y: _this.position.y + _this.height - 40
+      },
+      width: 90,
+      height: 30,
+      event: {
+        click: function click(obj, eventInfo) {
+          if (_this.cancel) _this.confirm();
+        }
+      }
+    });
+    _this.cancelBtn = new _Button2.default({
+      text: '取消',
+      position: {
+        x: _this.position.x + _this.width / 2 + (_this.width - 180) / 4,
+        y: _this.position.y + _this.height - 40
+      },
+      width: 90,
+      height: 30,
+      event: {
+        click: function click(obj, eventInfo) {
+          if (_this.confirm) _this.cancel();
+        }
+      }
+    });
+
+    _this.registerControl(_this.confirmBtn);
+    _this.registerControl(_this.cancelBtn);
+    return _this;
+  }
+
+  return Modal;
+}(_Control3.default);
+
+module.exports = Modal;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Control2 = __webpack_require__(7);
+
+var _Control3 = _interopRequireDefault(_Control2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextBlock = function (_Control) {
+  _inherits(TextBlock, _Control);
+
+  function TextBlock(option) {
+    _classCallCheck(this, TextBlock);
+
+    var _this = _possibleConstructorReturn(this, (TextBlock.__proto__ || Object.getPrototypeOf(TextBlock)).call(this, option));
+
+    _this.textArray = [];
+    _this.setText = function (texts) {
+      if (!texts) return;
+      this.clear();
+      this.append(texts);
+    };
+    _this.clear = function (texts) {
+      this.textArray.length = 0;
+    };
+    _this.append = function (texts) {
+      if (!texts) return;
+      if (texts instanceof Array) {
+        [].push.apply(this.textArray, texts);
+      } else {
+        this.textArray.push(texts.toString());
+      }
+    };
+    _this.render = function (drawContext) {
+      for (var index = 0; index < this.textArray.length; index++) {
+        drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y);
+      }
+    };
+    return _this;
+  }
+
+  return TextBlock;
+}(_Control3.default);
+
+module.exports = TextBlock;
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports) {
 
 var g;
@@ -19428,7 +20316,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 15 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -19456,12 +20344,13 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 16 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(7);
+module.exports = __webpack_require__(12);
 
 
 /***/ })
 /******/ ]);
 //# sourceMappingURL=engine.js.map
+window.Engine=module.exports;

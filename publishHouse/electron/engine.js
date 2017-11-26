@@ -75,20 +75,6 @@ module.exports =
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    uiRoot: []
-};
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var util = {
@@ -239,6 +225,62 @@ var util = {
 };exports.default = util;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ShapeElementManager = function () {
+    function ShapeElementManager() {
+        _classCallCheck(this, ShapeElementManager);
+
+        this.uiRoot = [];
+    }
+
+    _createClass(ShapeElementManager, [{
+        key: 'addElement',
+        value: function addElement(element) {
+            this.uiRoot.push(element);
+        }
+    }, {
+        key: 'removeElement',
+        value: function removeElement(element) {
+            if (!element) return;
+            element.destroy();
+            _util2.default.removeArr(this.uiRoot, element);
+        }
+    }, {
+        key: 'forEach',
+        value: function forEach(func) {
+            for (var index = 0; index < this.uiRoot.length; index++) {
+                func(this.uiRoot[index]);
+            }
+        }
+    }]);
+
+    return ShapeElementManager;
+}();
+
+exports.default = {
+    objectManager: new ShapeElementManager()
+};
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -331,11 +373,11 @@ exports.default = resource;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -352,26 +394,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 var EObject = function () {
   function EObject(option) {
+    var _this = this;
+
     _classCallCheck(this, EObject);
 
-    this.isDisplay = true;
+    this.isDisplay = true; //is show
     this.Oid = ++_context2.default.currentOid; // id
-    this.backgroundColor;
-    this.icon; // 图片
-    this.name = '';
-    this.width = 0; // 宽度
-    this.height = 0; // 高度
-    this.speedY = 5; // Y速度
-    this.speedX = 0; // X速度
-    this.fixed = { x: false, y: false };
-    this.position = { x: 0, y: 0 // 位置
-    };this.collisionArea = [];
-    this.children = [];
-    this.zIndex = 0;
+    this.backgroundColor; //background color
+    this.icon; //background image
+    this.name = ''; //name
+    this.width = 0; // width
+    this.height = 0; // height
+    this.speedY = 5; // Y speed
+    this.speedX = 0; // X speed
+    this.fixed = { x: false, y: false //x,y position constraint
+    };this.position = { x: 0, y: 0 //position
+    };this.collisionArea = []; //collision area
+    this.children = []; //child element
+    this.zIndex = 0; //layer index
+    this.borderColor = "black"; //border color
+    this.borderSize = 1; //border size
+    //property above can be override
     _lodash2.default.merge(this, option);
-    this._xpath;
-    this._ypath;
-    this.moveTick = 0;
+    //property below can't be override
+    this._xpath; //x position function
+    this._ypath; //x position function 
+    this._moveTick = 0; //tick
+
+    if (option && option.event) {
+      Object.keys(option.event).forEach(function (actionName) {
+        if (option.event[actionName] instanceof Function) {
+          _this.on(actionName, option.event[actionName]);
+        }
+      });
+    }
   }
 
   _createClass(EObject, [{
@@ -403,12 +459,12 @@ var EObject = function () {
   }, {
     key: 'getAbsoluteCollisionArea',
     value: function getAbsoluteCollisionArea() {
-      var _this = this;
+      var _this2 = this;
 
       return _lodash2.default.map(this.collisionArea, function (area) {
         return {
-          x: _this.position.x + area.x,
-          y: _this.position.y + area.y,
+          x: _this2.position.x + area.x,
+          y: _this2.position.y + area.y,
           width: area.width,
           height: area.height
         };
@@ -428,7 +484,7 @@ var EObject = function () {
     key: 'update',
     value: function update() {
       this.move();
-      this.moveTick++;
+      this._moveTick++;
     }
   }, {
     key: 'show',
@@ -443,16 +499,21 @@ var EObject = function () {
   }, {
     key: 'render',
     value: function render(drawContext) {
+      if (!this.isDisplay) return;
       if (this.backgroundColor) {
         drawContext.save();
+
+        var radis = Math.floor(Math.min(this.width, this.height) * 0.08);
+        this.polygon(drawContext, this.position.x, this.position.y, this.width + 1, this.height + 1, radis);
+
         drawContext.fillStyle = this.backgroundColor;
-        drawContext.fillRect(this.position.x, this.position.y, this.width, this.height);
+        drawContext.fill();
         drawContext.restore();
       }
 
-      if (!this.isDisplay) return;
+      this.drawBordor(drawContext);
       if (this.icon) {
-        drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
+        this.drawBakcgroundImage(drawContext);
       }
 
       if (_context2.default.setting.isDebug.value) {
@@ -474,14 +535,68 @@ var EObject = function () {
           drawContext.stroke();
         }
       }
+      this.drawText(drawContext);
+      if (this.children) {
+        this.children.forEach(function (control) {
+          control.render(drawContext);
+        });
+      }
+    }
+  }, {
+    key: 'drawBordor',
+    value: function drawBordor(drawContext) {
+      if (this.borderColor && this.borderSize > 0) {
+        drawContext.save();
+        var radis = Math.floor(Math.min(this.width, this.height) * 0.08);
+        this.polygon(drawContext, this.position.x - 1, this.position.y - 1, this.width + 1, this.height + 1, radis);
+        drawContext.strokeStyle = this.borderColor;
+        drawContext.stroke();
+        drawContext.restore();
+      }
+    }
+  }, {
+    key: 'drawBakcgroundImage',
+    value: function drawBakcgroundImage(drawContext) {
+      if (this.icon) {
+        drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height), 0, 0, this.icon.width, this.icon.height;
+      }
+    }
+  }, {
+    key: 'polygon',
+    value: function polygon(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x, y + radius);
+      ctx.lineTo(x, y + height - radius);
+      ctx.quadraticCurveTo(x, y + height, x + radius, y + height);
+      ctx.lineTo(x + width - radius, y + height);
+      ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+      ctx.lineTo(x + width, y + radius);
+      ctx.quadraticCurveTo(x + width, y, x + width - radius, y);
+      ctx.lineTo(x + radius, y);
+      ctx.quadraticCurveTo(x, y, x, y + radius);
+      ctx.closePath();
+    }
+  }, {
+    key: 'drawText',
+    value: function drawText(drawContext) {
+      if (!this.text) return;
+      drawContext.save();
+
+      drawContext.font = this.height * 0.6 + "px Arial";
+      var offsetToButton = this.height * 0.2;
+      var requireWidth = drawContext.measureText(this.text);
+      var leftOffset = (this.width - requireWidth.width) / 2;
+      drawContext.fillText(this.text, this.position.x + (leftOffset >= 0 ? leftOffset : 0), this.position.y + this.height - offsetToButton, this.width);
+      drawContext.restore();
     }
   }, {
     key: 'on',
     value: function on(eventName, callback) {
-      var _this2 = this;
+      var _this3 = this;
 
+      if (!callback || !eventName) return;
       var func = function func(obj, eventInfo) {
-        if (callback) callback.call(_this2, eventInfo);
+        if (callback) callback.call(_this3, eventInfo);
       };
       if (!this[eventName]) {
         this[eventName] = [];
@@ -492,7 +607,7 @@ var EObject = function () {
   }, {
     key: 'off',
     value: function off(eventName, callack) {
-      _context2.default.losEvent.detachEvent(this, eventName, callack);
+      _context2.default.losEvent.deAttchEvent(this, eventName, callack);
     }
   }, {
     key: 'getEvent',
@@ -502,12 +617,23 @@ var EObject = function () {
   }, {
     key: 'registerControl',
     value: function registerControl(childControl) {
+      if (childControl.zIndex < this.zIndex) childControl.zIndex = this.zIndex + 1;
       this.children.push(childControl);
     }
   }, {
     key: 'cancelControl',
     value: function cancelControl(childControl) {
       _util2.default.removeArr(this.children, childControl);
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      _context2.default.losEvent.deAttchEvent(this);
+      if (this.children) {
+        this.children.forEach(function (element) {
+          element.destroy();
+        });
+      }
     }
   }]);
 
@@ -535,7 +661,7 @@ var _EObject2 = __webpack_require__(3);
 
 var _EObject3 = _interopRequireDefault(_EObject2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -543,7 +669,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -565,6 +691,7 @@ var BasePlain = function (_EObject) {
 
     var _this = _possibleConstructorReturn(this, (BasePlain.__proto__ || Object.getPrototypeOf(BasePlain)).call(this));
 
+    _this.borderColor = null;
     _this.AllHp = 1; // 总HP
     _this.Hp = 1; // 当前Hp
     _this.isDie = false; // 是否死亡
@@ -708,7 +835,7 @@ module.exports = {
 "use strict";
 
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -716,7 +843,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -762,7 +889,7 @@ var _EObject = __webpack_require__(3);
 
 var _EObject2 = _interopRequireDefault(_EObject);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -770,7 +897,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -894,15 +1021,11 @@ module.exports = {
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _Control2 = __webpack_require__(7);
 
 var _Control3 = _interopRequireDefault(_Control2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -910,7 +1033,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -933,18 +1056,6 @@ var Button = function (_Control) {
     _this.text = option.text;
     return _this;
   }
-
-  _createClass(Button, [{
-    key: 'render',
-    value: function render(drawContext) {
-      _get(Button.prototype.__proto__ || Object.getPrototypeOf(Button.prototype), 'render', this).call(this, drawContext);
-      if (!this.text) return;
-      drawContext.save();
-      drawContext.font = this.height + "px Arial";
-      drawContext.fillText(this.text, this.position.x, this.position.y);
-      drawContext.restore();
-    }
-  }]);
 
   return Button;
 }(_Control3.default);
@@ -18081,7 +18192,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -18089,7 +18200,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -18151,29 +18262,32 @@ function Engine() {
       },
       width: _context2.default.headOffset,
       height: _context2.default.headOffset - 4,
-      icon: _resource2.default.setting
-    });
-    settingButton.on('click', function (eventInfo) {
-      stageManager.stage.stop();
-      var modal = new _ui.Modal({
-        title: '设置页面',
-        position: {
-          x: 10,
-          y: _context2.default.option.ctxHeight / 4
-        },
-        width: _context2.default.option.ctxWidth - 20,
-        height: _context2.default.option.ctxHeight / 2,
-        zIndex: 2,
-        confirm: function confirm() {
-          stageManager.stage.restart();
-        },
-        cancel: function cancel() {
-          stageManager.stage.restart();
-          _util2.default.removeArr(_context2.default.uiRoot, modal);
+      icon: _resource2.default.setting,
+      event: {
+        'click': function click(eventInfo) {
+          stageManager.stage.stop();
+          var modal = new _ui.Modal({
+            title: '设置页面',
+            position: {
+              x: 10,
+              y: _context2.default.option.ctxHeight / 4
+            },
+            width: _context2.default.option.ctxWidth - 20,
+            height: _context2.default.option.ctxHeight / 2,
+            zIndex: 2,
+            confirm: function confirm() {
+              stageManager.stage.restart();
+            },
+            cancel: function cancel() {
+              stageManager.stage.restart();
+              _context2.default.objectManager.removeElement(modal);
+            }
+          });
+          _context2.default.objectManager.addElement(modal);
         }
-      });
-      _context2.default.uiRoot.push(modal);
+      }
     });
+
     // bar
     bar = new _ui.Bar({
       icon: _resource2.default.head,
@@ -18188,8 +18302,8 @@ function Engine() {
         y: _context2.default.headOffset
       }
     });
-    _context2.default.uiRoot.push(bar);
-    _context2.default.uiRoot.push(textBlock);
+    _context2.default.objectManager.addElement(bar);
+    _context2.default.objectManager.addElement(textBlock);
   };
 
   /**
@@ -18229,7 +18343,7 @@ function Engine() {
       textBlock.render(drawContext)
     }*/
 
-    _context2.default.uiRoot.forEach(function (item) {
+    _context2.default.objectManager.forEach(function (item) {
       item.render(drawContext);
     });
   };
@@ -18256,7 +18370,7 @@ module.exports = Engine;
 "use strict";
 
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -18264,7 +18378,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -18371,11 +18485,11 @@ module.exports = {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -18394,6 +18508,8 @@ var LosEvent = function () {
     // super()
     this.eventContainer = [];
     this.init(_option);
+    this.focusTarget;
+    this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus'];
   }
 
   _createClass(LosEvent, [{
@@ -18429,20 +18545,29 @@ var LosEvent = function () {
       if (-1 === actions.indexOf(action)) actions.push(action);
     }
   }, {
-    key: 'detachEvent',
-    value: function detachEvent(target, action, funcs) {
+    key: 'deAttchEvent',
+    value: function deAttchEvent(target, action, funcs) {
       var items = this.findTarget(target);
 
-      for (var i = 0; i < items.actions.length; i++) {
-        if (items.actions[i] == action) {
-          if (funcs) {
-            _util2.default.removeArr(items.target[action], funcs);
-          } else {
-            _util2.default.removeArr(items.actions, items.actions[i]);
-            return;
+      if (action) {
+        for (var i = 0; i < items.actions.length; i++) {
+          if (items.actions[i] == action) {
+            if (funcs) {
+              _util2.default.removeArr(items.target[action], funcs);
+            } else {
+              _util2.default.removeArr(items.actions, items.actions[i]);
+              return;
+            }
           }
         }
+      } else {
+        this.deAttchAllEvent(items);
       }
+    }
+  }, {
+    key: 'deAttchAllEvent',
+    value: function deAttchAllEvent(target) {
+      _util2.default.removeArr(this.eventContainer, target);
     }
     // 触发事件中 action-eventInfo
 
@@ -18455,16 +18580,27 @@ var LosEvent = function () {
 
       if (targets.length == 0) {
         return;
-      } else if (targets.length == 1) {
-        targets[0].target[action].forEach(function (func) {
-          func(targets[0], eventInfo);
+      } else if (targets.length > 1) {
+        targets.sort(function (a, b) {
+          return b.target.zIndex - a.target.zIndex;
         });
-      } else {
-        targets.sort(function (a) {
-          return a.Oid;
-        });
-        targets[0].target[action].forEach(function (func) {
-          func(targets[0], eventInfo);
+      }
+      this.invokeEventListiner(targets[0].target, action, eventInfo);
+
+      if (action == 'click') {
+        if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo);
+        this.focusTarget = targets[0].target;
+        this.invokeEventListiner(targets[0].target, 'focus', eventInfo);
+      }
+    }
+  }, {
+    key: 'invokeEventListiner',
+    value: function invokeEventListiner(target, action, eventInfo) {
+      if (target[action] && target[action] instanceof Array) {
+        target[action].forEach(function (func) {
+          if (func instanceof Function) {
+            func(target, eventInfo);
+          }
         });
       }
     }
@@ -18599,11 +18735,11 @@ var _EObject2 = __webpack_require__(3);
 
 var _EObject3 = _interopRequireDefault(_EObject2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -18656,17 +18792,20 @@ var Stage = function (_EObject) {
       },
       width: _this.width / 2,
       height: 40,
-      icon: _resource2.default.button
-    });
-
-    _this.resetButton.on('click', function (eventInfo) {
-      _this.resetButton.hide();
-      if (_this.player.hp > 0) {
-        _this.start();
-      } else {
-        _this.restart();
+      icon: _resource2.default.button,
+      borderSize: 0,
+      event: {
+        click: function click(eventInfo) {
+          _this.resetButton.hide();
+          if (_this.player.hp > 0) {
+            _this.start();
+          } else {
+            _this.restart();
+          }
+        }
       }
     });
+
     var plainMoveState = {
       isMouseDown: false,
       position: { x: 0, y: 0 }
@@ -18805,9 +18944,6 @@ var Stage = function (_EObject) {
           _util2.default.removeArr(spoils, spoil);
           continue;
         }
-        // if (!util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
-        //   util.removeArr(spoils, spoil)
-        // }
       }
     }
   }, {
@@ -19071,30 +19207,28 @@ function StageManager() {
   };
   this.init = function () {
     if (this.stage) this.stage.destroy();
-    _util2.default.removeArr(_context2.default.uiRoot, this.stage);
+    _context2.default.objectManager.removeElement(this.stage);
     var stage = new Stage(this.stagesConfig[0]);
     stage.isRunning = 0;
     this.stage = stage;
-    _context2.default.uiRoot.push(stage);
+    _context2.default.objectManager.addElement(stage);
   };
   this.next = function () {
     this.currentStageIndex++;
     if (this.stagesConfig.length > this.currentStageIndex) {
       this.stage.destroy();
-      if (this.stage) this.stage.destroy();
-      _util2.default.removeArr(_context2.default.uiRoot, this.stage);
+      _context2.default.objectManager.removeElement(this.stage);
       var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
       this.stage = stage;
-      _context2.default.uiRoot.push(stage);
+      _context2.default.objectManager.addElement(stage);
     }
   };
   this.reset = function () {
     this.currentStageIndex = 0;
-    if (this.stage) this.stage.destroy();
-    _util2.default.removeArr(_context2.default.uiRoot, this.stage);
+    _context2.default.objectManager.removeElement(this.stage);
     var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
     this.stage = stage;
-    _context2.default.uiRoot.push(stage);
+    _context2.default.objectManager.addElement(stage);
   };
 }
 module.exports = {
@@ -19190,7 +19324,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19198,7 +19332,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19270,7 +19404,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19278,7 +19412,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19337,7 +19471,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19345,7 +19479,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19418,7 +19552,7 @@ module.exports = Player;
 "use strict";
 
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19426,7 +19560,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19497,7 +19631,7 @@ var _EObject2 = __webpack_require__(3);
 
 var _EObject3 = _interopRequireDefault(_EObject2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19505,7 +19639,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19551,7 +19685,7 @@ var _EObject2 = __webpack_require__(3);
 
 var _EObject3 = _interopRequireDefault(_EObject2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19559,7 +19693,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19611,7 +19745,7 @@ var _EObject = __webpack_require__(3);
 
 var _EObject2 = _interopRequireDefault(_EObject);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19619,7 +19753,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19643,7 +19777,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19651,7 +19785,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19719,7 +19853,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19727,7 +19861,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19787,7 +19921,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19795,7 +19929,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19941,7 +20075,7 @@ var _Control2 = __webpack_require__(7);
 
 var _Control3 = _interopRequireDefault(_Control2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -19949,7 +20083,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -19997,15 +20131,11 @@ module.exports = Bar;
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _Control2 = __webpack_require__(7);
 
 var _Control3 = _interopRequireDefault(_Control2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -20013,7 +20143,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
@@ -20039,6 +20169,8 @@ var Modal = function (_Control) {
 
     var _this = _possibleConstructorReturn(this, (Modal.__proto__ || Object.getPrototypeOf(Modal)).call(this, option));
 
+    _this.cancel = option.cancel;
+    _this.confirmBtn = option.confirmBtn;
     _this.on('keyUp', function (params) {
       option.cancel();
     });
@@ -20046,42 +20178,38 @@ var Modal = function (_Control) {
       // option.cancel()
     });
     _this.confirmBtn = new _Button2.default({
-      text: 'confirm',
+      text: '确定',
       position: {
-        x: _this.position.x + (_this.width - 30) / 4,
-        y: _this.position.y + _this.height - 10
+        x: _this.position.x + (_this.width - 180) / 4,
+        y: _this.position.y + _this.height - 40
       },
       width: 90,
-      height: 30
-      // icon: resource.setting
+      height: 30,
+      event: {
+        click: function click(obj, eventInfo) {
+          if (_this.cancel) _this.confirm();
+        }
+      }
     });
     _this.cancelBtn = new _Button2.default({
-      text: 'cancel',
+      text: '取消',
       position: {
-        x: _this.position.x + _this.width / 2 + (_this.width - 30) / 4,
-        y: _this.position.y + _this.height - 10
+        x: _this.position.x + _this.width / 2 + (_this.width - 180) / 4,
+        y: _this.position.y + _this.height - 40
       },
       width: 90,
-      height: 30
-      // icon: resource.setting
+      height: 30,
+      event: {
+        click: function click(obj, eventInfo) {
+          if (_this.confirm) _this.cancel();
+        }
+      }
     });
+
     _this.registerControl(_this.confirmBtn);
     _this.registerControl(_this.cancelBtn);
     return _this;
   }
-
-  _createClass(Modal, [{
-    key: 'render',
-    value: function render(drawContext) {
-      _get(Modal.prototype.__proto__ || Object.getPrototypeOf(Modal.prototype), 'render', this).call(this, drawContext);
-      // 画边框
-
-      // 画按钮 
-      this.confirmBtn.render(drawContext);
-      this.cancelBtn.render(drawContext);
-      // 画
-    }
-  }]);
 
   return Modal;
 }(_Control3.default);
@@ -20099,7 +20227,7 @@ var _Control2 = __webpack_require__(7);
 
 var _Control3 = _interopRequireDefault(_Control2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -20107,7 +20235,7 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 

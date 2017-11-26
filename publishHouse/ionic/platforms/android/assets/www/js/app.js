@@ -26,9 +26,7 @@ angular.module('starter', ['ionic'])
     var en = new Engine()
     en.Create({
       id: 'myCanvas',
-      attachEvent: $scope,
-      showConsoleView: showConsoleView,
-      initConsoleView: initConsoleView
+      attachEvent: $scope
     })
     en.Start()
   }])
