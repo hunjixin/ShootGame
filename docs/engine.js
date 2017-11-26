@@ -1,6 +1,5 @@
 var module={}
 var exports={}
-var __dirname=''
 module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache

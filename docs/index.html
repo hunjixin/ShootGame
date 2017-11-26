@@ -18,12 +18,12 @@
       position: fixed;
       top: 0;
       left: 0;
-      padding:0;
-      margin:0;
+      padding: 0;
+      margin: 0;
     }
   </style>
 
-<script src="https://cdn.bootcss.com/ionic/1.3.2/js/ionic.bundle.js"></script>
+  <script src="https://cdn.bootcss.com/ionic/1.3.2/js/ionic.bundle.js"></script>
 </head>
 
 <body ng-app="gameDem" ng-controller="crash" style="height:100%;width:100%;">
@@ -32,9 +32,11 @@
     style="height:100%;width:100%;border:1px solid #d3d3d3;background:#ffffff;">
     Your browser does not support the HTML5 canvas tag.
   </canvas>
-
-  <script  type="text/javascript" src="engine.js"></script>
-  <script  type="text/javascript" src="app.js"></script>
+  <script>
+    window.__dirname = 'https://raw.githubusercontent.com/hunjixin/FightShootingGame/master/docs'
+  </script>
+  <script type="text/javascript" src="engine.js"></script>
+  <script type="text/javascript" src="app.js"></script>
 
 </body>
 
