@@ -1,4 +1,7 @@
-var Engine =
+var module={}
+var exports={}
+var __dirname=''
+module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,23 +67,11 @@ var Engine =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -221,6 +212,13 @@ var util = {
       return false;
     }
   },
+  isElectron: function isElectron() {
+    if (navigator.userAgent.match(/(Electron)/i)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
   randInt: function randInt(min, max) {
     if (min > max) return max;
     return parseInt(Math.random() * (max - min)) + min;
@@ -228,6 +226,62 @@ var util = {
 
   // Do setup work here
 };exports.default = util;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ShapeElementManager = function () {
+    function ShapeElementManager() {
+        _classCallCheck(this, ShapeElementManager);
+
+        this.uiRoot = [];
+    }
+
+    _createClass(ShapeElementManager, [{
+        key: 'addElement',
+        value: function addElement(element) {
+            this.uiRoot.push(element);
+        }
+    }, {
+        key: 'removeElement',
+        value: function removeElement(element) {
+            if (!element) return;
+            element.destroy();
+            _util2.default.removeArr(this.uiRoot, element);
+        }
+    }, {
+        key: 'forEach',
+        value: function forEach(func) {
+            for (var index = 0; index < this.uiRoot.length; index++) {
+                func(this.uiRoot[index]);
+            }
+        }
+    }]);
+
+    return ShapeElementManager;
+}();
+
+exports.default = {
+    objectManager: new ShapeElementManager()
+};
 
 /***/ }),
 /* 2 */
@@ -240,57 +294,57 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var baseUrl = '';
+var baseUrl = __dirname;
 var plain = new Image();
-plain.src = baseUrl + __webpack_require__(12);
+plain.src = baseUrl + '/image/2332.png';
 
 var shot = new Image();
-shot.src = baseUrl + __webpack_require__(28);
+shot.src = baseUrl + '/image/shot.png';
 
 var eshot = new Image();
-eshot.src = baseUrl + __webpack_require__(22);
+eshot.src = baseUrl + '/image/eshot.png';
 
 var bg1 = new Image();
-bg1.src = baseUrl + __webpack_require__(13);
+bg1.src = baseUrl + '/image/bg1.jpg';
 
 var bg2 = new Image();
-bg2.src = baseUrl + __webpack_require__(14);
+bg2.src = baseUrl + '/image/bg2.png';
 
 var bg3 = new Image();
-bg3.src = baseUrl + __webpack_require__(15);
+bg3.src = baseUrl + '/image/bg3.jpg';
 
 var head = new Image();
-head.src = baseUrl + __webpack_require__(25);
+head.src = baseUrl + '/image/head.png';
 
 var hp = new Image();
-hp.src = baseUrl + __webpack_require__(26);
+hp.src = baseUrl + '/image/hp.png';
 
 var ene1 = new Image();
-ene1.src = baseUrl + __webpack_require__(18);
+ene1.src = baseUrl + '/image/ene1.png';
 var ene2 = new Image();
-ene2.src = baseUrl + __webpack_require__(19);
+ene2.src = baseUrl + '/image/ene2.png';
 var ene3 = new Image();
-ene3.src = baseUrl + __webpack_require__(20);
+ene3.src = baseUrl + '/image/ene3.png';
 var ene4 = new Image();
-ene4.src = baseUrl + __webpack_require__(21);
+ene4.src = baseUrl + '/image/ene4.png';
 
 var bullet = new Image();
-bullet.src = baseUrl + __webpack_require__(16);
+bullet.src = baseUrl + '/image/bullet.png';
 
 var button = new Image();
-button.src = baseUrl + __webpack_require__(17);
+button.src = baseUrl + '/image/button.png';
 
 var gz = new Image();
-gz.src = baseUrl + __webpack_require__(24);
+gz.src = baseUrl + '/image/gz.png';
 
 var u = new Image();
-u.src = baseUrl + __webpack_require__(29);
+u.src = baseUrl + '/image/u.png';
 
 var g = new Image();
-g.src = baseUrl + __webpack_require__(23);
+g.src = baseUrl + '/image/g.png';
 
 var setting = new Image();
-setting.src = baseUrl + __webpack_require__(27);
+setting.src = baseUrl + '/image/setting.png';
 
 var resource = {
   shot: shot,
@@ -320,122 +374,272 @@ exports.default = resource;
 "use strict";
 
 
-var _util = __webpack_require__(1);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
 
 var _lodash = __webpack_require__(11);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * 基类
  */
-function eShape(option) {
-  this.isDisplay = true;
-  var that = this;
-  this.Oid = ++_context2.default.currentOid; // id
-  this.icon; // 图片
-  this.name = '';
-  this.width = 0; // 宽度
-  this.height = 0; // 高度
-  this.speedY = 5; // Y速度
-  this.speedX = 0; // X速度
-  this.fixed = { x: false, y: false };
-  this.position = { x: 0, y: 0 // 位置
-  };this.collisionArea = [];
-  this.base = {};
-  this.move = this.base.move = function () {
-    that.moveY();
-    that.moveX();
-  };
-  _lodash2.default.merge(this, option);
-  this._xpath;
-  this._ypath;
-  this.moveTick = 0;
-  this.moveX = this.base.moveX = function () {
-    if (that.fixed.x) return;
-    if (that._xpath && that._xpath instanceof Function) {
-      that.position.x += that._xpath();
-    } else {
-      that.position.x += that.speedX;
+var EObject = function () {
+  function EObject(option) {
+    var _this = this;
+
+    _classCallCheck(this, EObject);
+
+    this.isDisplay = true;
+    this.Oid = ++_context2.default.currentOid; // id
+    this.backgroundColor;
+    this.icon; // 图片
+    this.name = '';
+    this.width = 0; // 宽度
+    this.height = 0; // 高度
+    this.speedY = 5; // Y速度
+    this.speedX = 0; // X速度
+    this.fixed = { x: false, y: false };
+    this.position = { x: 0, y: 0 // 位置
+    };this.collisionArea = [];
+    this.children = [];
+    this.zIndex = 0;
+    _lodash2.default.merge(this, option);
+    this._xpath;
+    this._ypath;
+    this.moveTick = 0;
+    this.border = "black";
+    if (option && option.event) {
+      Object.keys(option.event).forEach(function (actionName) {
+        if (option.event[actionName] instanceof Function) {
+          _this.on(actionName, option.event[actionName]);
+        }
+      });
     }
-  };
-  this.moveY = this.base.moveY = function () {
-    if (that.fixed.y) return;
-    if (that._ypath && that._ypath instanceof Function) {
-      that.position.y += that._ypath();
-    } else {
-      that.position.y += that.speedY;
+  }
+
+  _createClass(EObject, [{
+    key: 'move',
+    value: function move() {
+      this.moveY();
+      this.moveX();
     }
-  };
-  this.getAbsoluteCollisionArea = function () {
-    var that = this;
-    return _lodash2.default.map(this.collisionArea, function (area) {
-      return {
-        x: that.position.x + area.x,
-        y: that.position.y + area.y,
-        width: area.width,
-        height: area.height
-      };
-    });
-  };
-  this.setXPath = this.base.setXPath = function (xpath) {
-    that._xpath = xpath;
-  };
-  this.setYPath = this.base.setYPath = function (ypath) {
-    that._xpath = ypath;
-  };
-
-  this.update = this.base.update = function () {
-    that.move();
-    that.moveTick++;
-  };
-
-  this.show = this.base.show = function () {
-    that.isDisplay = true;
-  };
-  this.hide = this.base.hide = function () {
-    that.isDisplay = false;
-  };
-  this.render = function (drawContext) {
-    if (!this.isDisplay) return;
-    drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
-    if (_context2.default.setting.isDebug.value) {
-      if (this.collisionArea && this.collisionArea.length > 0) {
-        var rec = this.getAbsoluteCollisionArea()[0];
-        drawContext.beginPath();
-        drawContext.moveTo(rec.x, rec.y);
-        drawContext.lineTo(rec.x + rec.width, rec.y);
-
-        drawContext.moveTo(rec.x + rec.width, rec.y);
-        drawContext.lineTo(rec.x + rec.width, rec.y + rec.height);
-
-        drawContext.moveTo(rec.x + rec.width, rec.y + rec.height);
-        drawContext.lineTo(rec.x, rec.y + rec.height);
-
-        drawContext.moveTo(rec.x, rec.y + rec.height);
-        drawContext.lineTo(rec.x, rec.y);
-        drawContext.strokeStyle = "blue";
-        drawContext.stroke();
+  }, {
+    key: 'moveX',
+    value: function moveX() {
+      if (this.fixed.x) return;
+      if (this._xpath && this._xpath instanceof Function) {
+        this.position.x += this._xpath();
+      } else {
+        this.position.x += this.speedX;
       }
     }
-  };
-  this.on = function (evnetName, callback) {
-    var that = this;
-    _context2.default.myevent.eventRelative.attachEvent(this, evnetName, function (obj, eventInfo) {
-      if (callback) callback.call(that, eventInfo);
-    });
-  };
-}
+  }, {
+    key: 'moveY',
+    value: function moveY() {
+      if (this.fixed.y) return;
+      if (this._ypath && this._ypath instanceof Function) {
+        this.position.y += this._ypath();
+      } else {
+        this.position.y += this.speedY;
+      }
+    }
+  }, {
+    key: 'getAbsoluteCollisionArea',
+    value: function getAbsoluteCollisionArea() {
+      var _this2 = this;
 
-module.exports = eShape;
+      return _lodash2.default.map(this.collisionArea, function (area) {
+        return {
+          x: _this2.position.x + area.x,
+          y: _this2.position.y + area.y,
+          width: area.width,
+          height: area.height
+        };
+      });
+    }
+  }, {
+    key: 'setXPath',
+    value: function setXPath(xpath) {
+      this._xpath = xpath;
+    }
+  }, {
+    key: 'setYPath',
+    value: function setYPath(ypath) {
+      this._xpath = ypath;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      this.move();
+      this.moveTick++;
+    }
+  }, {
+    key: 'show',
+    value: function show() {
+      this.isDisplay = true;
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      this.isDisplay = false;
+    }
+  }, {
+    key: 'render',
+    value: function render(drawContext) {
+      if (!this.isDisplay) return;
+      if (this.backgroundColor) {
+        drawContext.save();
+
+        var radis = Math.floor(Math.min(this.width, this.height) * 0.08);
+        this.polygon(drawContext, this.position.x, this.position.y, this.width + 1, this.height + 1, radis);
+
+        drawContext.fillStyle = this.backgroundColor;
+        drawContext.fill();
+        drawContext.restore();
+      }
+
+      this.drawBordor(drawContext);
+      if (this.icon) {
+        this.drawBakcgroundImage(drawContext);
+      }
+
+      if (_context2.default.setting.isDebug.value) {
+        if (this.collisionArea && this.collisionArea.length > 0) {
+          var rec = this.getAbsoluteCollisionArea()[0];
+          drawContext.beginPath();
+          drawContext.moveTo(rec.x, rec.y);
+          drawContext.lineTo(rec.x + rec.width, rec.y);
+
+          drawContext.moveTo(rec.x + rec.width, rec.y);
+          drawContext.lineTo(rec.x + rec.width, rec.y + rec.height);
+
+          drawContext.moveTo(rec.x + rec.width, rec.y + rec.height);
+          drawContext.lineTo(rec.x, rec.y + rec.height);
+
+          drawContext.moveTo(rec.x, rec.y + rec.height);
+          drawContext.lineTo(rec.x, rec.y);
+          drawContext.strokeStyle = 'blue';
+          drawContext.stroke();
+        }
+      }
+      this.drawText(drawContext);
+      if (this.children) {
+        this.children.forEach(function (control) {
+          control.render(drawContext);
+        });
+      }
+    }
+  }, {
+    key: 'drawBordor',
+    value: function drawBordor(drawContext) {
+      if (this.border) {
+        drawContext.save();
+        var radis = Math.floor(Math.min(this.width, this.height) * 0.08);
+        this.polygon(drawContext, this.position.x - 1, this.position.y - 1, this.width + 1, this.height + 1, radis);
+        drawContext.strokeStyle = this.border;
+        drawContext.stroke();
+        drawContext.restore();
+      }
+    }
+  }, {
+    key: 'drawBakcgroundImage',
+    value: function drawBakcgroundImage(drawContext) {
+      if (this.icon) {
+        drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height), 0, 0, this.icon.width, this.icon.height;
+      }
+    }
+  }, {
+    key: 'polygon',
+    value: function polygon(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x, y + radius);
+      ctx.lineTo(x, y + height - radius);
+      ctx.quadraticCurveTo(x, y + height, x + radius, y + height);
+      ctx.lineTo(x + width - radius, y + height);
+      ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+      ctx.lineTo(x + width, y + radius);
+      ctx.quadraticCurveTo(x + width, y, x + width - radius, y);
+      ctx.lineTo(x + radius, y);
+      ctx.quadraticCurveTo(x, y, x, y + radius);
+      ctx.closePath();
+    }
+  }, {
+    key: 'drawText',
+    value: function drawText(drawContext) {
+      if (!this.text) return;
+      drawContext.save();
+
+      drawContext.font = this.height * 0.6 + "px Arial";
+      var offsetToButton = this.height * 0.2;
+      var requireWidth = drawContext.measureText(this.text);
+      var leftOffset = (this.width - requireWidth.width) / 2;
+      drawContext.fillText(this.text, this.position.x + (leftOffset >= 0 ? leftOffset : 0), this.position.y + this.height - offsetToButton, this.width);
+      drawContext.restore();
+    }
+  }, {
+    key: 'on',
+    value: function on(eventName, callback) {
+      var _this3 = this;
+
+      if (!callback || !eventName) return;
+      var func = function func(obj, eventInfo) {
+        if (callback) callback.call(_this3, eventInfo);
+      };
+      if (!this[eventName]) {
+        this[eventName] = [];
+        _context2.default.losEvent.attachEvent(this, eventName, this[eventName]);
+      }
+      this[eventName].push(func);
+    }
+  }, {
+    key: 'off',
+    value: function off(eventName, callack) {
+      _context2.default.losEvent.deAttchEvent(this, eventName, callack);
+    }
+  }, {
+    key: 'getEvent',
+    value: function getEvent(eventName) {
+      return _context2.default.losEvent[eventName];
+    }
+  }, {
+    key: 'registerControl',
+    value: function registerControl(childControl) {
+      if (childControl.zIndex < this.zIndex) childControl.zIndex = this.zIndex + 1;
+      this.children.push(childControl);
+    }
+  }, {
+    key: 'cancelControl',
+    value: function cancelControl(childControl) {
+      _util2.default.removeArr(this.children, childControl);
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      _context2.default.losEvent.deAttchEvent(this);
+      if (this.children) {
+        this.children.forEach(function (element) {
+          element.destroy();
+        });
+      }
+    }
+  }]);
+
+  return EObject;
+}();
+
+module.exports = EObject;
 
 /***/ }),
 /* 4 */
@@ -444,11 +648,19 @@ module.exports = eShape;
 "use strict";
 
 
-var _eShape = __webpack_require__(3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _eShape2 = _interopRequireDefault(_eShape);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(1);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -456,13 +668,252 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
+var _shot = __webpack_require__(8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var shotTypes = ['umShot', 'gzShot', 'common'];
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BasePlain = function (_EObject) {
+  _inherits(BasePlain, _EObject);
+
+  function BasePlain(enableShot) {
+    _classCallCheck(this, BasePlain);
+
+    var _this = _possibleConstructorReturn(this, (BasePlain.__proto__ || Object.getPrototypeOf(BasePlain)).call(this));
+
+    _this.border = null;
+    _this.AllHp = 1; // 总HP
+    _this.Hp = 1; // 当前Hp
+    _this.isDie = false; // 是否死亡
+    _this.shotInterVal = 10; // 发射周期
+    _this.enableShot = enableShot; // 是否发射
+    _this.shotor = new _shot.ShotorFactory();
+    _this.shotSpeedFactor = 1;
+    _this.shots = [];
+    _this.shotEx = 1;
+    _this.shotTick = 0;
+    return _this;
+  }
+
+  _createClass(BasePlain, [{
+    key: 'setShotInterVal',
+    value: function setShotInterVal(val, minVal) {
+      if (minVal < 1) minVal = 1;
+      if (val < minVal) val = minVal;
+      this.shotInterVal = val;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      _get(BasePlain.prototype.__proto__ || Object.getPrototypeOf(BasePlain.prototype), 'update', this).call(this);
+      if (this.shotTick <= this.shotInterVal) {
+        this.shotTick++;
+      } else {
+        if (this.shots && this.shots.length > 0) return;
+        this.shots.push.apply(this.shots, this.shotFactory());
+        this.shotTick = 0;
+      }
+    }
+  }, {
+    key: 'getShot',
+    value: function getShot() {
+      if (this.shots && this.shots.length > 0) {
+        var shotes = this.shots.concat([]);
+        this.shots.length = 0;
+        return shotes;
+      } else {
+        return undefined;
+      }
+    }
+  }, {
+    key: 'getPositionAbsolute',
+    value: function getPositionAbsolute() {
+      return {
+        x: this.position.x,
+        y: this.position.y + _context2.default.headOffset
+      };
+    }
+  }]);
+
+  return BasePlain;
+}(_EObject3.default);
+
+exports.default = BasePlain;
+
+module.exports = BasePlain;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Spoil = function (_EObject) {
+  _inherits(Spoil, _EObject);
+
+  function Spoil(obj, type) {
+    _classCallCheck(this, Spoil);
+
+    var _this = _possibleConstructorReturn(this, (Spoil.__proto__ || Object.getPrototypeOf(Spoil)).call(this, {}));
+
+    _this.speedY = 3;
+    _this.isDie = false;
+    _this.spoiltype = type;
+    _this.width = 25;
+    _this.height = 25;
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    _this.position.x = obj.position.x;
+    _this.position.y = obj.position.y;
+    return _this;
+  }
+
+  _createClass(Spoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {}
+  }, {
+    key: 'update',
+    value: function update() {
+      _get(Spoil.prototype.__proto__ || Object.getPrototypeOf(Spoil.prototype), 'update', this).call(this);
+    }
+  }]);
+
+  return Spoil;
+}(_EObject3.default);
+
+exports.default = Spoil;
+
+module.exports = Spoil;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+    umShot: 'umShot',
+    gzShot: 'gzShot',
+    addHp: 'addHp'
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Control = function (_EObject) {
+    _inherits(Control, _EObject);
+
+    function Control(option) {
+        _classCallCheck(this, Control);
+
+        var _this = _possibleConstructorReturn(this, (Control.__proto__ || Object.getPrototypeOf(Control)).call(this, option));
+
+        _this.on('click', function (params) {
+            // option.cancel()
+        });
+        return _this;
+    }
+
+    return Control;
+}(_EObject3.default);
+
+module.exports = Control;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _EObject = __webpack_require__(3);
+
+var _EObject2 = _interopRequireDefault(_EObject);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Bullet = __webpack_require__(21);
+
+var _Bullet2 = _interopRequireDefault(_Bullet);
+
+var _Shot = __webpack_require__(22);
+
+var _Shot2 = _interopRequireDefault(_Shot);
+
+var _ShotTypes = __webpack_require__(23);
+
+var _ShotTypes2 = _interopRequireDefault(_ShotTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function ShotorFactory() {
   this.CreateShot = function (ePlayer) {
     // ePlayer.shots.
@@ -476,7 +927,7 @@ function ShotorFactory() {
     var rotate = Math.PI / (split + 1);
     var shots = [];
     for (var i = 1; i <= split; i++) {
-      var shot = new Shot();
+      var shot = new _Shot2.default();
       shot.belong = ePlayer.Oid;
       shot.Hp = 1;
       shot.width = 5;
@@ -494,7 +945,7 @@ function ShotorFactory() {
   var gzShot = function gzShot(ePlayer) {
     var spy = ePlayer.speedY === 0 ? 1 : ePlayer.speedY;
     var sp = 10 * ePlayer.shotSpeedFactor * Math.sign(spy) * Math.abs(spy) * Math.sign(spy);
-    var shot = new Shot();
+    var shot = new _Shot2.default();
     shot.belong = ePlayer.Oid;
     shot.Hp = 100000000;
     shot.width = 100;
@@ -528,7 +979,7 @@ function ShotorFactory() {
   var commonShot = function commonShot(ePlayer) {
     var spy = ePlayer.speedY === 0 ? 1 : ePlayer.speedY;
     var sp = 10 * ePlayer.shotSpeedFactor * Math.sign(spy) * Math.abs(spy);
-    var shot = new Shot();
+    var shot = new _Shot2.default();
     shot.belong = ePlayer.Oid;
     shot.Hp = 1;
     shot.width = 8;
@@ -541,7 +992,7 @@ function ShotorFactory() {
     return [shot];
   };
   var enemyShot = function enemyShot(enemy) {
-    var shot = new Shot();
+    var shot = new _Shot2.default();
     shot.belong = enemy.Oid;
     shot.Hp = 1;
     shot.width = 5;
@@ -554,659 +1005,13 @@ function ShotorFactory() {
     return [shot];
   };
 }
-/**
-     * 爆炸
-     */
-function Bullet(option) {
-  _eShape2.default.call(this, option);
-  this.collisionArea = [{ x: 0, y: 0, width: this.width, height: this.height }];
-}
-/**
- * 子弹
- */
-function Shot() {
-  _eShape2.default.call(this);
-
-  this.speedX = 0;
-  this.type = 'common';
-  this.attack = 1; // 攻击力
-  this.belong = 0;
-}
-module.exports = {
-  shotTypes: shotTypes,
-  ShotorFactory: ShotorFactory,
-  Bullet: Bullet,
-  Shot: Shot
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _eShape = __webpack_require__(3);
-
-var _eShape2 = _interopRequireDefault(_eShape);
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-var _shot = __webpack_require__(4);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var createEnemy = function createEnemy(type) {
-  // 1 大飞机  2,3,4 小飞机
-  if (type == 1) {
-    var enemy = new Enemy(true);
-    enemy.setShotInterVal(_util2.default.randInt(5, 15));
-    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
-    enemy.position.y = 0 - enemy.width / 2;
-    enemy.speedY = _util2.default.randInt(3, 6);
-    enemy.icon = _resource2.default.enes[type - 1];
-    enemy.width = 40;
-    enemy.height = 60;
-    enemy.Hp = 20 + 10 * Math.random();
-    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
-    return enemy;
-  } else if (type == 2 || type == 3 || type == 4) {
-    var enemy = new Enemy(_context2.default, true);
-    enemy.setShotInterVal(_util2.default.randInt(5, 15));
-    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
-    enemy.position.y = 0 - enemy.width / 2;
-    enemy.speedY = _util2.default.randInt(3, 6);
-
-    enemy.icon = _resource2.default.enes[type - 1];
-    enemy.width = 20;
-    enemy.height = 30;
-    enemy.Hp = 2 + 5 * Math.random();
-    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
-    return enemy;
-  } else {
-    return new Boss();
-  }
-};
-
-function Plain(enableShot) {
-  _eShape2.default.call(this);
-
-  this.AllHp = 1; // 总HP
-  this.Hp = 1; // 当前Hp
-  this.isDie = false; // 是否死亡
-  this.shotInterVal = 10; // 发射周期
-  this.enableShot = enableShot; // 是否发射
-  this.shotor = new _shot.ShotorFactory();
-  this.shotSpeedFactor = 1;
-  this.shots = [];
-  this.shotEx = 1;
-  var that = this;
-  var shotTick = 0;
-
-  this.setShotInterVal = function (val, minVal) {
-    if (minVal < 1) minVal = 1;
-    if (val < minVal) val = minVal;
-    this.shotInterVal = val;
-  };
-
-  this.update = function () {
-    this.base.update();
-    if (shotTick <= that.shotInterVal) {
-      shotTick++;
-    } else {
-      if (that.shots && that.shots.length > 0) return;
-      that.shots.push.apply(that.shots, that.shotFactory());
-      shotTick = 0;
-    }
-  };
-  this.getShot = function () {
-    if (this.shots && that.shots.length > 0) {
-      var shotes = this.shots.concat([]);
-      this.shots.length = 0;
-      return shotes;
-    } else {
-      return undefined;
-    }
-  };
-  this.getPositionAbsolute = function () {
-    return {
-      x: this.position.x,
-      y: this.position.y + _context2.default.headOffset
-    };
-  };
-}
-/**
- * 敌军
- * @param {*是否发射} isShot 
- */
-function Enemy(isShot) {
-  Plain.call(this, isShot);
-  this.type = 'common';
-  this.speedX = 0;
-  this.shotSpeedFactor = 0.6;
-  this.shotType = {
-    type: 'enemyShot',
-    num: 1
-  };
-  this.shotFactory = function () {
-    return this.shotor.CreateShot(this);
-  };
-}
-function Boss() {
-  Plain.call(this, true);
-  this.type = 'boss';
-  this.fixed.y = true;
-  this.setShotInterVal(_util2.default.randInt(10, 20));
-  this.width = _context2.default.option.ctxWidth * 0.6;
-  this.height = this.width * 0.6;
-  this.position.x = _context2.default.option.ctxWidth * 0.5;
-  this.position.y = 0;
-  this.collisionArea = [{ x: 0, y: 0, width: this.width, height: this.height }];
-  this.speedY = 0;
-  this.icon = _resource2.default.enes[1];
-  this.Hp = 200 + 200 * Math.random();
-  this.shotSpeedFactor = 0.1;
-  var factor = 5 * Math.random();
-  this.setXPath(function (x) {
-    return factor * Math.cos(this.moveTick / 15);
-  });
-
-  this.shotType = {
-    type: 'umShot',
-    num: 4
-  };
-  this.shotFactory = function () {
-    return this.shotor.CreateShot(this);
-  };
-}
-
-/**
- * @param {*玩家} isShot 
- */
-function Player() {
-  Plain.call(this, true);
-  var that = this;
-  this.fixed.y = true;
-  this.icon = _resource2.default.plainImg;
-  this.width = 30;
-  this.height = 24;
-  this.AllHp = 12;
-  this.Hp = this.AllHp;
-  this.position.x = (_context2.default.stageManager.stage.width - this.width) / 2;
-  this.position.y = _context2.default.stageManager.stage.height - this.height;
-  this.collisionArea = [{ x: 0, y: 0, width: this.width, height: this.height }];
-  this.enableShot = true;
-  this.speedY = -1;
-  this.shotType = {
-    type: 'umShot',
-    num: 5
-  };
-  this.shotFactory = function () {
-    return this.shotor.CreateShot(this);
-  };
-  this.reset = function () {
-    this.Hp = 3;
-    this.position.x = (_context2.default.stageManager.stage.width - this.width) / 2;
-    this.position.y = _context2.default.stageManager.stage.height - this.height;
-    this.shotType = {
-      type: 'umShot',
-      num: 5
-    };
-    this.setShotInterVal(5);
-  };
-}
-module.exports = {
-  createEnemy: createEnemy,
-  Plain: Plain,
-  Enemy: Enemy,
-  Player: Player,
-  Boss: Boss
-};
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-var _spoil = __webpack_require__(9);
-
-var _event = __webpack_require__(8);
-
-var _event2 = _interopRequireDefault(_event);
-
-var _eShape = __webpack_require__(3);
-
-var _eShape2 = _interopRequireDefault(_eShape);
-
-var _plain = __webpack_require__(5);
-
-var _shot = __webpack_require__(4);
-
-var _uiComonent = __webpack_require__(10);
-
-var _debug = __webpack_require__(7);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-console.log(_debug.StateInfo);
-function Engine() {
-  var option = {};
-
-  var plainMoveState = {
-    isMouseDown: false,
-    position: { x: 0, y: 0 }
-  };
-
-  var player;
-  var bar;
-  var stageManager;
-  var textBlock;
-  var drawContext;
-  this.Create = function (_option) {
-    // canvas context
-    var canvas = document.getElementById(_option.id);
-    drawContext = canvas.getContext('2d');
-
-    option.ctxWidth = canvas.width = window.document.body.clientWidth;
-    option.ctxHeight = canvas.height = window.document.body.clientHeight;
-    Object.assign(_context2.default, {
-      headOffset: 20,
-      currentOid: 0,
-      option: option,
-      myevent: new _event2.default(),
-      stateInfo: new _debug.StateInfo(),
-      plainMoveState: plainMoveState,
-      shotType: _shot.shotTypes,
-      setting: new _debug.DebugSetting(),
-      spoilManager: new _spoil.SpoilManager()
-    });
-
-    // events
-    _context2.default.myevent.init(_option);
-    // stage
-    stageManager = new _uiComonent.StageManager();
-    stageManager.init();
-    _context2.default.stageManager = stageManager;
-
-    // 设置按钮
-    var settingButton = new _uiComonent.Button({
-      name: 'setting',
-      position: {
-        x: _context2.default.option.ctxWidth - _context2.default.headOffset,
-        y: 2
-      },
-      width: _context2.default.headOffset,
-      height: _context2.default.headOffset - 4,
-      icon: _resource2.default.setting
-    });
-    settingButton.on('click', function (eventInfo) {
-      stageManager.stage.stop();
-      _option.showConsoleView(function () {
-        stageManager.stage.restart();
-      });
-    });
-    // bar
-    bar = new _uiComonent.Bar({
-      icon: _resource2.default.head,
-      position: { x: -5, y: 0 },
-      width: option.ctxWidth + 10,
-      height: _context2.default.headOffset,
-      rightButton: settingButton
-    });
-    textBlock = new _uiComonent.TextBlock({
-      position: {
-        x: 0,
-        y: _context2.default.headOffset
-      }
-    });
-    player = new _plain.Player(true);
-    _context2.default.player = player;
-    player.setShotInterVal(1);
-    // 注册事件
-    // 玩家开始移动
-    player.on('mouseDown', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1) plainMoveState.isMouseDown = true;
-    });
-    // 玩家停止移动
-    stageManager.stage.on('mouseUp', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1) plainMoveState.isMouseDown = false;
-    });
-    // 玩家移动中
-    stageManager.stage.on('mouseMove', function (eventInfo) {
-      if (stageManager.stage.isRunning == 1 && plainMoveState.isMouseDown === true) {
-        player.position.x = eventInfo.position.x - player.width / 2;
-        player.position.y = eventInfo.position.y - player.height / 2 - _context2.default.headOffset;
-      }
-    });
-    _option.initConsoleView(_context2.default);
-  };
-
-  /**
-   * time
-   */
-  var clearTm;
-  var drawTm;
-  var moveTm;
-  var checkTm;
-  this.Start = function () {
-    // 拦截作用 必要时可以扩展出去
-    var before = function before(callback) {
-      return function () {
-        if (stageManager.stage.isRunning == 1) callback();
-      };
-    };
-
-    drawTm = setInterval(draw, 50);
-
-    checkTm = setInterval(before(function () {
-      stageManager.stage.checkCollection();
-    }), 50);
-
-    moveTm = setInterval(before(function () {
-      stageManager.stage.objectMove();
-    }), 50);
-
-    clearTm = setInterval(before(function () {
-      stageManager.stage.clearObject();
-    }), 5000);
-  };
-  // 绘制
-  var draw = function draw() {
-    // stage
-    stageManager.stage.render(drawContext);
-    // head
-    bar.render(drawContext);
-    // 绘制文本
-    if (_context2.default.setting.isDebug.value) {
-      textBlock.setText(_context2.default.stateInfo.getDebugArray());
-      textBlock.render(drawContext);
-    }
-  };
-  /**
-   * 清理函数
-   */
-  var destory = function destory() {
-    stageManager.stage.destroy();
-    clearInterval(clearTm);
-    clearInterval(drawTm);
-    clearInterval(moveTm);
-    clearInterval(checkTm);
-  };
-}
-
-module.exports = Engine;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _resource = __webpack_require__(2);
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function StateInfo() {
-  this.enemies = {
-    all: {},
-    resolve: {}
-  };
-  this.emitShot = {
-    all: {},
-    resolve: {}
-  };
-  this.spoils = {
-    all: {},
-    resolve: {}
-  };
-  this.currentShotNum = 0;
-  this.currentEnemyNum = 0;
-  this.getDebugArray = function () {
-    var sumLog = function sumLog(obj) {
-      var keys = Object.keys(obj);
-      var sum = 0;
-      for (var i = 0; i < keys.length; i++) {
-        sum += obj[keys[i]];
-      }
-      return sum;
-    };
-    var arr = [];
-
-    var allKillEmemies = sumLog(this.enemies.resolve);
-    var allEnemies = sumLog(this.enemies.all);
-    arr.push('杀敌总数量：' + allKillEmemies + '\r\n');
-    arr.push('敌人总数：' + allEnemies + '\r\n');
-    arr.push('击杀比：' + allKillEmemies / allEnemies + '\r\n');
-
-    var allTargetShots = sumLog(this.emitShot.resolve);
-    var allShots = sumLog(this.emitShot.all);
-    arr.push('命中弹药' + allTargetShots + '\r\n');
-    arr.push('发射弹药总量：' + allShots + '\r\n');
-    arr.push('命中比：' + allTargetShots / allShots + '\r\n');
-
-    arr.push('子弹数量：' + this.currentShotNum + '\r\n');
-    arr.push('敌人数量：' + this.currentEnemyNum + '\r\n');
-    return arr;
-  };
-  this.reset = function () {
-    this.enemies.all = {};
-    this.enemies.resolve = {};
-
-    this.emitShot.all = {};
-    this.emitShot.resolve = {};
-
-    this.spoils.all = {};
-    this.spoils.resolve = {};
-
-    this.currentShotNum = 0;
-    this.currentEnemyNum = 0;
-  };
-}
-function DebugSetting() {
-  this.isDebug = {
-    message: '显示调试信息',
-    value: true
-  };
-  this.stageTime = {
-    message: '关卡时长',
-    value: 20 // unit ms
-  };
-  this.spoilRate = {
-    message: '战利品几率',
-    value: 0.5
-  };
-  this.enemyRemoveRate = {
-    message: '敌军移动速率',
-    value: 0.5
-  };
-  this.enemyShotRate = {
-    message: '敌军射速',
-    value: 0.5
-  };
-  this.playerShotRate = {
-    message: '玩家射速度',
-    value: 20
-  };
-  this.spoilRate = {
-    message: '战利品几率',
-    value: 0.5
-  };
-}
 
 module.exports = {
-  StateInfo: StateInfo,
-  DebugSetting: DebugSetting
+  Bullet: _Bullet2.default,
+  Shot: _Shot2.default,
+  ShotTypes: _ShotTypes2.default,
+  ShotorFactory: ShotorFactory
 };
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _util = __webpack_require__(1);
-
-var _util2 = _interopRequireDefault(_util);
-
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function MyEvent() {
-  var that = this;
-  // Do setup work here
-  // 此类型用于事件转换
-  this.eventRelative = {
-    click: [],
-    mouseDown: [],
-    mouseUp: [],
-    mouseMove: [],
-    // 附加事件中 object-action-callback
-    attachEvent: function attachEvent(target, action, callback) {
-      var eventMsg = { target: target, callback: callback };
-      var funcs = this[action];
-      if (!funcs) throw new Error('not support event');
-      funcs.push(eventMsg);
-    },
-    detachEvent: function detachEvent(target, action) {
-      var funcs = this[action];
-      for (var i = 0; i < funcs.length; i++) {
-        if (funcs[i].target == target) {
-          _util2.default.removeArr(funcs, funcs[i]);
-        }
-      }
-    },
-    // 触发事件中 action-eventInfo
-    triggerEvent: function triggerEvent(action, eventInfo) {
-      var funcs = this[action];
-      //  if(action==='click')
-      //  {
-      //    debugger
-      //  }
-      if (!funcs) throw new Error('not support event');
-      for (var i = 0; i < funcs.length; i++) {
-        if (funcs[i].target.isDisplay && _util2.default.isEffect(funcs[i].target, action, eventInfo)) {
-          funcs[i].callback(funcs[i].target, eventInfo);
-        }
-      }
-    }
-
-    // 外部事件转内部事件驱动  
-    // 包装按键按下，抬起，移动事件
-  };this.pacakgeEvent = function (event) {
-    var evnetInfo = {
-      position: { x: 0, y: 0 }
-    };
-    if (_util2.default.isAndroid()) {
-      evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft;
-      evnetInfo.position.y = event.gesture.center.pageY, _context2.default.option, _context2.default.headOffset;
-    } else {
-      evnetInfo.position.x = event.offsetX;
-      evnetInfo.position.y = event.offsetY, _context2.default.option, _context2.default.headOffset;
-    }
-    return evnetInfo;
-  };
-  // 包装单击事件
-  this.pacakgeClick = function (event) {
-    var evnetInfo = {
-      position: { x: 0, y: 0 }
-    };
-
-    if (_util2.default.isAndroid()) {
-      evnetInfo.position.x = event.pageX - event.target.offsetLeft;
-      evnetInfo.position.y = event.y;
-    } else {
-      evnetInfo.position.x = event.offsetX;
-      evnetInfo.position.y = event.offsetY;
-    }
-    return evnetInfo;
-  };
-
-  // 移动事件
-  var moveFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('mouseMove', that.pacakgeEvent(arguments[0]));
-    };
-  }();
-  // 按下事件
-  var moveDownFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('mouseDown', that.pacakgeEvent(arguments[0]));
-    };
-  }();
-  // 抬起事件
-  var moveUpFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('mouseUp', that.pacakgeEvent(arguments[0]));
-    };
-  }();
-  // 点击事件
-  var clickFunc = function () {
-    return function () {
-      that.eventRelative.triggerEvent('click', that.pacakgeClick(arguments[0]));
-    };
-  }();
-  // 事件输入
-  this.EventInput = {
-    mouseDown: moveDownFunc,
-    mouseUp: moveUpFunc,
-    click: clickFunc,
-    move: moveFunc
-  };
-  this.init = function (_option) {
-    if (_util2.default.isAndroid) {
-      _option.attachEvent.click = this.EventInput.click;
-      _option.attachEvent.move = this.EventInput.move;
-      _option.attachEvent.mouseDown = this.EventInput.mouseDown;
-      _option.attachEvent.mouseUp = this.EventInput.mouseUp;
-    } else {
-      _option.attachEvent.onclick = this.EventInput.click;
-      _option.attachEvent.onmousemove = this.EventInput.move;
-      _option.attachEvent.onmousedown = this.EventInput.mouseDown;
-      _option.attachEvent.onmouseup = this.EventInput.mouseUp;
-    }
-  };
-}
-
-module.exports = MyEvent;
 
 /***/ }),
 /* 9 */
@@ -1215,11 +1020,11 @@ module.exports = MyEvent;
 "use strict";
 
 
-var _eShape = __webpack_require__(3);
+var _Control2 = __webpack_require__(7);
 
-var _eShape2 = _interopRequireDefault(_eShape);
+var _Control3 = _interopRequireDefault(_Control2);
 
-var _util = __webpack_require__(1);
+var _util = __webpack_require__(0);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -1227,101 +1032,34 @@ var _resource = __webpack_require__(2);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _context = __webpack_require__(0);
+var _context = __webpack_require__(1);
 
 var _context2 = _interopRequireDefault(_context);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Spoil(obj, type) {
-  _eShape2.default.call(this);
-  this.speedY = 3;
-  this.spoiltype = type;
-  this.width = 25;
-  this.height = 25;
-  this.collisionArea = [{ x: 0, y: 0, width: this.width, height: this.height }];
-  this.position.x = obj.position.x;
-  this.position.y = obj.position.y;
-  this.Effect = function (targetPlayer) {};
-}
-function UmShotSpoil(object) {
-  Spoil.call(this, object);
-  this.spoiltype = 'umShot';
-  this.icon = _resource2.default.u;
-  this.Effect = function (targetPlayer) {
-    if (targetPlayer.shotType.type == SpoilManager.spoilType.umShot) {
-      if (targetPlayer.shotType.num > 7) {
-        targetPlayer.shotEx++;
-      } else {
-        targetPlayer.shotType.num++;
-      }
-    } else {
-      targetPlayer.shotType = {
-        type: SpoilManager.spoilType.umShot,
-        num: 1
-      };
-    }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    targetPlayer.setShotInterVal(2);
-  };
-}
-function GzShotSpoil(object) {
-  Spoil.call(this, object);
-  this.spoiltype = 'gzShot';
-  this.icon = _resource2.default.g;
-  this.Effect = function (targetPlayer) {
-    if (targetPlayer.shotType.type == SpoilManager.spoilType.gzShot) {
-      targetPlayer.shotType.num++;
-    } else {
-      targetPlayer.shotType = {
-        type: SpoilManager.spoilType.gzShot,
-        num: 1
-      };
-    }
-    targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2);
-  };
-}
-function HpSpoil(object) {
-  Spoil.call(this, object);
-  this.spoiltype = 'addHp';
-  this.icon = _resource2.default.hp;
-  this.Effect = function (targetPlayer) {
-    if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++;
-  };
-}
-function SpoilManager() {
-  this.createSpoil = function (obj) {
-    if (Math.random() < 0.5) return undefined;
-    var types = Object.values(SpoilManager.spoilType);
-    var t = types[(Math.random() * types.length).toString().charAt(0) - '0'];
-    var spoil;
-    switch (t) {
-      case SpoilManager.spoilType.umShot:
-        spoil = new UmShotSpoil(obj);
-        break;
-      case SpoilManager.spoilType.gzShot:
-        spoil = new GzShotSpoil(obj);
-        break;
-      case SpoilManager.spoilType.addHp:
-        spoil = new HpSpoil(obj);
-        break;
-    }
-    var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5);
-    spoil.setXPath(function (x) {
-      return factor * (Math.cos(this.moveTick / 15) + Math.random() - 0.5);
-    });
-    return spoil;
-  };
-}
-SpoilManager.spoilType = {
-  umShot: 'umShot',
-  gzShot: 'gzShot',
-  addHp: 'addHp'
-};
-module.exports = {
-  Spoil: Spoil,
-  SpoilManager: SpoilManager
-};
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Button = function (_Control) {
+  _inherits(Button, _Control);
+
+  function Button(option) {
+    _classCallCheck(this, Button);
+
+    var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this, option));
+
+    _this.text = option.text;
+    return _this;
+  }
+
+  return Button;
+}(_Control3.default);
+
+module.exports = Button;
 
 /***/ }),
 /* 10 */
@@ -1330,471 +1068,25 @@ module.exports = {
 "use strict";
 
 
-var _eShape = __webpack_require__(3);
+var _Bar = __webpack_require__(28);
 
-var _eShape2 = _interopRequireDefault(_eShape);
+var _Bar2 = _interopRequireDefault(_Bar);
 
-var _util = __webpack_require__(1);
+var _Modal = __webpack_require__(29);
 
-var _util2 = _interopRequireDefault(_util);
+var _Modal2 = _interopRequireDefault(_Modal);
 
-var _resource = __webpack_require__(2);
+var _Button = __webpack_require__(9);
 
-var _resource2 = _interopRequireDefault(_resource);
+var _Button2 = _interopRequireDefault(_Button);
 
-var _plain = __webpack_require__(5);
+var _TextBlock = __webpack_require__(30);
 
-var _context = __webpack_require__(0);
-
-var _context2 = _interopRequireDefault(_context);
-
-var _shot = __webpack_require__(4);
+var _TextBlock2 = _interopRequireDefault(_TextBlock);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Button(option) {
-  _eShape2.default.call(this, option);
-}
-function Bar(option) {
-  _eShape2.default.call(this, option);
-  this.rightButton = option.rightButton;
-  this.render = function (drawContext) {
-    if (!this.isDisplay) return;
-    drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
-    // hp
-    for (var index = 0; index < _context2.default.player.Hp; index++) {
-      var width = (_resource2.default.hp.width - 15) * index;
-      drawContext.drawImage(_resource2.default.hp, width, 0, 20, _context2.default.headOffset);
-    }
-    // rightbutton
-    this.rightButton.render(drawContext);
-  };
-}
-function TextBlock(option) {
-  _eShape2.default.call(this, option);
-  this.textArray = [];
-  this.setText = function (texts) {
-    if (!texts) return;
-    this.clear();
-    this.append(texts);
-  };
-  this.clear = function (texts) {
-    this.textArray.length = 0;
-  };
-  this.append = function (texts) {
-    if (!texts) return;
-    if (texts instanceof Array) {
-      [].push.apply(this.textArray, texts);
-    } else {
-      this.textArray.push(texts.toString());
-    }
-  };
-  this.render = function (drawContext) {
-    for (var index = 0; index < this.textArray.length; index++) {
-      drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y);
-    }
-  };
-}
-
-function Stage(stageConfig) {
-  _eShape2.default.call(this);
-  var that = this;
-
-  this.isRunning = 2, // 三种状态 1 预备/2 进行 /3 结束
-  this.position.x = 0;
-  this.position.y = _context2.default.headOffset;
-  this.width = _context2.default.option.ctxWidth;
-  this.height = _context2.default.option.ctxHeight - _context2.default.headOffset;
-  // 背景图片
-  // 敌军种类  自动配置敌军
-  // boss
-  // 关卡时长
-  // 组件
-
-  this.resetButton = new Button({
-    name: 'reset',
-    position: {
-      x: this.width / 4,
-      y: this.height / 2 + this.position.y
-    },
-    width: this.width / 2,
-    height: 40,
-    icon: _resource2.default.button
-  });
-
-  this.resetButton.on('click', function (eventInfo) {
-    that.resetButton.hide();
-    that.start();
-  });
-
-  this.icon = stageConfig.icon;
-  this.boss;
-  this.time = 10;
-  this.startTime = new Date();
-
-  this.shots = [];
-  this.enemies = [];
-  this.bullets = [];
-  this.spoils = [];
-  this.stopInterval = 0;
-  var stopTime;
-  // 检测碰撞
-  this.checkCollection = function () {
-    var player = _context2.default.player;
-    var plainRect = player.getAbsoluteCollisionArea()[0];
-    var enemies = this.enemies;
-    var shots = this.shots;
-    var bullets = this.bullets;
-    var spoils = this.spoils;
-
-    for (var i = enemies.length - 1; i > -1; i--) {
-      var enemy = enemies[i];
-      if (enemy.isDie) continue;
-      var enemyRect = enemy.getAbsoluteCollisionArea()[0];
-      // 检查子弹和飞机的碰撞
-      for (var j = shots.length - 1; j > -1; j--) {
-        var oneShot = shots[j];
-        if (oneShot.isDie) continue;
-        var shotRect = oneShot.getAbsoluteCollisionArea()[0];
-        if (player.Oid == oneShot.belong && _util2.default.isChonghe(shotRect, enemyRect)) {
-          enemy.Hp = enemy.Hp - oneShot.attack * player.shotEx;
-          oneShot.Hp--;
-          if (enemy.Hp <= 0) {
-            enemyDie(enemy);
-          }
-          // 子弹生命  穿甲弹
-          if (oneShot.Hp <= 0) {
-            oneShot.isDie = true;
-            if (_context2.default.stateInfo.emitShot.resolve[oneShot.type]) _context2.default.stateInfo.emitShot.resolve[oneShot.type]++;else _context2.default.stateInfo.emitShot.resolve[oneShot.type] = 1;
-            _util2.default.removeArr(shots, oneShot);
-          }
-        }
-      }
-      // 检查玩家和飞机的碰撞
-      if (_util2.default.isChonghe(plainRect, enemyRect)) {
-        enemy.Hp--;
-        player.Hp--;
-        _util2.default.isChonghe(plainRect, enemyRect);
-        if (enemy.Hp <= 0) {
-          enemy.isDie = true;
-          _util2.default.removeArr(enemies, enemy);
-        }
-      }
-    }
-
-    // 检查玩家是否被击中
-    for (var j = shots.length - 1; j > -1; j--) {
-      var oneShot = shots[j];
-      if (oneShot.isDie) continue;
-      if (player.Oid != oneShot.belong && _util2.default.inArea({ x: oneShot.position.x + oneShot.width / 2, y: oneShot.position.y }, plainRect)) {
-        var ene = findEnemyByOid(oneShot.belong);
-        var shotEx = ene ? ene.shotEx : 1;
-        player.Hp = player.Hp - oneShot.attack * shotEx;
-        oneShot.Hp--;
-        if (oneShot.Hp <= 0) {
-          oneShot.isDie = true;
-          _util2.default.removeArr(shots, oneShot);
-        }
-      }
-    }
-    // 检查玩家是否获取战利品
-    for (var j = spoils.length - 1; j > -1; j--) {
-      var oneSpoil = spoils[j];
-      if (oneSpoil.isDie) continue;
-      var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0];
-      if (_util2.default.isChonghe(spoilRect, plainRect)) {
-        oneSpoil.isDie = true;
-        _util2.default.removeArr(spoils, oneSpoil);
-        oneSpoil.Effect(player);
-        if (_context2.default.stateInfo.spoils.resolve[oneSpoil.type]) _context2.default.stateInfo.spoils.resolve[oneSpoil.type]++;else _context2.default.stateInfo.spoils.resolve[oneSpoil.type] = 1;
-      }
-    }
-
-    if (player.Hp <= 0) {
-      this.stop();
-      this.resetButton.show();
-    }
-  };
-
-  var enemyDie = function (enemy) {
-    var self = this;
-    enemy.isDie = true;
-    var bullet = new _shot.Bullet({
-      isDie: false,
-      icon: _resource2.default.bullet,
-      width: 8,
-      height: 8,
-      position: {
-        x: (enemy.position.x + enemy.width) / 2,
-        y: (enemy.position.y + enemy.height) / 2
-      }
-    });
-    self.bullets.push(bullet);
-    setTimeout(function (enemy, bullet) {
-      return function () {
-        _util2.default.removeArr(self.enemies, enemy);
-        _util2.default.removeArr(self.bullets, bullet);
-      };
-    }(enemy, bullet), 500);
-    // 判断是否产生战利品
-    var spoil = _context2.default.spoilManager.createSpoil(enemy);
-    if (spoil) {
-      if (_context2.default.stateInfo.spoils.all[spoil.type]) _context2.default.stateInfo.spoils.all[spoil.type]++;else _context2.default.stateInfo.spoils.all[spoil.type] = 0;
-      self.spoils.push(spoil);
-    }
-
-    if (_context2.default.stateInfo.enemies.resolve[enemy.type]) _context2.default.stateInfo.enemies.resolve[enemy.type]++;else _context2.default.stateInfo.enemies.resolve[enemy.type] = 1;
-  }.bind(this);
-  /**
-   * 对象移动
-   */
-  this.objectMove = function () {
-    var player = _context2.default.player;
-    var enemies = this.enemies;
-    var shots = this.shots;
-    var bullets = this.bullets;
-    var spoils = this.spoils;
-    if (_context2.default.stageManager.canGoNextStage()) {
-      _context2.default.stageManager.next();
-    }
-    // 生成新的个体
-    var pShots = player.getShot();
-    if (pShots) {
-      shots.push.apply(shots, pShots);
-      for (var i = 0; i < pShots.length; i++) {
-        if (_context2.default.stateInfo.emitShot.all[pShots[i].type]) _context2.default.stateInfo.emitShot.all[pShots[i].type]++;else _context2.default.stateInfo.emitShot.all[pShots[i].type] = 1;
-      }
-    }
-    this.update();
-
-    player.update();
-    // 报告
-    _context2.default.stateInfo.currentShotNum = this.shots.length;
-    _context2.default.stateInfo.currentEnemyNum = this.enemies.length;
-  };
-  // 对象清理
-  this.clearObject = function (that) {
-    var enemies = this.enemies;
-    var shots = this.shots;
-    var bullets = this.bullets;
-    var spoils = this.spoils;
-    // 删除越界的对象  
-    for (var i = shots.length - 1; i > -1; i--) {
-      var oneShot = shots[i];
-      if (oneShot.isDie || !_util2.default.inArea(oneShot.position, { x: -10, y: -10, width: this.width + 10, height: this.height + 10 })) {
-        _util2.default.removeArr(shots, oneShot);
-      }
-    }
-
-    for (var i = enemies.length - 1; i > -1; i--) {
-      var enemy = enemies[i];
-      if (enemy.isDie) {
-        _util2.default.removeArr(enemies, enemy);
-        continue;
-      }
-      if (!_util2.default.inArea(enemy.position, { x: -100, y: -100, width: this.width + 100, height: this.height + 100 })) {
-        _util2.default.removeArr(enemies, enemy);
-      }
-    }
-
-    for (var i = spoils.length - 1; i > -1; i--) {
-      var spoil = spoils[i];
-      if (spoil.isDie) {
-        _util2.default.removeArr(spoils, spoil);
-        continue;
-      }
-      // if (!util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
-      //   util.removeArr(spoils, spoil)
-      // }
-    }
-  };
-  this.stop = function () {
-    stopTime = new Date();
-    this.isRunning = 2;
-  };
-  this.restart = function () {
-    this.stopInterval += new Date() - stopTime;
-    this.isRunning = 1;
-  };
-  this.start = function () {
-    this.startTime = new Date();
-    this.isRunning = 1;
-  };
-  this.drawScene = function () {
-    var enemies = this.enemies;
-    var shots = this.shots;
-    var bullets = this.bullets;
-    var spoils = this.spoils;
-
-    var canvas = document.createElement('canvas');
-    var drawContext = canvas.getContext('2d');
-    canvas.height = this.height;
-    canvas.width = this.width;
-    // 背景
-    drawContext.drawImage(this.icon, 0, 0, this.width, this.height);
-    // 子弹
-    for (var index in this.shots) {
-      var shot = shots[index];
-      shot.render(drawContext);
-    }
-    // 飞机
-    _context2.default.player.render(drawContext);
-    // 敌军
-    for (var index in this.enemies) {
-      var enemy = enemies[index];
-      enemy.render(drawContext);
-    }
-    // 战利品
-    for (var index in this.spoils) {
-      var spoil = spoils[index];
-      spoil.render(drawContext);
-    }
-    // 死亡
-    for (var index in this.bullets) {
-      var bullet = bullets[index];
-      bullet.render(drawContext);
-    }
-    return canvas;
-  };
-  this.destroy = function () {};
-  this.reset = function () {
-    this.startTime = new Date();
-    this.shots.length = 0;
-    this.enemies.length = 0;
-    this.bullets.length = 0;
-    this.spoils.length = 0;
-    this.isRunning = 0;
-  };
-
-  this.hasCreateBoss = false;
-  var checkTm = setInterval(function () {
-    if (that.isStageTimeOut()) {
-      clearInterval(checkTm);
-      that.createBoss();
-      that.hasCreateBoss = true;
-    }
-  }, 100);
-  this.createBoss = function () {
-    var boss = new _plain.Boss();
-    this.boss = boss;
-    this.enemies.push(boss);
-  };
-
-  this.isStageTimeOut = function () {
-    return (new Date() - this.startTime - this.stopInterval) / 1000 > this.time;
-  };
-  this.update = function () {
-    var enemies = this.enemies;
-    var shots = this.shots;
-    var bullets = this.bullets;
-    var spoils = this.spoils;
-
-    if (Math.random() < 0.07) // 百分之七生成敌军
-      {
-        var rad = Math.random() * 3 + '';
-        var newEmeny = (0, _plain.createEnemy)(parseInt(rad.charAt(0)) + 2);
-        if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
-        enemies.push(newEmeny);
-      }
-
-    if (Math.random() < 0.01) // 百分之一生成强力敌军
-      {
-        var newEmeny = (0, _plain.createEnemy)(1);
-        if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
-        enemies.push(newEmeny);
-      }
-
-    for (var index in shots) {
-      if (shots[index].isDie) continue;
-      var shot = shots[index];
-      shot.update();
-    }
-
-    for (var index in spoils) {
-      if (spoils[index].isDie) continue;
-      var spoil = spoils[index];
-      spoil.update();
-    }
-
-    for (var index in enemies) {
-      if (enemies[index].isDie) continue;
-      var enemy = enemies[index];
-
-      var eShots = enemy.getShot();
-      if (eShots) {
-        shots.push.apply(shots, eShots);
-      }
-      enemy.update();
-    }
-  };
-  this.render = function (drawContext) {
-    var canvas = this.drawScene();
-    drawContext.drawImage(canvas, // 绘制
-    0, 0, canvas.width, canvas.height, this.position.x, this.position.y, this.width, this.height);
-    that.resetButton.render(drawContext);
-  };
-
-  /**
-     * 根据id查找敌人
-     * @param {*敌人id} oid 
-     */
-  var findEnemyByOid = function findEnemyByOid(oid) {
-    var enemies = that.enemies;
-    if (enemies) {
-      for (var i = 0; i < enemies.length; i++) {
-        if (enemies[i].Oid == oid) {
-          return enemies[i];
-        }
-      }
-    }
-  };
-}
-
-function StageManager() {
-  this.stagesConfig = [{
-    icon: _resource2.default.bg.bg1
-  }, {
-    icon: _resource2.default.bg.bg2
-  }, {
-    icon: _resource2.default.bg.bg3
-  }];
-  this.currentStageIndex = 0;
-  /**
-   * 判断关卡是否超时   单位s
-   */
-  this.isStageTimeOut = function () {
-    return this.stage.isStageTimeOut();
-  };
-  this.canGoNextStage = function () {
-    var isBossEsixt = this.stage.enemies.indexOf(this.stage.boss);
-    return -1 === isBossEsixt && this.stage.isStageTimeOut() && this.stage.hasCreateBoss == true;
-  };
-  this.init = function () {
-    var stage = new Stage(this.stagesConfig[0]);
-    stage.isRunning = 0;
-    this.stage = stage;
-  };
-  this.next = function () {
-    this.currentStageIndex++;
-    if (this.stagesConfig.length > this.currentStageIndex) {
-      this.stage.destroy();
-      var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
-      this.stage = stage;
-    }
-  };
-  this.reset = function () {
-    this.currentStageIndex = 0;
-    var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
-    this.stage = stage;
-  };
-}
-module.exports = {
-  Stage: Stage,
-  Button: Button,
-  Bar: Bar,
-  TextBlock: TextBlock,
-  StageManager: StageManager
-};
+module.exports = { Modal: _Modal2.default, Bar: _Bar2.default, Button: _Button2.default, TextBlock: _TextBlock2.default };
 
 /***/ }),
 /* 11 */
@@ -18886,118 +18178,2125 @@ module.exports = {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30), __webpack_require__(31)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31), __webpack_require__(32)(module)))
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,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"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _LosEvent = __webpack_require__(14);
+
+var _LosEvent2 = _interopRequireDefault(_LosEvent);
+
+var _EObject = __webpack_require__(3);
+
+var _EObject2 = _interopRequireDefault(_EObject);
+
+var _shot = __webpack_require__(8);
+
+var _spoil = __webpack_require__(27);
+
+var _ui = __webpack_require__(10);
+
+var _Stage = __webpack_require__(15);
+
+var _Debug = __webpack_require__(13);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Engine() {
+  var option = {};
+
+  var stageManager;
+  var textBlock;
+  var drawContext;
+  var bar;
+  this.Create = function (_option) {
+    // canvas context
+    var canvas = document.getElementById(_option.id);
+    drawContext = canvas.getContext('2d');
+
+    option.ctxWidth = canvas.width = window.document.body.clientWidth;
+    option.ctxHeight = canvas.height = window.document.body.clientHeight;
+    Object.assign(_context2.default, {
+      headOffset: 20,
+      currentOid: 0,
+      option: option,
+      losEvent: new _LosEvent2.default(_option),
+      stateInfo: new _Debug.StateInfo(),
+      shotType: _shot.ShotTypes,
+      setting: new _Debug.DebugSetting(),
+      spoilManager: new _spoil.SpoilManager()
+    });
+    // stage
+    stageManager = new _Stage.StageManager();
+    stageManager.init();
+    _context2.default.stageManager = stageManager;
+
+    // 设置按钮
+    var settingButton = new _ui.Button({
+      name: 'setting',
+      position: {
+        x: _context2.default.option.ctxWidth - _context2.default.headOffset,
+        y: 2
+      },
+      width: _context2.default.headOffset,
+      height: _context2.default.headOffset - 4,
+      icon: _resource2.default.setting,
+      event: {
+        'click': function click(eventInfo) {
+          stageManager.stage.stop();
+          var modal = new _ui.Modal({
+            title: '设置页面',
+            position: {
+              x: 10,
+              y: _context2.default.option.ctxHeight / 4
+            },
+            width: _context2.default.option.ctxWidth - 20,
+            height: _context2.default.option.ctxHeight / 2,
+            zIndex: 2,
+            confirm: function confirm() {
+              stageManager.stage.restart();
+            },
+            cancel: function cancel() {
+              stageManager.stage.restart();
+              _context2.default.objectManager.removeElement(modal);
+            }
+          });
+          _context2.default.objectManager.addElement(modal);
+        }
+      }
+    });
+
+    // bar
+    bar = new _ui.Bar({
+      icon: _resource2.default.head,
+      position: { x: -5, y: 0 },
+      width: option.ctxWidth + 10,
+      height: _context2.default.headOffset,
+      rightButton: settingButton
+    });
+    textBlock = new _ui.TextBlock({
+      position: {
+        x: 0,
+        y: _context2.default.headOffset
+      }
+    });
+    _context2.default.objectManager.addElement(bar);
+    _context2.default.objectManager.addElement(textBlock);
+  };
+
+  /**
+  * time
+  */
+  var clearTm;
+  var drawTm;
+  var moveTm;
+  var checkTm;
+  this.Start = function () {
+    // 拦截作用 必要时可以扩展出去
+    var before = function before(callback) {
+      return function () {
+        if (stageManager.stage.isRunning == 1) callback();
+      };
+    };
+
+    drawTm = setInterval(draw, 50);
+
+    checkTm = setInterval(before(function () {
+      stageManager.stage.checkCollection();
+    }), 50);
+
+    moveTm = setInterval(before(function () {
+      stageManager.stage.objectMove();
+    }), 50);
+
+    clearTm = setInterval(before(function () {
+      stageManager.stage.clearObject();
+    }), 5000);
+  };
+  // 绘制
+  var draw = function draw() {
+    // 绘制文本
+    /*if (context.setting.isDebug.value) {
+      textBlock.setText(context.stateInfo.getDebugArray())
+      textBlock.render(drawContext)
+    }*/
+
+    _context2.default.objectManager.forEach(function (item) {
+      item.render(drawContext);
+    });
+  };
+  /**
+   * 清理函数
+   */
+  var destory = function destory() {
+    stageManager.stage.destroy();
+    clearInterval(clearTm);
+    clearInterval(drawTm);
+    clearInterval(moveTm);
+    clearInterval(checkTm);
+  };
+}
+
+exports.default = Engine;
+
+module.exports = Engine;
 
 /***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/bg1.jpg";
+"use strict";
+
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function StateInfo() {
+  this.enemies = {
+    all: {},
+    resolve: {}
+  };
+  this.emitShot = {
+    all: {},
+    resolve: {}
+  };
+  this.spoils = {
+    all: {},
+    resolve: {}
+  };
+  this.currentShotNum = 0;
+  this.currentEnemyNum = 0;
+  this.getDebugArray = function () {
+    var sumLog = function sumLog(obj) {
+      var keys = Object.keys(obj);
+      var sum = 0;
+      for (var i = 0; i < keys.length; i++) {
+        sum += obj[keys[i]];
+      }
+      return sum;
+    };
+    var arr = [];
+
+    var allKillEmemies = sumLog(this.enemies.resolve);
+    var allEnemies = sumLog(this.enemies.all);
+    arr.push('杀敌总数量：' + allKillEmemies + '\r\n');
+    arr.push('敌人总数：' + allEnemies + '\r\n');
+    arr.push('击杀比：' + allKillEmemies / allEnemies + '\r\n');
+
+    var allTargetShots = sumLog(this.emitShot.resolve);
+    var allShots = sumLog(this.emitShot.all);
+    arr.push('命中弹药' + allTargetShots + '\r\n');
+    arr.push('发射弹药总量：' + allShots + '\r\n');
+    arr.push('命中比：' + allTargetShots / allShots + '\r\n');
+
+    arr.push('子弹数量：' + this.currentShotNum + '\r\n');
+    arr.push('敌人数量：' + this.currentEnemyNum + '\r\n');
+    return arr;
+  };
+  this.reset = function () {
+    this.enemies.all = {};
+    this.enemies.resolve = {};
+
+    this.emitShot.all = {};
+    this.emitShot.resolve = {};
+
+    this.spoils.all = {};
+    this.spoils.resolve = {};
+
+    this.currentShotNum = 0;
+    this.currentEnemyNum = 0;
+  };
+}
+function DebugSetting() {
+  this.isDebug = {
+    message: '显示调试信息',
+    value: true
+  };
+  this.stageTime = {
+    message: '关卡时长',
+    value: 20 // unit ms
+  };
+  this.spoilRate = {
+    message: '战利品几率',
+    value: 0.5
+  };
+  this.enemyRemoveRate = {
+    message: '敌军移动速率',
+    value: 0.5
+  };
+  this.enemyShotRate = {
+    message: '敌军射速',
+    value: 0.5
+  };
+  this.playerShotRate = {
+    message: '玩家射速度',
+    value: 20
+  };
+  this.spoilRate = {
+    message: '战利品几率',
+    value: 0.5
+  };
+}
+
+module.exports = {
+  StateInfo: StateInfo,
+  DebugSetting: DebugSetting
+};
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/bg2.png";
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _lodash = __webpack_require__(11);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LosEvent = function () {
+  function LosEvent(_option) {
+    _classCallCheck(this, LosEvent);
+
+    // super()
+    this.eventContainer = [];
+    this.init(_option);
+    this.focusTarget;
+    this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus'];
+  }
+
+  _createClass(LosEvent, [{
+    key: 'init',
+    value: function init(_option) {
+      _option.attachEvent.click = this.clickFunc();
+      _option.attachEvent.move = this.moveFunc();
+      _option.attachEvent.mouseDown = this.moveDownFunc();
+      _option.attachEvent.mouseUp = this.moveUpFunc();
+      _option.attachEvent.keyUp = this.keyUpFunc();
+    }
+  }, {
+    key: 'hasTarget',
+    value: function hasTarget(target) {
+      return _lodash2.default.filter(this.eventContainer, function (item) {
+        return item.target == target;
+      }).length > 0;
+    }
+  }, {
+    key: 'findTarget',
+    value: function findTarget(target) {
+      return _lodash2.default.filter(this.eventContainer, function (item) {
+        return item.target == target;
+      })[0];
+    }
+    // 附加事件中 object-action-callback
+
+  }, {
+    key: 'attachEvent',
+    value: function attachEvent(target, action, callback) {
+      if (!this.hasTarget(target)) this.eventContainer.push({ target: target, actions: [] });
+      var actions = this.findTarget(target).actions;
+      if (-1 === actions.indexOf(action)) actions.push(action);
+    }
+  }, {
+    key: 'deAttchEvent',
+    value: function deAttchEvent(target, action, funcs) {
+      var items = this.findTarget(target);
+
+      if (action) {
+        for (var i = 0; i < items.actions.length; i++) {
+          if (items.actions[i] == action) {
+            if (funcs) {
+              _util2.default.removeArr(items.target[action], funcs);
+            } else {
+              _util2.default.removeArr(items.actions, items.actions[i]);
+              return;
+            }
+          }
+        }
+      } else {
+        this.deAttchAllEvent(items);
+      }
+    }
+  }, {
+    key: 'deAttchAllEvent',
+    value: function deAttchAllEvent(target) {
+      _util2.default.removeArr(this.eventContainer, target);
+    }
+    // 触发事件中 action-eventInfo
+
+  }, {
+    key: 'triggerEvent',
+    value: function triggerEvent(action, eventInfo) {
+      var targets = _lodash2.default.filter(this.eventContainer, function (item) {
+        return item.target.isDisplay && _util2.default.isEffect(item.target, action, eventInfo) && item.actions.indexOf(action) > -1;
+      });
+
+      if (targets.length == 0) {
+        return;
+      } else if (targets.length > 1) {
+        targets.sort(function (a, b) {
+          return b.target.zIndex - a.target.zIndex;
+        });
+      }
+      this.invokeEventListiner(targets[0].target, action, eventInfo);
+
+      if (action == 'click') {
+        if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo);
+        this.focusTarget = targets[0].target;
+        this.invokeEventListiner(targets[0].target, 'focus', eventInfo);
+      }
+    }
+  }, {
+    key: 'invokeEventListiner',
+    value: function invokeEventListiner(target, action, eventInfo) {
+      if (target[action] && target[action] instanceof Array) {
+        target[action].forEach(function (func) {
+          if (func instanceof Function) {
+            func(target, eventInfo);
+          }
+        });
+      }
+    }
+  }, {
+    key: 'triggerKeyEvent',
+    value: function triggerKeyEvent(action, eventInfo) {
+      var _this = this;
+
+      var targets = _lodash2.default.filter(Object.keys(this.eventContainer), function (key) {
+        return _this.eventContainer[key].isDisplay && _this.eventContainer[key].indexOf(action) > -1;
+      });
+      targets[0][action].forEach(function (func) {
+        func(targets[0], eventInfo);
+      });
+    }
+
+    // 外部事件转内部事件驱动  
+    // 包装按键按下，抬起，移动事件
+
+  }, {
+    key: 'pacakgeEvent',
+    value: function pacakgeEvent(event) {
+      var evnetInfo = {
+        position: { x: 0, y: 0 }
+      };
+      if (_util2.default.isAndroid()) {
+        evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft;
+        evnetInfo.position.y = event.gesture.center.pageY, _context2.default.option, _context2.default.headOffset;
+      } else if (_util2.default.isElectron()) {
+        evnetInfo.position.x = event.pageX;
+        evnetInfo.position.y = event.pageY, _context2.default.option, _context2.default.headOffset;
+      } else {
+        evnetInfo.position.x = event.offsetX;
+        evnetInfo.position.y = event.offsetY, _context2.default.option, _context2.default.headOffset;
+      }
+      return evnetInfo;
+    }
+    // 包装单击事件
+
+  }, {
+    key: 'pacakgeClick',
+    value: function pacakgeClick(event) {
+      var evnetInfo = {
+        position: { x: 0, y: 0 }
+      };
+
+      if (_util2.default.isAndroid()) {
+        evnetInfo.position.x = event.pageX - event.target.offsetLeft;
+        evnetInfo.position.y = event.y;
+      } else if (_util2.default.isElectron()) {
+        evnetInfo.position.x = event.pageX;
+        evnetInfo.position.y = event.pageY;
+      } else {
+        evnetInfo.position.x = event.offsetX;
+        evnetInfo.position.y = event.offsetY;
+      }
+      return evnetInfo;
+    }
+
+    // 移动事件
+
+  }, {
+    key: 'moveFunc',
+    value: function moveFunc() {
+      var _this2 = this;
+
+      return function (eventInfo) {
+        _this2.triggerEvent('mouseMove', _this2.pacakgeEvent(eventInfo));
+      };
+    }
+    // 按下事件
+
+  }, {
+    key: 'moveDownFunc',
+    value: function moveDownFunc() {
+      var _this3 = this;
+
+      return function (eventInfo) {
+        _this3.triggerEvent('mouseDown', _this3.pacakgeEvent(eventInfo));
+      };
+    }
+    // 抬起事件
+
+  }, {
+    key: 'moveUpFunc',
+    value: function moveUpFunc() {
+      var _this4 = this;
+
+      return function (eventInfo) {
+        _this4.triggerEvent('mouseUp', _this4.pacakgeEvent(eventInfo));
+      };
+    }
+    // 点击事件
+
+  }, {
+    key: 'clickFunc',
+    value: function clickFunc() {
+      var _this5 = this;
+
+      return function (eventInfo) {
+        _this5.triggerEvent('click', _this5.pacakgeClick(eventInfo));
+      };
+    }
+    // 点击事件
+
+  }, {
+    key: 'keyUpFunc',
+    value: function keyUpFunc() {
+      var _this6 = this;
+
+      return function (eventInfo) {
+        _this6.triggerEvent('keyUp', eventInfo);
+      };
+    }
+  }]);
+
+  return LosEvent;
+}();
+
+module.exports = LosEvent;
 
 /***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/bg3.jpg";
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _TimeLine = __webpack_require__(16);
+
+var _TimeLine2 = _interopRequireDefault(_TimeLine);
+
+var _shotGame = __webpack_require__(20);
+
+var _shot = __webpack_require__(8);
+
+var _ui = __webpack_require__(10);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Stage = function (_EObject) {
+  _inherits(Stage, _EObject);
+
+  function Stage(stageConfig) {
+    _classCallCheck(this, Stage);
+
+    var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this, stageConfig));
+
+    _this.isRunning = 2; // 三种状态 1 预备/2 进行 /3 结束
+    _this.position.x = 0;
+    _this.position.y = _context2.default.headOffset;
+    _this.width = _context2.default.option.ctxWidth;
+    _this.height = _context2.default.option.ctxHeight - _context2.default.headOffset;
+    // 背景图片
+    // 敌军种类  自动配置敌军
+    // boss
+    // 关卡时长
+    // 组件
+
+    _this.resetButton = new _ui.Button({
+      name: 'reset',
+      position: {
+        x: _this.width / 4,
+        y: _this.height / 2 + _this.position.y
+      },
+      width: _this.width / 2,
+      height: 40,
+      icon: _resource2.default.button
+    });
+
+    _this.resetButton.on('click', function (eventInfo) {
+      _this.resetButton.hide();
+      if (_this.player.hp > 0) {
+        _this.start();
+      } else {
+        _this.restart();
+      }
+    });
+    var plainMoveState = {
+      isMouseDown: false,
+      position: { x: 0, y: 0 }
+    };
+    _this.player = new _shotGame.Player(_this);
+    _this.player.setShotInterVal(1);
+    // 注册事件
+    // 玩家开始移动
+    _this.player.on('mouseDown', function (eventInfo) {
+      if (_this.isRunning == 1) plainMoveState.isMouseDown = true;
+    });
+    // 玩家停止移动
+    _this.on('mouseUp', function (eventInfo) {
+      if (_this.isRunning == 1) plainMoveState.isMouseDown = false;
+    });
+    // 玩家移动中
+    _this.on('mouseMove', function (eventInfo) {
+      if (_this.isRunning == 1 && plainMoveState.isMouseDown === true) {
+        _this.player.position.x = eventInfo.position.x - _this.player.width / 2;
+        _this.player.position.y = eventInfo.position.y - _this.player.height / 2 - _context2.default.headOffset;
+      }
+    });
+    _this.icon = stageConfig.icon;
+    _this.boss;
+    _this.time = 10;
+
+    _this.timeLine = new _TimeLine2.default();
+
+    _this.shots = [];
+    _this.enemies = [];
+    _this.bullets = [];
+    _this.spoils = [];
+
+    _this.hasCreateBoss = false;
+    var checkTm = setInterval(function () {
+      if (_this.isStageTimeOut()) {
+        clearInterval(checkTm);
+        _this.createBoss();
+        _this.hasCreateBoss = true;
+      }
+    }, 100);
+    return _this;
+  }
+
+  _createClass(Stage, [{
+    key: 'enemyDie',
+    value: function enemyDie(enemy) {
+      var self = this;
+      enemy.isDie = true;
+      var bullet = new _shot.Bullet({
+        isDie: false,
+        icon: _resource2.default.bullet,
+        width: 8,
+        height: 8,
+        position: {
+          x: (enemy.position.x + enemy.width) / 2,
+          y: (enemy.position.y + enemy.height) / 2
+        }
+      });
+      self.bullets.push(bullet);
+      setTimeout(function (enemy, bullet) {
+        return function () {
+          _util2.default.removeArr(self.enemies, enemy);
+          _util2.default.removeArr(self.bullets, bullet);
+        };
+      }(enemy, bullet), 500);
+      // 判断是否产生战利品
+      var spoil = _context2.default.spoilManager.createSpoil(enemy);
+      if (spoil) {
+        if (_context2.default.stateInfo.spoils.all[spoil.type]) _context2.default.stateInfo.spoils.all[spoil.type]++;else _context2.default.stateInfo.spoils.all[spoil.type] = 0;
+        self.spoils.push(spoil);
+      }
+
+      if (_context2.default.stateInfo.enemies.resolve[enemy.type]) _context2.default.stateInfo.enemies.resolve[enemy.type]++;else _context2.default.stateInfo.enemies.resolve[enemy.type] = 1;
+    }
+    /**
+       * 对象移动
+       */
+
+  }, {
+    key: 'objectMove',
+    value: function objectMove() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+      if (_context2.default.stageManager.canGoNextStage()) {
+        _context2.default.stageManager.next();
+      }
+      // 生成新的个体
+      var pShots = this.player.getShot();
+      if (pShots) {
+        shots.push.apply(shots, pShots);
+        for (var i = 0; i < pShots.length; i++) {
+          if (_context2.default.stateInfo.emitShot.all[pShots[i].type]) _context2.default.stateInfo.emitShot.all[pShots[i].type]++;else _context2.default.stateInfo.emitShot.all[pShots[i].type] = 1;
+        }
+      }
+      this.update();
+
+      this.player.update();
+      // 报告
+      _context2.default.stateInfo.currentShotNum = this.shots.length;
+      _context2.default.stateInfo.currentEnemyNum = this.enemies.length;
+    }
+    // 对象清理
+
+  }, {
+    key: 'clearObject',
+    value: function clearObject() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+      // 删除越界的对象  
+      for (var i = shots.length - 1; i > -1; i--) {
+        var oneShot = shots[i];
+        if (oneShot.isDie || !_util2.default.inArea(oneShot.position, { x: -10, y: -10, width: this.width + 10, height: this.height + 10 })) {
+          _util2.default.removeArr(shots, oneShot);
+        }
+      }
+
+      for (var i = enemies.length - 1; i > -1; i--) {
+        var enemy = enemies[i];
+        if (enemy.isDie) {
+          _util2.default.removeArr(enemies, enemy);
+          continue;
+        }
+        if (!_util2.default.inArea(enemy.position, { x: -100, y: -100, width: this.width + 100, height: this.height + 100 })) {
+          _util2.default.removeArr(enemies, enemy);
+        }
+      }
+
+      for (var i = spoils.length - 1; i > -1; i--) {
+        var spoil = spoils[i];
+        if (spoil.isDie) {
+          _util2.default.removeArr(spoils, spoil);
+          continue;
+        }
+        // if (!util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
+        //   util.removeArr(spoils, spoil)
+        // }
+      }
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.timeLine.stop();
+      this.isRunning = 2;
+    }
+  }, {
+    key: 'restart',
+    value: function restart() {
+      this.timeLine.start();
+      this.isRunning = 1;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      this.timeLine.start();
+      this.isRunning = 1;
+    }
+  }, {
+    key: 'drawScene',
+    value: function drawScene() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+
+      var canvas = document.createElement('canvas');
+      var drawContext = canvas.getContext('2d');
+      canvas.height = this.height;
+      canvas.width = this.width;
+      // 背景
+      drawContext.drawImage(this.icon, 0, 0, this.width, this.height);
+      // 子弹
+      for (var index in this.shots) {
+        var shot = shots[index];
+        shot.render(drawContext);
+      }
+      // 飞机
+      this.player.render(drawContext);
+      // 敌军
+      for (var index in this.enemies) {
+        var enemy = enemies[index];
+        enemy.render(drawContext);
+      }
+      // 战利品
+      for (var index in this.spoils) {
+        var spoil = spoils[index];
+        spoil.render(drawContext);
+      }
+      // 死亡
+      for (var index in this.bullets) {
+        var bullet = bullets[index];
+        bullet.render(drawContext);
+      }
+      return canvas;
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.player.off('mouseDown');
+      this.off('mouseUp');
+      this.off('mouseMove');
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.timeLine.reset();
+      this.shots.length = 0;
+      this.enemies.length = 0;
+      this.bullets.length = 0;
+      this.spoils.length = 0;
+      this.isRunning = 0;
+    }
+  }, {
+    key: 'createBoss',
+    value: function createBoss() {
+      var boss = new _shotGame.Boss();
+      this.boss = boss;
+      this.enemies.push(boss);
+    }
+  }, {
+    key: 'isStageTimeOut',
+    value: function isStageTimeOut() {
+      return this.timeLine.getRunningTime() / 1000 > this.time;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+
+      if (Math.random() < 0.07) // 百分之七生成敌军
+        {
+          var rad = Math.random() * 3 + '';
+          var newEmeny = (0, _shotGame.createEnemy)(parseInt(rad.charAt(0)) + 2);
+          if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
+          enemies.push(newEmeny);
+        }
+
+      if (Math.random() < 0.01) // 百分之一生成强力敌军
+        {
+          var newEmeny = (0, _shotGame.createEnemy)(1);
+          if (_context2.default.stateInfo.enemies.all[newEmeny.type]) _context2.default.stateInfo.enemies.all[newEmeny.type]++;else _context2.default.stateInfo.enemies.all[newEmeny.type] = 1;
+          enemies.push(newEmeny);
+        }
+
+      for (var index in shots) {
+        if (shots[index].isDie) continue;
+        var shot = shots[index];
+        shot.update();
+      }
+
+      for (var index in spoils) {
+        if (spoils[index].isDie) continue;
+        var spoil = spoils[index];
+        spoil.update();
+      }
+
+      for (var index in enemies) {
+        if (enemies[index].isDie) continue;
+        var enemy = enemies[index];
+
+        var eShots = enemy.getShot();
+        if (eShots) {
+          shots.push.apply(shots, eShots);
+        }
+        enemy.update();
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(drawContext) {
+      var canvas = this.drawScene();
+      drawContext.drawImage(canvas, // 绘制
+      0, 0, canvas.width, canvas.height, this.position.x, this.position.y, this.width, this.height);
+      this.resetButton.render(drawContext);
+    }
+    /**
+     * 根据id查找敌人
+     * @param {*敌人id} oid 
+     */
+
+  }, {
+    key: 'findEnemyByOid',
+    value: function findEnemyByOid(oid) {
+      var enemies = this.enemies;
+      if (enemies) {
+        for (var i = 0; i < enemies.length; i++) {
+          if (enemies[i].Oid == oid) {
+            return enemies[i];
+          }
+        }
+      }
+    }
+    // 检测碰撞
+
+  }, {
+    key: 'checkCollection',
+    value: function checkCollection() {
+      var plainRect = this.player.getAbsoluteCollisionArea()[0];
+      var enemies = this.enemies;
+      var shots = this.shots;
+      var bullets = this.bullets;
+      var spoils = this.spoils;
+
+      for (var i = enemies.length - 1; i > -1; i--) {
+        var enemy = enemies[i];
+        if (enemy.isDie) continue;
+        var enemyRect = enemy.getAbsoluteCollisionArea()[0];
+        // 检查子弹和飞机的碰撞
+        for (var j = shots.length - 1; j > -1; j--) {
+          var oneShot = shots[j];
+          if (oneShot.isDie) continue;
+          var shotRect = oneShot.getAbsoluteCollisionArea()[0];
+          if (this.player.Oid == oneShot.belong && _util2.default.isChonghe(shotRect, enemyRect)) {
+            enemy.Hp = enemy.Hp - oneShot.attack * this.player.shotEx;
+            oneShot.Hp--;
+            if (enemy.Hp <= 0) {
+              this.enemyDie(enemy);
+            }
+            // 子弹生命  穿甲弹
+            if (oneShot.Hp <= 0) {
+              oneShot.isDie = true;
+              if (_context2.default.stateInfo.emitShot.resolve[oneShot.type]) _context2.default.stateInfo.emitShot.resolve[oneShot.type]++;else _context2.default.stateInfo.emitShot.resolve[oneShot.type] = 1;
+              _util2.default.removeArr(shots, oneShot);
+            }
+          }
+        }
+        // 检查玩家和飞机的碰撞
+        if (_util2.default.isChonghe(plainRect, enemyRect)) {
+          enemy.Hp--;
+          this.player.Hp--;
+          _util2.default.isChonghe(plainRect, enemyRect);
+          if (enemy.Hp <= 0) {
+            enemy.isDie = true;
+            _util2.default.removeArr(enemies, enemy);
+          }
+        }
+      }
+
+      // 检查玩家是否被击中
+      for (var j = shots.length - 1; j > -1; j--) {
+        var oneShot = shots[j];
+        if (oneShot.isDie) continue;
+        if (this.player.Oid != oneShot.belong && _util2.default.inArea({ x: oneShot.position.x + oneShot.width / 2, y: oneShot.position.y }, plainRect)) {
+          var ene = this.findEnemyByOid(oneShot.belong);
+          var shotEx = ene ? ene.shotEx : 1;
+          this.player.Hp = this.player.Hp - oneShot.attack * shotEx;
+          oneShot.Hp--;
+          if (oneShot.Hp <= 0) {
+            oneShot.isDie = true;
+            _util2.default.removeArr(shots, oneShot);
+          }
+        }
+      }
+      // 检查玩家是否获取战利品
+      for (var j = spoils.length - 1; j > -1; j--) {
+        var oneSpoil = spoils[j];
+        if (oneSpoil.isDie) continue;
+        var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0];
+        if (_util2.default.isChonghe(spoilRect, plainRect)) {
+          oneSpoil.isDie = true;
+          _util2.default.removeArr(spoils, oneSpoil);
+          oneSpoil.Effect(this.player);
+          if (_context2.default.stateInfo.spoils.resolve[oneSpoil.type]) _context2.default.stateInfo.spoils.resolve[oneSpoil.type]++;else _context2.default.stateInfo.spoils.resolve[oneSpoil.type] = 1;
+        }
+      }
+
+      if (this.player.Hp <= 0) {
+        this.stop();
+        this.resetButton.show();
+      }
+    }
+  }]);
+
+  return Stage;
+}(_EObject3.default);
+
+function StageManager() {
+  this.stagesConfig = [{
+    icon: _resource2.default.bg.bg1
+  }, {
+    icon: _resource2.default.bg.bg2
+  }, {
+    icon: _resource2.default.bg.bg3
+  }];
+  this.currentStageIndex = 0;
+  /**
+   * 判断关卡是否超时   单位s
+   */
+  this.isStageTimeOut = function () {
+    return this.stage.isStageTimeOut();
+  };
+  this.canGoNextStage = function () {
+    var isBossEsixt = this.stage.enemies.indexOf(this.stage.boss);
+    return -1 === isBossEsixt && this.stage.isStageTimeOut() && this.stage.hasCreateBoss == true;
+  };
+  this.init = function () {
+    if (this.stage) this.stage.destroy();
+    _context2.default.objectManager.removeElement(this.stage);
+    var stage = new Stage(this.stagesConfig[0]);
+    stage.isRunning = 0;
+    this.stage = stage;
+    _context2.default.objectManager.addElement(stage);
+  };
+  this.next = function () {
+    this.currentStageIndex++;
+    if (this.stagesConfig.length > this.currentStageIndex) {
+      this.stage.destroy();
+      _context2.default.objectManager.removeElement(this.stage);
+      var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
+      this.stage = stage;
+      _context2.default.objectManager.addElement(stage);
+    }
+  };
+  this.reset = function () {
+    this.currentStageIndex = 0;
+    _context2.default.objectManager.removeElement(this.stage);
+    var stage = new Stage(this.stagesConfig[this.currentStageIndex]);
+    this.stage = stage;
+    _context2.default.objectManager.addElement(stage);
+  };
+}
+module.exports = {
+  Stage: Stage,
+  StageManager: StageManager
+};
 
 /***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/bullet.png";
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TimeLine = function () {
+  function TimeLine() {
+    _classCallCheck(this, TimeLine);
+
+    this.timePoints = [];
+  }
+
+  _createClass(TimeLine, [{
+    key: 'getRunningTime',
+    value: function getRunningTime() {
+      var timeLong = 0;
+      for (var index = 0; index < this.timePoints.length;) {
+        var element = this.timePoints[index];
+        if (element.action == 'start') {
+          if (index != this.timePoints.length - 1) {
+            timeLong += this.timePoints[index + 1].time - element.time;
+          } else {
+            timeLong += new Date() - element.time;
+          }
+          index = index + 2;
+        }
+        index++;
+      }
+      return timeLong;
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.timePoints = [];
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.setAction('stop');
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      this.setAction('start');
+    }
+  }, {
+    key: 'setAction',
+    value: function setAction(actionName) {
+      if (this.timePoints.length == 0) {
+        this.timePoints.push({
+          action: actionName,
+          time: new Date()
+        });
+      } else {
+        var timePoint = this.timePoints[this.timePoints.length - 1];
+        if (timePoint.action == actionName) {} else {
+          timePoint.time = new Date();
+        }
+      }
+    }
+  }]);
+
+  return TimeLine;
+}();
+
+exports.default = TimeLine;
 
 /***/ }),
 /* 17 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,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"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain2 = __webpack_require__(4);
+
+var _BasePlain3 = _interopRequireDefault(_BasePlain2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Boss
+ */
+var Boss = function (_BasePlain) {
+  _inherits(Boss, _BasePlain);
+
+  function Boss() {
+    _classCallCheck(this, Boss);
+
+    var _this = _possibleConstructorReturn(this, (Boss.__proto__ || Object.getPrototypeOf(Boss)).call(this, true));
+
+    _this.type = 'boss';
+    _this.fixed.y = true;
+    _this.setShotInterVal(_util2.default.randInt(10, 20));
+    _this.width = _context2.default.option.ctxWidth * 0.6;
+    _this.height = _this.width * 0.6;
+    _this.position.x = _context2.default.option.ctxWidth * 0.5;
+    _this.position.y = 0;
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    _this.speedY = 0;
+    _this.icon = _resource2.default.enes[1];
+    _this.Hp = 200 + 200 * Math.random();
+    _this.shotSpeedFactor = 0.1;
+    var factor = 5 * Math.random();
+    _this.setXPath(function (x) {
+      return factor * Math.cos(this.moveTick / 15);
+    });
+
+    _this.shotType = {
+      type: 'umShot',
+      num: 4
+    };
+    _this.shotFactory = function () {
+      return this.shotor.CreateShot(this);
+    };
+    return _this;
+  }
+
+  return Boss;
+}(_BasePlain3.default);
+
+exports.default = Boss;
+
+module.exports = Boss;
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/ene1.png";
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain2 = __webpack_require__(4);
+
+var _BasePlain3 = _interopRequireDefault(_BasePlain2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * 敌军
+ * @param {*是否发射} isShot 
+ */
+var Enemy = function (_BasePlain) {
+  _inherits(Enemy, _BasePlain);
+
+  function Enemy(isShot) {
+    _classCallCheck(this, Enemy);
+
+    var _this = _possibleConstructorReturn(this, (Enemy.__proto__ || Object.getPrototypeOf(Enemy)).call(this));
+
+    _this.type = 'common';
+    _this.speedX = 0;
+    _this.shotSpeedFactor = 0.6;
+    _this.shotType = {
+      type: 'enemyShot',
+      num: 1
+    };
+    _this.shotFactory = function () {
+      return this.shotor.CreateShot(this);
+    };
+    return _this;
+  }
+
+  return Enemy;
+}(_BasePlain3.default);
+
+exports.default = Enemy;
+
+module.exports = Enemy;
 
 /***/ }),
 /* 19 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAgCAYAAABpRpp6AAAAhnpUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjaXY5RCgMxCET/PUWPYEaj8Tgl7MLeoMevkl1C+z50GOQhHZ/rpFfRGKTdh4UZJxoaeGcYvBDmBm61cy7uLS0Tdk2CFSyGs+5DvfuHLjbsdHW3btMm0o5DIMhZorJyvRFbgvl89Nf/upm+RzIsQqRIEugAAAoCaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/Pgo8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA0LjQuMC1FeGl2MiI+CiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIKICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICBleGlmOlBpeGVsWERpbWVuc2lvbj0iNDQiCiAgIGV4aWY6UGl4ZWxZRGltZW5zaW9uPSIzMiIKICAgdGlmZjpJbWFnZVdpZHRoPSI0NCIKICAgdGlmZjpJbWFnZUhlaWdodD0iMzIiCiAgIHRpZmY6T3JpZW50YXRpb249IjEiLz4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg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"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain2 = __webpack_require__(4);
+
+var _BasePlain3 = _interopRequireDefault(_BasePlain2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @param {*玩家} isShot 
+ */
+var Player = function (_BasePlain) {
+  _inherits(Player, _BasePlain);
+
+  function Player(stage) {
+    _classCallCheck(this, Player);
+
+    var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, true));
+
+    _this.stage = stage;
+    _this.fixed.y = true;
+    _this.icon = _resource2.default.plainImg;
+    _this.width = 30;
+    _this.height = 24;
+    _this.AllHp = 12;
+    _this.Hp = _this.AllHp;
+    _this.position.x = (_this.stage.width - _this.width) / 2;
+    _this.position.y = _this.stage.height - _this.height;
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    _this.enableShot = true;
+    _this.speedY = -1;
+    _this.shotType = {
+      type: 'umShot',
+      num: 5
+    };
+    _this.shotFactory = function () {
+      return this.shotor.CreateShot(this);
+    };
+    _this.reset = function () {
+      this.Hp = 3;
+      this.position.x = (this.stage.width - this.width) / 2;
+      this.position.y = this.stage.height - this.height;
+      this.shotType = {
+        type: 'umShot',
+        num: 5
+      };
+      this.setShotInterVal(5);
+    };
+    return _this;
+  }
+
+  return Player;
+}(_BasePlain3.default);
+
+exports.default = Player;
+
+module.exports = Player;
 
 /***/ }),
 /* 20 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAgCAYAAABQISshAAAAh3pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjaXY5RDoQwCET/OcUeYQoUynGM0cQbePyFVOOu7wMmk+ZR2s5jp0/RwKTdh4UZEg0NXjIMTARojFY75+Ta0jLxU5PwDBbDoc9DvfqbLjZsd3W3bqutnHbehIVzlqisqG/Ez7VbIv/9yw36Aj+zLBLyp2kWAAAKAmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNC40LjAtRXhpdjIiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjUwIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzIiCiAgIHRpZmY6SW1hZ2VXaWR0aD0iNTAiCiAgIHRpZmY6SW1hZ2VIZWlnaHQ9IjMyIgogICB0aWZmOk9yaWVudGF0aW9uPSIxIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg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"
+"use strict";
+
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _BasePlain = __webpack_require__(4);
+
+var _BasePlain2 = _interopRequireDefault(_BasePlain);
+
+var _Boss = __webpack_require__(17);
+
+var _Boss2 = _interopRequireDefault(_Boss);
+
+var _Enemy = __webpack_require__(18);
+
+var _Enemy2 = _interopRequireDefault(_Enemy);
+
+var _Player = __webpack_require__(19);
+
+var _Player2 = _interopRequireDefault(_Player);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var createEnemy = function createEnemy(type) {
+  // 1 大飞机  2,3,4 小飞机
+  if (type == 1) {
+    var enemy = new _Enemy2.default(true);
+    enemy.setShotInterVal(_util2.default.randInt(5, 15));
+    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
+    enemy.position.y = 0 - enemy.width / 2;
+    enemy.speedY = _util2.default.randInt(3, 6);
+    enemy.icon = _resource2.default.enes[type - 1];
+    enemy.width = 40;
+    enemy.height = 60;
+    enemy.Hp = 20 + 10 * Math.random();
+    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
+    return enemy;
+  } else if (type == 2 || type == 3 || type == 4) {
+    var enemy = new _Enemy2.default(_context2.default, true);
+    enemy.setShotInterVal(_util2.default.randInt(5, 15));
+    enemy.position.x = _context2.default.stageManager.stage.width * Math.random();
+    enemy.position.y = 0 - enemy.width / 2;
+    enemy.speedY = _util2.default.randInt(3, 6);
+
+    enemy.icon = _resource2.default.enes[type - 1];
+    enemy.width = 20;
+    enemy.height = 30;
+    enemy.Hp = 2 + 5 * Math.random();
+    enemy.collisionArea = [{ x: 0, y: 0, width: enemy.width, height: enemy.height }];
+    return enemy;
+  } else {
+    return new _Boss2.default();
+  }
+};
+
+module.exports = { createEnemy: createEnemy, BasePlain: _BasePlain2.default, Boss: _Boss2.default, Enemy: _Enemy2.default, Player: _Player2.default };
 
 /***/ }),
 /* 21 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAfCAYAAAB+tjR7AAAAh3pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjaVY7RDcMwCET/maIj4AODGaeNYqkbdPyCnMjK+4DTCT1B5+876VU0Bmn3YWHGiYYG3hkGL4S5gVvtnItrS8uEXZNgBYvhrPtQr/6miw2bru7W7bADaccpEOQsUVm53ogtwef+6Nm3+ZTTH0pZLHaTfNXsAAAKAmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNC40LjAtRXhpdjIiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjQzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzEiCiAgIHRpZmY6SW1hZ2VXaWR0aD0iNDMiCiAgIHRpZmY6SW1hZ2VIZWlnaHQ9IjMxIgogICB0aWZmOk9yaWVudGF0aW9uPSIxIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg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"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bullet = function (_EObject) {
+  _inherits(Bullet, _EObject);
+
+  function Bullet(option) {
+    _classCallCheck(this, Bullet);
+
+    var _this = _possibleConstructorReturn(this, (Bullet.__proto__ || Object.getPrototypeOf(Bullet)).call(this, option));
+
+    _this.collisionArea = [{ x: 0, y: 0, width: _this.width, height: _this.height }];
+    return _this;
+  }
+
+  return Bullet;
+}(_EObject3.default);
+
+exports.default = Bullet;
+
+module.exports = Bullet;
 
 /***/ }),
 /* 22 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAdCAYAAABMr4eBAAAAh3pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjaXY5LDoUwCEXnrMIl8CuU5RifJu7A5QuppvGdAdzcNIfCfp0HLAUhgzbvFmaYaGjwmqHjQBCJkWrnHDxbKBPPGoRHsOiOOh/q0780sW6Hq7s122zjtPMuLJyzRGXF+kZMCb1n5K//feVwA0JoLEJqmdnsAAAKAmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNC40LjAtRXhpdjIiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjE3IgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMjkiCiAgIHRpZmY6SW1hZ2VXaWR0aD0iMTciCiAgIHRpZmY6SW1hZ2VIZWlnaHQ9IjI5IgogICB0aWZmOk9yaWVudGF0aW9uPSIxIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgCjw/eHBhY2tldCBlbmQ9InciPz4TJvAJAAAABHNCSVQICAgIfAhkiAAABA1JREFUOMuFlcuKHVUUhr+1L3U9depcku5Ok0RtjkkgaRVHCoIDJw4cZyRIQBzmDYTzDMGn8A0yERyIEzEQvCEROoQoielOOt1d51JVezmoY5JOGq1RDfb66l///lct4YRHQZhupuSnBIC+V6LdINd25iedlxMhNyYxUoxxGgHgRanbGQ9u78mU5uXz7iQITZyTcZoQ+uCgbRWjj8jfOoLb/w/RL/D4piREmxi3QQiWYBaosfj6sUIloC/WmFdUXJmkeD/GcBr0dSxvInoWkRGZLbkxiV4uMa+osEkJbohIClKiMkYkRUOK6pC2Sf8T0qlwY1T6aLAky5wz83cI1GAManv4tNTpcRueQfRrLGR9VIeoxqhpudB+xLpeJmpqJCi0GS4ZMJpkJyu5u57gGaDaQxBeC+cZxW8wiBO25UMMSxAPlPi86D76Sju9nBD6qDgwNZPsc/Icyh6sZx+zKedQIxhy0CF315NjEJ0SEUUl3ncyt9MPSIo18hJ6JcQFTPrXIASCRgTTp1+mx5Wc2UqxviC0DmzNmVNXifqQDCEeQlRC2rvCWjzuci4Zy6TQaVffQZY+R0yCSODS6BJRuU48ADcEN6J7L2By6hMIAfB422c08QBGpzgk6WHFodry2vlPsQVEY3BjkOEK1oOifI9gAqih1Zw4JF3s+2c9Ip0Xm2fGJKO38TH4weoyAtgEvII166wXp3lw+AAXYogzYN+QRxHSWqBmsvU+pgA/AjsGBkAJdtRBTQaba9sEFcCj9BTEUMUZag3SBnw/xxSdD2b0HEIf3AAkg95oq0unNVibMsU6ej5hWUNwSjy6AHnnBf3u90QDLMC2YPYhPdpCQkBVURfDZeOYawyiWKO4YgPprSD/JrsGZitICq63BhIQUcDT37cOJw5ZzZMrLkIGMlhBtFOBAbMEicGnGxhtUH2WkOfTONrIwQMxkL/QzhHQgkYgrrsxte1qbGtcEhxiFrTqcNpiXMdVuwK1KyUW2gAqsFzegjZgRVmEOXt3WoNqhdeah/cOaBa/IQGaQ9CDzgsaaOewOIRQw5O97xBjOxX2AAgODRUiEWpzZns/gr9EdR+WT8FYYAntE1jsQj075KdbN4GaWg6ZV4cyJRjSgxlHoUK14tbNr2ie/k69C/P7MLsHs79gvgv1Aez88iVP9ncJHGHliOKw6oy9u7Pk3MWKuRP+3nnIr99eZ/LuZ0S9CyAKDYSFUD36g9s/fL9qv6JuDvjmz8Wz5aVTIta2c8RkWHJqybDiCKKERhFjsaJARcMRtp1RV/ty/c7i2AbUG5MYl2aIyWjJcSalaS1iAiY0mDCDtuLxomIrncnVn5cnrlGdYhhNPDb2iPEkrsvRvGnQUNMuavbu1DIlvFj3D3DrixmAXCopAAAAAElFTkSuQmCC"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _EObject2 = __webpack_require__(3);
+
+var _EObject3 = _interopRequireDefault(_EObject2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * 子弹
+ */
+var Shot = function (_EObject) {
+  _inherits(Shot, _EObject);
+
+  function Shot() {
+    _classCallCheck(this, Shot);
+
+    var _this = _possibleConstructorReturn(this, (Shot.__proto__ || Object.getPrototypeOf(Shot)).call(this));
+
+    _this.speedX = 0;
+    _this.type = 'common';
+    _this.attack = 1; // 攻击力
+    _this.belong = 0;
+    return _this;
+  }
+
+  return Shot;
+}(_EObject3.default);
+
+exports.default = Shot;
+
+module.exports = Shot;
 
 /***/ }),
 /* 23 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,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"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _EObject = __webpack_require__(3);
+
+var _EObject2 = _interopRequireDefault(_EObject);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var shotTypes = ['umShot', 'gzShot', 'common'];
+
+module.exports = shotTypes;
+exports.default = shotTypes;
 
 /***/ }),
 /* 24 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,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"
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Spoil2 = __webpack_require__(5);
+
+var _Spoil3 = _interopRequireDefault(_Spoil2);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GzShotSpoil = function (_Spoil) {
+  _inherits(GzShotSpoil, _Spoil);
+
+  function GzShotSpoil(object) {
+    _classCallCheck(this, GzShotSpoil);
+
+    var _this = _possibleConstructorReturn(this, (GzShotSpoil.__proto__ || Object.getPrototypeOf(GzShotSpoil)).call(this, object));
+
+    _this.spoiltype = _SpoilType2.default.gzShot;
+    _this.icon = _resource2.default.g;
+    return _this;
+  }
+
+  _createClass(GzShotSpoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {
+      if (targetPlayer.shotType.type == _SpoilType2.default.gzShot) {
+        targetPlayer.shotType.num++;
+      } else {
+        targetPlayer.shotType = {
+          type: _SpoilType2.default.gzShot,
+          num: 1
+        };
+      }
+      targetPlayer.setShotInterVal(30 - 4 * targetPlayer.shotType.num, 2);
+    }
+  }]);
+
+  return GzShotSpoil;
+}(_Spoil3.default);
+
+exports.default = GzShotSpoil;
+
+module.exports = GzShotSpoil;
 
 /***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/head.png";
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Spoil2 = __webpack_require__(5);
+
+var _Spoil3 = _interopRequireDefault(_Spoil2);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var HpSpoil = function (_Spoil) {
+  _inherits(HpSpoil, _Spoil);
+
+  function HpSpoil(object) {
+    _classCallCheck(this, HpSpoil);
+
+    var _this = _possibleConstructorReturn(this, (HpSpoil.__proto__ || Object.getPrototypeOf(HpSpoil)).call(this, object));
+
+    _this.spoiltype = _SpoilType2.default.addHp;
+    _this.icon = _resource2.default.hp;
+    return _this;
+  }
+
+  _createClass(HpSpoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {
+      if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++;
+    }
+  }]);
+
+  return HpSpoil;
+}(_Spoil3.default);
+
+exports.default = HpSpoil;
+
+module.exports = HpSpoil;
 
 /***/ }),
 /* 26 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAaCAYAAACkVDyJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABRdJREFUeNq8Vs1PXFUUP/d9zDyeAwgoDEzLh1VQwAA2llKqdlGjiSvixpULUxfujFsX/gsuNTZNXLkxMbhyoVhDVAytCS004aN8NQ0FZYaPmWHe5/V335zXPilobBNn8st7797zzu+c3z3nviuk/ID+z5/xL/Pi0LN8TLsjCTVA5zmDn9UvAHxGmLCN7XQeCxN2QcL2SEL1nAIyQB1QC6R5zgGKDIfH0mybOWS3D+yxrcvkDxGqCC2gEchBlA6qaO1UEU0QTFBKFsiS90iTW+yMoqBC0QybLLmiAblIqpHbZIXreGMN83eBPHDA2d4nFJxZA/AMHYiX6Y64IOecAXLDOpGBma0X6TljhVqCBTIiUsQNsk29m5b8LiqHGVmCT5P2RG96hk7KqyCf5vVUZBV1byTWwgaycDJIS/Q2fXZ7WPwOvxkkLfGOoddSW6aVxk6co1fT+9Fbk24tjSORjRJcShICdiWMDTTl6FJ7E/WSh5QwSWWWNjAScqp1OEmbNEqXl8/Q1dVq4kUsSQhHGmLagJI3N4nOtNZGmlxDQC6Cz2aJXjlP1NdHdGuOaGqK6Mv1M/RR5x3KQV6iLV7X+4QGF0ibXHaHxMSyoAMPYWhVQTR41/UHJfHDbcTCnaBszo0QDQ1Vnwdx9Xzyv/1aiLG2IT1n/ITRBeAPlaWWyPAJ4KlgsZj19yG3B8IKvLtQwgFKUKWMtXcw52C8gqvrVMd7nkfsyNT3SeIa9vaSX3IpWCpllU/2rSeLRuOisb2ia/l4MQ0ZjTCsNqFItHJ8r9Y1VuD6daKRsyBDmZom+TMziNcjs+RaXBupuJ8P96HwZEhlROnj5TQITTg20wjORSsF3MOS2ZWsuA9/nCApMNc/QMH0NLmTkxQgaL1qL45qfDXjqX6RzTXOvu/bitAHoQUE+KewjlrZeUCmiFBIARCu3abgyjIFHmyx1mo8NA0yn0453INevOMYiW1Lle6OOGHl9w2yXccnO6ySpl04giApRG36WCNkFhGBNED8AQIJ0RYRGQcioYqWs1TT77DvvzW+2npUv2ylOlJLXq72ROXWJno+JBvyqiw9JS9RBF1lifFAOVeAGlEQ8TPutVwTGfDFLVGKt7fkxqz6ZMNs1m60vD/o7MqAdrDwBWRVAFkBk7sKkHYPKAEeKsYHscdQ96rgAmwA1rsvOHqzfkP5jHswSRhy2ve0FM22vNUyZV98lvIgyvNmuK0Akh1FyB6KuK9A0ohIya+yBqHxWifZ8KGlaVb5ZN9hklByS/8pNJq3stpE/yfDi7I3G5FsM2kerRJjF9gDioDy5kXFhe2tu4nqP35p0WwzJuB9Xvlk3zJJmJR1XRg0Xd9njZ+//MaKPdpFeSYtMGmBK2FHkfI3qAwbcbadGj9/fcV60R5XPpSvpJxRjxw6YsQ7TjPQE3o0srvivTl7ZeH03BfXwFaOPnpp/o7F93ZDDbVdOk3N73VfrzmV+k6Y4lcMzycK5ljCuHJt3pI6UXT97r4cLiwcjC5+s9qx+NVNclby1Q9nVyOdeqefcmOda5nump/NOu03tLlat1WWspz8+B5HGJNa/NVX+2GHyhibUP/emtf//Ye/9Kj2uPDpyHxtR2oW6z7LGa1xkezx989/6PDzD6c2jduuBqhnmXNAK/Ak2+xw2d9l+XYP7yz/5dQWcnX57GSXo8+w5MSSFbkwDhIHp0c+JsbVG3DUpUMntOC409njECYzjjf5R/79JcAADmF8LPuIoBIAAAAASUVORK5CYII="
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Spoil2 = __webpack_require__(5);
+
+var _Spoil3 = _interopRequireDefault(_Spoil2);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UmShotSpoil = function (_Spoil) {
+  _inherits(UmShotSpoil, _Spoil);
+
+  function UmShotSpoil(object) {
+    _classCallCheck(this, UmShotSpoil);
+
+    var _this = _possibleConstructorReturn(this, (UmShotSpoil.__proto__ || Object.getPrototypeOf(UmShotSpoil)).call(this, object));
+
+    _this.spoiltype = _SpoilType2.default.umShot;
+    _this.icon = _resource2.default.u;
+    return _this;
+  }
+
+  _createClass(UmShotSpoil, [{
+    key: 'Effect',
+    value: function Effect(targetPlayer) {
+      if (targetPlayer.shotType.type == _SpoilType2.default.umShot) {
+        if (targetPlayer.shotType.num > 7) {
+          targetPlayer.shotEx++;
+        } else {
+          targetPlayer.shotType.num++;
+        }
+      } else {
+        targetPlayer.shotType = {
+          type: _SpoilType2.default.umShot,
+          num: 1
+        };
+      }
+
+      targetPlayer.setShotInterVal(2);
+    }
+  }]);
+
+  return UmShotSpoil;
+}(_Spoil3.default);
+
+exports.default = UmShotSpoil;
+
+module.exports = UmShotSpoil;
 
 /***/ }),
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/image/setting.png";
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _GzShotSpoil = __webpack_require__(24);
+
+var _GzShotSpoil2 = _interopRequireDefault(_GzShotSpoil);
+
+var _HpSpoil = __webpack_require__(25);
+
+var _HpSpoil2 = _interopRequireDefault(_HpSpoil);
+
+var _Spoil = __webpack_require__(5);
+
+var _Spoil2 = _interopRequireDefault(_Spoil);
+
+var _SpoilType = __webpack_require__(6);
+
+var _SpoilType2 = _interopRequireDefault(_SpoilType);
+
+var _UmShotSpoil = __webpack_require__(26);
+
+var _UmShotSpoil2 = _interopRequireDefault(_UmShotSpoil);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SpoilManager = function () {
+  function SpoilManager() {
+    _classCallCheck(this, SpoilManager);
+  }
+
+  _createClass(SpoilManager, [{
+    key: 'createSpoil',
+    value: function createSpoil(obj) {
+      if (Math.random() < 0.5) return undefined;
+      var types = Object.values(_SpoilType2.default);
+      var t = types[(Math.random() * types.length).toString().charAt(0) - '0'];
+      var spoil;
+      switch (t) {
+        case _SpoilType2.default.umShot:
+          spoil = new _UmShotSpoil2.default(obj);
+          break;
+        case _SpoilType2.default.gzShot:
+          spoil = new _GzShotSpoil2.default(obj);
+          break;
+        case _SpoilType2.default.addHp:
+          spoil = new _HpSpoil2.default(obj);
+          break;
+      }
+      var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5);
+      spoil.setXPath(function (x) {
+        return factor * (Math.cos(this.moveTick / 15) + Math.random() - 0.5);
+      });
+      return spoil;
+    }
+  }]);
+
+  return SpoilManager;
+}();
+
+module.exports = {
+  Spoil: _Spoil2.default,
+  GzShotSpoil: _GzShotSpoil2.default,
+  HpSpoil: _HpSpoil2.default,
+  SpoilType: _SpoilType2.default,
+  UmShotSpoil: _UmShotSpoil2.default,
+  SpoilManager: SpoilManager };
 
 /***/ }),
 /* 28 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,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"
+"use strict";
+
+
+var _Control2 = __webpack_require__(7);
+
+var _Control3 = _interopRequireDefault(_Control2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bar = function (_Control) {
+  _inherits(Bar, _Control);
+
+  function Bar(option) {
+    _classCallCheck(this, Bar);
+
+    var _this = _possibleConstructorReturn(this, (Bar.__proto__ || Object.getPrototypeOf(Bar)).call(this, option));
+
+    _this.rightButton = option.rightButton;
+    _this.render = function (drawContext) {
+      if (!this.isDisplay) return;
+      drawContext.drawImage(this.icon, this.position.x, this.position.y, this.width, this.height);
+      // hp
+      for (var index = 0; index < _context2.default.stageManager.stage.player.Hp; index++) {
+        var width = (_resource2.default.hp.width - 15) * index;
+        drawContext.drawImage(_resource2.default.hp, width, 0, 20, _context2.default.headOffset);
+      }
+      // rightbutton
+      this.rightButton.render(drawContext);
+    };
+    _this.registerControl(_this.rightButton);
+    return _this;
+  }
+
+  return Bar;
+}(_Control3.default);
+
+module.exports = Bar;
 
 /***/ }),
 /* 29 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "data:image/png;base64,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"
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _Control2 = __webpack_require__(7);
+
+var _Control3 = _interopRequireDefault(_Control2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+var _Button = __webpack_require__(9);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Modal = function (_Control) {
+  _inherits(Modal, _Control);
+
+  function Modal(option) {
+    _classCallCheck(this, Modal);
+
+    option.backgroundColor = 'silver';
+
+    var _this = _possibleConstructorReturn(this, (Modal.__proto__ || Object.getPrototypeOf(Modal)).call(this, option));
+
+    _this.cancel = option.cancel;
+    _this.confirmBtn = option.confirmBtn;
+    _this.on('keyUp', function (params) {
+      option.cancel();
+    });
+    _this.on('click', function (params) {
+      // option.cancel()
+    });
+    _this.confirmBtn = new _Button2.default({
+      text: '确定',
+      position: {
+        x: _this.position.x + (_this.width - 180) / 4,
+        y: _this.position.y + _this.height - 40
+      },
+      width: 90,
+      height: 30,
+      event: {
+        click: function click(obj, eventInfo) {
+          if (_this.cancel) _this.confirm();
+        }
+      }
+    });
+    _this.cancelBtn = new _Button2.default({
+      text: '取消',
+      position: {
+        x: _this.position.x + _this.width / 2 + (_this.width - 180) / 4,
+        y: _this.position.y + _this.height - 40
+      },
+      width: 90,
+      height: 30,
+      event: {
+        click: function click(obj, eventInfo) {
+          if (_this.confirm) _this.cancel();
+        }
+      }
+    });
+
+    _this.registerControl(_this.confirmBtn);
+    _this.registerControl(_this.cancelBtn);
+    return _this;
+  }
+
+  _createClass(Modal, [{
+    key: 'render',
+    value: function render(xxx) {
+      _get(Modal.prototype.__proto__ || Object.getPrototypeOf(Modal.prototype), 'render', this).call(this, xxx);
+    }
+  }]);
+
+  return Modal;
+}(_Control3.default);
+
+module.exports = Modal;
 
 /***/ }),
 /* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Control2 = __webpack_require__(7);
+
+var _Control3 = _interopRequireDefault(_Control2);
+
+var _util = __webpack_require__(0);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _resource = __webpack_require__(2);
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _context = __webpack_require__(1);
+
+var _context2 = _interopRequireDefault(_context);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextBlock = function (_Control) {
+  _inherits(TextBlock, _Control);
+
+  function TextBlock(option) {
+    _classCallCheck(this, TextBlock);
+
+    var _this = _possibleConstructorReturn(this, (TextBlock.__proto__ || Object.getPrototypeOf(TextBlock)).call(this, option));
+
+    _this.textArray = [];
+    _this.setText = function (texts) {
+      if (!texts) return;
+      this.clear();
+      this.append(texts);
+    };
+    _this.clear = function (texts) {
+      this.textArray.length = 0;
+    };
+    _this.append = function (texts) {
+      if (!texts) return;
+      if (texts instanceof Array) {
+        [].push.apply(this.textArray, texts);
+      } else {
+        this.textArray.push(texts.toString());
+      }
+    };
+    _this.render = function (drawContext) {
+      for (var index = 0; index < this.textArray.length; index++) {
+        drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y);
+      }
+    };
+    return _this;
+  }
+
+  return TextBlock;
+}(_Control3.default);
+
+module.exports = TextBlock;
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports) {
 
 var g;
@@ -19024,7 +20323,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -19052,11 +20351,13 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(6);
+module.exports = __webpack_require__(12);
 
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=engine.js.map
+window.Engine=module.exports;
