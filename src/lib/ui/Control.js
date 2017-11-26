@@ -11,6 +11,7 @@ class Control extends EObject
             // option.cancel()
          })
     }
+    
 }
 
 module.exports = Control

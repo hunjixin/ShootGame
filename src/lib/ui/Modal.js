@@ -8,6 +8,8 @@ class Modal extends Control {
   constructor (option) {
     option.backgroundColor = 'silver'
     super(option)
+    this.cancel = option.cancel
+    this.confirmBtn = option.confirmBtn
     this.on('keyUp', function (params) {
       option.cancel()
     })
@@ -15,36 +17,38 @@ class Modal extends Control {
       // option.cancel()
     })
     this.confirmBtn = new Button({
-      text: 'confirm',
+      text: '确定',
       position: {
-        x: this.position.x + (this.width - 30) / 4,
-        y: this.position.y + this.height - 10
+        x: this.position.x + (this.width - 180) / 4,
+        y: this.position.y + this.height - 40
       },
       width: 90,
       height: 30,
-    // icon: resource.setting
+      event: {
+        click: (obj, eventInfo) => {
+          if (this.cancel)
+            this.confirm()
+        }
+      }
     })
     this.cancelBtn = new Button({
-      text: 'cancel',
+      text: '取消',
       position: {
-        x: this.position.x + this.width / 2 + (this.width - 30) / 4,
-        y: this.position.y + this.height - 10
+        x: this.position.x + this.width / 2 + (this.width - 180) / 4,
+        y: this.position.y + this.height - 40
       },
       width: 90,
       height: 30,
-    // icon: resource.setting
+      event: {
+        click: (obj, eventInfo) => {
+          if (this.confirm)
+            this.cancel()
+        }
+      }
     })
+
     this.registerControl(this.confirmBtn)
     this.registerControl(this.cancelBtn)
-  }
-  render (drawContext) {
-    super.render(drawContext)
-    // 画边框
-
-    // 画按钮 
-    this.confirmBtn.render(drawContext)
-    this.cancelBtn.render(drawContext)
-  // 画
   }
 }
 

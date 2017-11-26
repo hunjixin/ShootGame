@@ -32,17 +32,20 @@ class Stage extends EObject {
       },
       width: this.width / 2,
       height: 40,
-      icon: resource.button
-    })
-
-    this.resetButton.on('click',(eventInfo)=> {
-      this.resetButton.hide()
-      if(this.player.hp>0) {
-        this.start()
-      }else{
-        this.restart()
+      icon: resource.button,
+      borderSize:0,
+      event:{
+        click:(eventInfo)=> {
+          this.resetButton.hide()
+          if(this.player.hp>0) {
+            this.start()
+          }else{
+            this.restart()
+          }
+        }
       }
     })
+
     var plainMoveState = {
       isMouseDown: false,
       position: {x: 0,y: 0}
@@ -178,9 +181,6 @@ class Stage extends EObject {
         util.removeArr(spoils, spoil)
         continue
       }
-    // if (!util.inArea(spoil.position, {x: -100,y: -100,width: option.ctxWidth + 100,height: option.ctxHeight + 100})) {
-    //   util.removeArr(spoils, spoil)
-    // }
     }
   }
   stop () {
@@ -430,30 +430,28 @@ function StageManager () {
   }
   this.init = function () {
     if(this.stage) this.stage.destroy()
-    util.removeArr(context.uiRoot,this.stage)
+    context.objectManager.removeElement(this.stage)
     var stage = new Stage(this.stagesConfig[0])
     stage.isRunning = 0
     this.stage = stage
-    context.uiRoot.push(stage)
+    context.objectManager.addElement(stage)
   }
   this.next = function () {
     this.currentStageIndex++
     if (this.stagesConfig.length > this.currentStageIndex) {
       this.stage.destroy()
-      if(this.stage) this.stage.destroy()
-      util.removeArr(context.uiRoot,this.stage)
+      context.objectManager.removeElement(this.stage)
       var stage = new Stage(this.stagesConfig[this.currentStageIndex])
       this.stage = stage
-      context.uiRoot.push(stage)
+      context.objectManager.addElement(stage)
     }
   }
   this.reset = function () {
     this.currentStageIndex = 0
-    if(this.stage) this.stage.destroy()
-    util.removeArr(context.uiRoot,this.stage)
+    context.objectManager.removeElement(this.stage)
     var stage = new Stage(this.stagesConfig[this.currentStageIndex])
     this.stage = stage
-    context.uiRoot.push(stage)
+    context.objectManager.addElement(stage)
   }
 }
 module.exports = {

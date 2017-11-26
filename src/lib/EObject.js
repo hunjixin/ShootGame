@@ -7,24 +7,36 @@ import lodash from 'lodash'
  */
 class EObject {
   constructor (option) {
-    this.isDisplay = true
+    this.isDisplay = true        //is show
     this.Oid = ++context.currentOid // id
-    this.backgroundColor;
-    this.icon // 图片
-    this.name = ''
-    this.width = 0 // 宽度
-    this.height = 0 // 高度
-    this.speedY = 5 // Y速度
-    this.speedX = 0 // X速度
-    this.fixed = {x: false,y: false}
-    this.position = {x: 0,y: 0} // 位置
-    this.collisionArea = []
-    this.children = []
-    this.zIndex = 0
+    this.backgroundColor         //background color
+    this.icon                    //background image
+    this.name = ''               //name
+    this.width = 0               // width
+    this.height = 0              // height
+    this.speedY = 5              // Y speed
+    this.speedX = 0              // X speed
+    this.fixed = {x: false,y: false}  //x,y position constraint
+    this.position = {x: 0,y: 0}  //position
+    this.collisionArea = []      //collision area
+    this.children = []           //child element
+    this.zIndex = 0              //layer index
+    this.borderColor="black"     //border color
+    this.borderSize=1            //border size
+    //property above can be override
     lodash.merge(this, option)
-    this._xpath
-    this._ypath
-    this.moveTick = 0
+    //property below can't be override
+    this._xpath                  //x position function
+    this._ypath                  //x position function 
+    this._moveTick = 0           //tick
+    
+    if(option&&option.event){
+     Object.keys(option.event).forEach((actionName)=>{
+       if(option.event[actionName] instanceof Function) {
+        this.on(actionName,option.event[actionName])
+       }
+     })
+    }
   }
   move () {
     this.moveY()
@@ -47,7 +59,7 @@ class EObject {
     }
   }
   getAbsoluteCollisionArea () {
-    return lodash.map(this.collisionArea, (area)=>  {
+    return lodash.map(this.collisionArea, (area) => {
       return {
         x: this.position.x + area.x,
         y: this.position.y + area.y,
@@ -65,7 +77,7 @@ class EObject {
 
   update () {
     this.move()
-    this.moveTick++
+    this._moveTick++
   }
 
   show () {
@@ -75,18 +87,21 @@ class EObject {
     this.isDisplay = false
   }
   render (drawContext) {
-    if(this.backgroundColor)  {
+    if(!this.isDisplay) return
+    if (this.backgroundColor) {
       drawContext.save()
-      drawContext.fillStyle = this.backgroundColor;
-      drawContext.fillRect( this.position.x , this.position.y,this.width, this.height);
+  
+      var radis= Math.floor(Math.min(this.width,this.height)*0.08)
+      this.polygon(drawContext,this.position.x,this.position.y,this.width+1,this.height+1,radis)
+    
+      drawContext.fillStyle = this.backgroundColor
+      drawContext.fill()
       drawContext.restore()
     }
-  
-    if (!this.isDisplay) return
-    if(this.icon){
-      drawContext.drawImage(this.icon,
-        this.position.x , this.position.y,
-        this.width, this.height)
+
+    this.drawBordor(drawContext)
+    if (this.icon) {
+      this.drawBakcgroundImage(drawContext)
     }
 
     if (context.setting.isDebug.value) {
@@ -108,29 +123,88 @@ class EObject {
         drawContext.stroke()
       }
     }
+    this.drawText(drawContext)
+    if(this.children)
+    {
+      this.children.forEach((control)=>{
+        control.render(drawContext)
+      })
+    }
+  }
+  drawBordor(drawContext){
+    if(this.borderColor&&this.borderSize>0)
+    {
+      drawContext.save()
+      var radis= Math.floor(Math.min(this.width,this.height)*0.08)
+      this.polygon(drawContext,this.position.x-1,this.position.y-1,this.width+1,this.height+1,radis)
+      drawContext.strokeStyle = this.borderColor
+      drawContext.stroke()
+      drawContext.restore() 
+    }
+  }
+  drawBakcgroundImage(drawContext){
+    if (this.icon) {
+      drawContext.drawImage(this.icon,
+        this.position.x , this.position.y,
+        this.width, this.height),
+        0,0,this.icon.width,this.icon.height
+    }
+  }
+  polygon(ctx,x, y, width, height, radius){
+    ctx.beginPath();
+    ctx.moveTo(x, y+radius);
+    ctx.lineTo(x, y+height-radius);
+    ctx.quadraticCurveTo(x, y+height, x+radius, y+height);
+    ctx.lineTo(x+width-radius, y+height);
+    ctx.quadraticCurveTo(x+width, y+height, x+width, y+height-radius);
+    ctx.lineTo(x+width, y+radius);
+    ctx.quadraticCurveTo(x+width, y, x+width-radius, y);
+    ctx.lineTo(x+radius, y);
+    ctx.quadraticCurveTo(x, y, x, y+radius);
+    ctx.closePath();
+  }
+  drawText(drawContext){
+    if(!this.text)return
+    drawContext.save()
+   
+    drawContext.font=this.height*0.6+"px Arial";
+    var offsetToButton=this.height*0.2;
+    var requireWidth=drawContext.measureText(this.text)
+    var leftOffset=(this.width-requireWidth.width)/2
+    drawContext.fillText(this.text,this.position.x+(leftOffset>=0?leftOffset:0),this.position.y+this.height-offsetToButton,this.width);
+    drawContext.restore()
   }
   on (eventName, callback) {
-    var func=(obj,eventInfo)=>  {
+    if (!callback || !eventName) return
+    var func = (obj, eventInfo) => {
       if (callback)  callback.call(this, eventInfo)
     }
-    if(!this[eventName])
-    {
-      this[eventName]=[]
-      context.losEvent.attachEvent(this, eventName,this[eventName])
+    if (!this[eventName]) {
+      this[eventName] = []
+      context.losEvent.attachEvent(this, eventName, this[eventName])
     }
     this[eventName].push(func)
   }
-  off(eventName,callack){
-    context.losEvent.detachEvent(this, eventName,callack)
+  off (eventName, callack) {
+    context.losEvent.deAttchEvent(this, eventName, callack)
   }
-  getEvent(eventName){
-    return  context.losEvent[eventName]
+  getEvent (eventName) {
+    return context.losEvent[eventName]
   }
-  registerControl(childControl){
+  registerControl (childControl) {
+    if(childControl.zIndex<this.zIndex) childControl.zIndex=this.zIndex+1
     this.children.push(childControl)
   }
-  cancelControl(childControl){
-    util.removeArr(this.children,childControl)
+  cancelControl (childControl) {
+    util.removeArr(this.children, childControl)
+  }
+  destroy(){
+    context.losEvent.deAttchEvent(this)
+    if(this.children){
+      this.children.forEach(element=> {
+        element.destroy()
+      });
+    }
   }
 }
 

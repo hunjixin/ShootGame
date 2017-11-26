@@ -8,7 +8,7 @@ import {ShotorFactory} from './shot/'
 class BasePlain extends EObject {
     constructor (enableShot) {
       super()
-  
+      this.borderColor=null
       this.AllHp = 1 // 总HP
       this.Hp = 1 // 当前Hp
       this.isDie = false // 是否死亡

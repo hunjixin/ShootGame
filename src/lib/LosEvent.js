@@ -6,6 +6,8 @@ class LosEvent {
     // super()
     this.eventContainer = []
     this.init(_option)
+    this.focusTarget
+    this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
   }
   init (_option) {
     _option.attachEvent.click = this.clickFunc()
@@ -14,68 +16,82 @@ class LosEvent {
     _option.attachEvent.mouseUp = this.moveUpFunc()
     _option.attachEvent.keyUp = this.keyUpFunc()
   }
-  hasTarget(target){
-    return lodash.filter(this.eventContainer,(item)=>{
-      return item.target==target
-    }).length>0
+  hasTarget (target) {
+    return lodash.filter(this.eventContainer, (item) => {
+        return item.target == target
+      }).length > 0
   }
-  findTarget(target){
-    return lodash.filter(this.eventContainer,(item)=>{
-      return item.target==target
+  findTarget (target) {
+    return lodash.filter(this.eventContainer, (item) => {
+      return item.target == target
     })[0]
   }
   // 附加事件中 object-action-callback
   attachEvent (target, action, callback) {
     if (!this.hasTarget(target))
-      this.eventContainer.push({target:target,actions:[]})
-    var actions =this.findTarget(target).actions
+      this.eventContainer.push({target: target,actions: []})
+    var actions = this.findTarget(target).actions
     if (-1 === actions.indexOf(action))  actions.push(action)
   }
-  detachEvent (target, action,funcs) {
-    var items =this.findTarget(target)
+  deAttchEvent (target, action, funcs) {
+    var items = this.findTarget(target)
 
-    for (var i = 0;i < items.actions.length;i++) {
-      if(items.actions[i]==action) {
-        if(funcs)
-        {
-          util.removeArr(items.target[action], funcs)
-        }else{
-          util.removeArr(items.actions, items.actions[i])
-          return;
+    if (action) {
+      for (var i = 0;i < items.actions.length;i++) {
+        if (items.actions[i] == action) {
+          if (funcs) {
+            util.removeArr(items.target[action], funcs)
+          }else {
+            util.removeArr(items.actions, items.actions[i])
+            return
+          }
         }
       }
+    }else {
+      this.deAttchAllEvent(items)
     }
+  }
+  deAttchAllEvent (target) {
+    util.removeArr(this.eventContainer , target)
   }
   // 触发事件中 action-eventInfo
   triggerEvent (action, eventInfo) {
-    var targets=lodash.filter(this.eventContainer,(item)=>{
-       return item.target.isDisplay
-       &&util.isEffect(item.target, action, eventInfo)
-       &&item.actions.indexOf(action)>-1
+    var targets = lodash.filter(this.eventContainer, (item) => {
+      return item.target.isDisplay
+        && util.isEffect(item.target, action, eventInfo)
+        && item.actions.indexOf(action) > -1
     })
-  
-    if(targets.length==0) {
+
+    if (targets.length == 0) {
       return
     }
-    else if(targets.length==1)
-    {
-      targets[0].target[action].forEach(func=>{
-        func(targets[0],eventInfo)
-      });
-    }else{
-      targets.sort(a=>a.Oid)
-      targets[0].target[action].forEach(func=>{
-        func(targets[0],eventInfo)
-      });
+    else if (targets.length > 1) {
+      targets.sort((a, b) => b.target.zIndex - a.target.zIndex)
+    }
+    this.invokeEventListiner(targets[0].target, action, eventInfo)
+
+    if (action == 'click') {
+      if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo)
+      this.focusTarget = targets[0].target
+      this.invokeEventListiner(targets[0].target, 'focus', eventInfo)
+    }
+  }
+  invokeEventListiner (target, action, eventInfo) {
+    if (target[action] && target[action] instanceof Array) {
+      target[action].forEach(func => {
+        if (func instanceof Function) {
+          func(target, eventInfo)
+        }
+      })
     }
   }
   triggerKeyEvent (action, eventInfo) {
-    var targets=lodash.filter(Object.keys(this.eventContainer),(key)=>{
-      return this.eventContainer[key].isDisplay&&this.eventContainer[key].indexOf(action)>-1
-     })
-     targets[0][action].forEach(func=>{
-      func(targets[0],eventInfo)
-    });
+    var targets = lodash.filter(Object.keys(this.eventContainer), (key) => {
+      return this.eventContainer[key].isDisplay && this.eventContainer[key].indexOf(action) > -1
+    })
+    targets[0][action].forEach(func => {
+      func(targets[0], eventInfo)
+    })
   }
 
   // 外部事件转内部事件驱动  

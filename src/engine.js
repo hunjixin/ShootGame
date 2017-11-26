@@ -48,29 +48,32 @@ function Engine () {
       },
       width: context.headOffset,
       height: context.headOffset - 4,
-      icon: resource.setting
-    })
-    settingButton.on('click', function (eventInfo) {
-      stageManager.stage.stop()
-      var modal = new Modal({
-        title: '设置页面',
-        position: {
-          x: 10,
-          y: context.option.ctxHeight / 4
-        },
-        width: context.option.ctxWidth - 20,
-        height: context.option.ctxHeight / 2,
-        zIndex: 2,
-        confirm: function () {
-          stageManager.stage.restart()
-        },
-        cancel: function () {
-          stageManager.stage.restart()
-          util.removeArr(context.uiRoot, modal)
+      icon: resource.setting,
+      event:{
+        'click':function (eventInfo) {
+          stageManager.stage.stop()
+          var modal = new Modal({
+            title: '设置页面',
+            position: {
+              x: 10,
+              y: context.option.ctxHeight / 4
+            },
+            width: context.option.ctxWidth - 20,
+            height: context.option.ctxHeight / 2,
+            zIndex: 2,
+            confirm: function () {
+              stageManager.stage.restart()
+            },
+            cancel: function () {
+              stageManager.stage.restart()
+              context.objectManager.removeElement(modal)
+            }
+          })
+          context.objectManager.addElement(modal)
         }
-      })
-      context.uiRoot.push(modal)
+      }
     })
+
     // bar
     bar = new Bar({
       icon: resource.head,
@@ -85,8 +88,8 @@ function Engine () {
         y: context.headOffset
       }
     })
-    context.uiRoot.push(bar)
-    context.uiRoot.push(textBlock)
+    context.objectManager.addElement(bar)
+    context.objectManager.addElement(textBlock)
   }
   
   /**
@@ -126,9 +129,9 @@ function Engine () {
      textBlock.render(drawContext)
    }*/
    
-   context.uiRoot.forEach((item)=>{
-     item.render(drawContext)
-   });
+   context.objectManager.forEach((item)=>{
+    item.render(drawContext)
+    })
  }
  /**
   * 清理函数
