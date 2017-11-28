@@ -26,6 +26,18 @@ class EObject {
     //property above can be override
     lodash.merge(this, option)
     //property below can't be override
+    if(this.parent&&!this.zIndex){
+      this.zIndex=this.parent.zIndex+1
+      this.parent.children.push(this)
+    }
+    if(this.children&&this.children instanceof Array)
+    {
+        for (var i = 0; i < this.children.length; i++) {
+          var child = this.children[i];
+          child.parent=this
+          if(!child.zIndex) child.zIndex=this.zIndex+1
+        }
+    }
     this._xpath                  //x position function
     this._ypath                  //x position function 
     this._moveTick = 0           //tick
@@ -191,10 +203,7 @@ class EObject {
   getEvent (eventName) {
     return context.losEvent[eventName]
   }
-  registerControl (childControl) {
-    if(childControl.zIndex<this.zIndex) childControl.zIndex=this.zIndex+1
-    this.children.push(childControl)
-  }
+
   cancelControl (childControl) {
     util.removeArr(this.children, childControl)
   }

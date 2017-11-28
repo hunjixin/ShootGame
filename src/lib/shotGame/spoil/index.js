@@ -24,8 +24,8 @@ class SpoilManager {
     }
     var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5)
     spoil.setXPath(
-      function (x) {
-        return factor * (Math.cos(this.moveTick / 15) + Math.random() - 0.5)
+      (x)=> {
+        return factor * (Math.cos(spoil._moveTick / 15) + Math.random() - 0.5)
       }
     )
     return spoil

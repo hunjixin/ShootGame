@@ -3,52 +3,71 @@ import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
 import Button from './Button.js'
-
+import Label from './Label.js'
+import CheckBox from './CheckBox.js'
+import Grid from './Grid.js'
 class Modal extends Control {
   constructor (option) {
-    option.backgroundColor = 'silver'
+    option.backgroundColor = 'white'
     super(option)
     this.cancel = option.cancel
     this.confirmBtn = option.confirmBtn
+
     this.on('keyUp', function (params) {
       option.cancel()
     })
     this.on('click', function (params) {
       // option.cancel()
     })
-    this.confirmBtn = new Button({
-      text: '确定',
+    var grid=new Grid({
+      parent:this,
       position: {
-        x: this.position.x + (this.width - 180) / 4,
-        y: this.position.y + this.height - 40
+        x: this.position.x,
+        y: this.position.y 
       },
-      width: 90,
-      height: 30,
-      event: {
-        click: (obj, eventInfo) => {
-          if (this.cancel)
-            this.confirm()
-        }
-      }
-    })
-    this.cancelBtn = new Button({
-      text: '取消',
-      position: {
-        x: this.position.x + this.width / 2 + (this.width - 180) / 4,
-        y: this.position.y + this.height - 40
-      },
-      width: 90,
-      height: 30,
-      event: {
-        click: (obj, eventInfo) => {
-          if (this.confirm)
-            this.cancel()
-        }
-      }
+      width:this.width,
+      height: this.height,
+      col:2,
+      row:5
     })
 
-    this.registerControl(this.confirmBtn)
-    this.registerControl(this.cancelBtn)
+    grid.cells[0][0].addControl(new Label({
+      parent: grid.cells[0][0],
+      text: 'Degbu',
+      width: 90,
+      height: 30
+    }))
+    grid.cells[0][1].addControl(new CheckBox({
+      parent: grid.cells[0][0],
+      width: 30,
+      height: 30
+    }))
+  
+    grid.cells[4][0].addControl(new Button({
+      parent: grid.cells[4][0],
+      parent:this,
+      text: '确定',
+      width: 90,
+      height: 30,
+      event: {
+        click: (obj, eventInfo) => {
+          context.objectManager.removeElement(this)
+          if (this.confirm)  this.confirm()
+        }
+      }
+    }))
+    grid.cells[4][1].addControl(new Button({
+      parent: grid.cells[4][1],
+      text: '取消',
+      width: 90,
+      height: 30,
+      event: {
+        click: (obj, eventInfo) => {
+          context.objectManager.removeElement(this)
+          if (this.cancel) this.cancel()
+        }
+      }
+    }))
   }
 }
 

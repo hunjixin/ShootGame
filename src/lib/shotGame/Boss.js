@@ -23,8 +23,8 @@ class Boss extends BasePlain {
     this.shotSpeedFactor = 0.1
     var factor = 5 * Math.random()
     this.setXPath(
-      function (x) {
-        return factor * (Math.cos(this.moveTick / 15))
+       (x)=> {
+        return factor * (Math.cos(this._moveTick / 15))
       }
     )
 
