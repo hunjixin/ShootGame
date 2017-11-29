@@ -2,7 +2,6 @@ import EObject from './EObject.js'
 import util from './common/util.js'
 import context from './common/context.js'
 import resource from './common/resource.js'
-console.log(context)
 import TimeLine from './TimeLine.js'
 import { Boss,Player, createEnemy } from './shotGame/'
 import { ShotorFactory, Bullet, Shot } from './shotGame/shot/'

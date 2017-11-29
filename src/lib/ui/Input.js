@@ -29,11 +29,11 @@ class Input extends Control {
     drawContext.save()
 
     drawContext.font = this.height - 4 + 'px Arial'
-    drawContext.fillText(this.text, this.position.x, this.position.y + this.height - 1)
+    drawContext.fillText(this.text, this.position.x, this.position.y + this.height - 2)
     if (this.isFocus && this.isShowCarrot()) {
       if (!this._ilen) this._ilen = drawContext.measureText('|').width
       var textleng = drawContext.measureText(this.text).width
-      drawContext.fillText('|', this.position.x + textleng, this.position.y + this.height - 1)
+      drawContext.fillText('|', this.position.x + textleng, this.position.y + this.height - 2)
     }
 
     drawContext.restore()
