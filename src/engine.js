@@ -32,7 +32,8 @@ function Engine () {
       stateInfo: new StateInfo(),
       shotType: ShotTypes,
       setting: new DebugSetting(),
-      spoilManager: new SpoilManager()
+      spoilManager: new SpoilManager(),
+      tick:0
     })
     // stage
     stageManager = new StageManager()
@@ -66,7 +67,6 @@ function Engine () {
             },
             cancel: function () {
               stageManager.stage.restart()
-              context.objectManager.removeElement(modal)
             }
           })
           context.objectManager.addElement(modal)
@@ -80,7 +80,7 @@ function Engine () {
       position: {x: -5,y: 0},
       width: option.ctxWidth + 10,
       height: context.headOffset,
-      rightButton: settingButton
+      children: [settingButton]
     })
     textBlock = new TextBlock({
       position: {
@@ -115,6 +115,7 @@ function Engine () {
 
    moveTm = setInterval(before(function () {
      stageManager.stage.objectMove()
+     context.tick++
    }), 50)
 
    clearTm = setInterval(before(function () {

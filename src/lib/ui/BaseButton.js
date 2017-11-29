@@ -1,15 +1,17 @@
-import BaseButton from './BaseButton.js'
+import Control from './Control.js'
 import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
 
-class Label extends BaseButton {
+class BaseButton extends Control {
     constructor (option) {
       super(option)
       this.text=option.text
-      this.borderSize=0
     }
-}
-  
+    render(drawContext){
+        super.render(drawContext)
+        this.drawText(drawContext)
+    }
+  }
 
-  module.exports = Label
+  module.exports = BaseButton

@@ -19,6 +19,10 @@ class ShapeElementManager
         }
     }
 }
-export default {
-    objectManager:new ShapeElementManager()
+
+let context= {
+    objectManager:new ShapeElementManager(),
+    tick:0
 }
+export default context
+module.exports = context

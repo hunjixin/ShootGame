@@ -86,11 +86,13 @@ class LosEvent {
     }
   }
   triggerKeyEvent (action, eventInfo) {
-    var targets = lodash.filter(Object.keys(this.eventContainer), (key) => {
-      return this.eventContainer[key].isDisplay && this.eventContainer[key].indexOf(action) > -1
+    var targets = lodash.filter(this.eventContainer, (item) => {
+      return item.target.isDisplay
+        && item.actions.indexOf(action) > -1
     })
-    targets[0][action].forEach(func => {
-      func(targets[0], eventInfo)
+    if(targets.length==0) return
+    targets.forEach((targetItem)=>{
+      this.invokeEventListiner(targetItem.target, 'keyUp', eventInfo)
     })
   }
 
@@ -158,7 +160,7 @@ class LosEvent {
   // 点击事件
   keyUpFunc () {
     return (eventInfo) => {
-      this.triggerEvent('keyUp', eventInfo)
+      this.triggerKeyEvent('keyUp',{keyCode: eventInfo.keyCode,key:eventInfo.key})
     }
   }
 }

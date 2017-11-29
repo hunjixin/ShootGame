@@ -94,9 +94,15 @@ class EObject {
 
   show () {
     this.isDisplay = true
+    this.children.forEach((control)=>{
+      control.isDisplay = true
+    })
   }
   hide () {
     this.isDisplay = false
+    this.children.forEach((control)=>{
+      control.isDisplay = false
+    })
   }
   render (drawContext) {
     if(!this.isDisplay) return
@@ -135,7 +141,6 @@ class EObject {
         drawContext.stroke()
       }
     }
-    this.drawText(drawContext)
     if(this.children)
     {
       this.children.forEach((control)=>{
