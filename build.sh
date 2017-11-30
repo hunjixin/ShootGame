@@ -18,7 +18,7 @@ ionicImageDir="$ionicRootDir/image"
 webRootDir="$basePath/publishHouse/web"
 webImageDir="$basePath/publishHouse/web/image"
 
-testDir="$basePath/test"
+testDir="$basePath/test/lib"
 
 init(){
      npm install
@@ -32,6 +32,7 @@ init(){
 losBuild(){
     createDir $electronImageDir
     createDir $ionicImageDir
+    createDir $webImageDir
     createDir $testDir
 
     echo "build core and copy file"

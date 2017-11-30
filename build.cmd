@@ -7,53 +7,97 @@ set help1="--help"
 set build="--build"
 set init="--init"
 set clean="--clean"
+set package="--package"
+
+set electronRootDir=%basePath%\publishHouse\electron
+set electronImageDir=%electronRootDir%\dist\image
+
+set ionicRootDir=%basePath%\publishHouse\ionic\www
+set ionicImageDir=%ionicRootDir%\image
+
+set webRootDir=%basePath%\publishHouse\web
+set webImageDir=%basePath%\publishHouse\web\image\
+
+set testDir=%basePath%\test\lib
 
 if "%1" == %help1% (
   goto:losHelp
-) else if   "%1" == %clean% (
-  goto:clean
-)else if   "%1" == %build% (
+) else if   "%1" == %build% (
   goto:losBuild
+) else if   "%1" == %package% (
+  goto:losPakage
+)else if   "%1" == %clean% (
+  goto:clean
 )else if   "%1" == %init% (
   goto:losInit
 )
 GOTO:EOF
 
-
 :losHelp
     echo "-init   install all pacakge"
     echo "--build  build android\win\linux"
+    echo "--package  package android\win\linux"
     echo "--clean  clean build files"
 GOTO:EOF 
 
 :losBuild
+    IF NOT EXIST "%electronImageDir%" MD  "%electronImageDir%"
+    IF NOT EXIST "%ionicImageDir%" MD  "%ionicImageDir%"
+    IF NOT EXIST "%testDir%" MD  "%testDir%"
+    IF NOT EXIST "%webImageDir%" MD  "%webImageDir%"
+
     echo "build core and copy file"
     node node_modules\webpack\bin\webpack.js
-    
-    rem python .\transformAmdToCmd.py
 
-    copy   "%basePath%\lib\engine.js"  "%basePath%\publishHouse\electron\src\engine.js"   /Y
-    copy   "%basePath%\lib\engine.js"  "%basePath%\publishHouse\ionic\www\js\engine.js"   /Y
+    ::  m electron
+    echo "copy electron file"
+    copy  "%basePath%\lib\engine.js"  "%electronRootDir%\src\engine.js"   
+    copy  "%basePath%\image\"  "%electronRootDir%\dist\image\" /Y
 
-    copy   "%basePath%\image"  "%basePath%\publishHouse\ionic\www\img\"  /Y
-    copy   "%basePath%\image"  "%basePath%\publishHouse\electron\dist\image\"  /Y
+    ::  ionic
+    echo "copy ionic file" 
+    copy  "%basePath%\lib\engine.js"  "%ionicRootDir%\js\engine.js" 
+    copy  "%basePath%\image\"  %ionicImageDir% /Y
     
-    echo "package electron"
+    ::  web
+    echo "copy web file"
+    copy  "%basePath%\lib\engine.js"  "%webRootDir%\engine.js"   
+    copy  "%basePath%\image\"  %webImageDir% /Y
+
+    ::  test
+    copy "%basePath%\lib"  %testDir% /Y
+   
+    echo "transform lib for browser environment"
+    python .\transformAmdToCmd.py 
+
+    echo "build electron"
     cd .\publishHouse\electron
     node node_modules\webpack\bin\webpack.js
     cd ..\..
+GOTO:EOF 
+
+:losPakage
+    set androidPath="%buildDir%\android"
+    set webPublist="%buildDir%\web"
 
     cd .\publishHouse\ionic
-    echo "ionic cordova build android"
-    rem ionic cordova build android
+    echo "ionic cordova build android" 
+
+    ionic cordova build android
     cd ..\..
+    copy  "%basePath%\publishHouse\ionic\platforms\android\build\outputs\apk"  %androidPath% /Y
+
 
     cd .\publishHouse\electron
     
-    echo "electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out=%basePath%\build"
+    echo "electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out=$basePath\build"
     electron-packager .  --electron-version=1.7.9 --no-prune --overwrite --out="%basePath%\build"
     cd ..\..
-GOTO:EOF 
+
+    cd .\publishHouse\web
+
+    copy %webRootDir% %webPublist% /Y
+GOTO:EOF
 
 :clean
     rmdir /s /q "%basePath%\lib"
@@ -66,12 +110,27 @@ GOTO:EOF
     rmdir /s /q "%basePath%\publishHouse\ionic\www\img"
 
     rmdir /s /q "%basePath%\shotdown-win32-x64"
+
+
+    rmdir /s /q  "%basePath%/lib"
+    rmdir /s /q  "%basePath%/build"
+
+    del  "%electronRootDir%\src\engine.js"  
+    rmdir /s /q "%electronRootDir%\dist"
+
+    del  "%ionicRootDir%\js\engine.js" 
+    rmdir /s /q  %ionicImageDir%
+
+    rmdir /s /q "%basePath%\test\lib"
+
+    del  "%webRootDir%\engine.js"  
+    rmdir /s /q  %webImageDir%
 GOTO:EOF 
 
 :losInit
      npm install
      cd publishHouse\electron
-     npm install
+     npm install 
      cd ..\ionic
      npm install 
      cd ..\..

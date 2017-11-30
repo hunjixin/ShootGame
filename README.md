@@ -14,7 +14,7 @@ The program is written based on nodejs, so you need to install [nodejs](https://
 
 In order to take account of both the client and the mobile side, the python script is used as the class library conversion in the program,if you want to build the program ,[python](https://www.python.org/download/releases/2.7/) is require
 
-If you want  mobile version, you need to install the [ionic] (http://ionicframework.com/getting-started) environment  </br>
+If you want  mobile version, you need to install the [ionic](http://ionicframework.com/getting-started) environment  </br>
 
 If you want  PC version ,you need to install the [electron](https://electronjs.org) environment
 
@@ -48,7 +48,7 @@ There will be a  package, The specific package name depends on the current machi
 
 Example
 -------
-[https://hunjixin.github.io/FightShootingGame/](https://hunjixin.github.io/FightShootingGame/)
+[https://github.com/hunjixin/ShootGame/settings/](https://github.com/hunjixin/ShootGame/settings/)
 </br>
 
 
