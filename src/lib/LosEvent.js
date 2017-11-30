@@ -1,12 +1,15 @@
 import util from './common/util.js'
 import context from './common/context.js'
 import lodash from 'lodash'
+import EventWell from './common/EventWell.js'
 class LosEvent {
   constructor (_option) {
     // super()
     this.eventContainer = []
     this.init(_option)
     this.focusTarget
+    this.clickWell=new EventWell(2);
+    this.keyWell=new EventWell(3);
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
   }
   init (_option) {
@@ -74,6 +77,8 @@ class LosEvent {
       if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo)
       this.focusTarget = targets[0].target
       this.invokeEventListiner(targets[0].target, 'focus', eventInfo)
+
+      this.clickWell.attach({action,eventInfo})
     }
   }
   invokeEventListiner (target, action, eventInfo) {
@@ -85,6 +90,17 @@ class LosEvent {
       })
     }
   }
+  triggerNamedEvent (action, eventInfo) {
+    var targets = lodash.filter(this.eventContainer, (item) => {
+      return item.target.isDisplay
+        &&item.target.isFocus
+        && item.actions.indexOf(action) > -1
+    })
+    if(targets.length==0) return
+    targets.forEach((targetItem)=>{
+      this.invokeEventListiner(targetItem.target, action, eventInfo)
+    })
+  }
   triggerKeyEvent (action, eventInfo) {
     var targets = lodash.filter(this.eventContainer, (item) => {
       return item.target.isDisplay
@@ -92,10 +108,10 @@ class LosEvent {
     })
     if(targets.length==0) return
     targets.forEach((targetItem)=>{
-      this.invokeEventListiner(targetItem.target, 'keyUp', eventInfo)
+      this.invokeEventListiner(targetItem.target, action, eventInfo)
+      this.keyWell.attach({action:eventInfo.key,eventInfo})
     })
   }
-
   // 外部事件转内部事件驱动  
   // 包装按键按下，抬起，移动事件
   pacakgeEvent (event) {
