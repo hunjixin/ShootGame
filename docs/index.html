@@ -35,7 +35,17 @@
   <script>
     window.__dirname = 'https://raw.githubusercontent.com/hunjixin/FightShootingGame/master/docs'
   </script>
-  <script type="text/javascript" src="engine.js"></script>
+  <script>
+    var module = {}
+    var exports = {}
+    window.__dirname = ""
+
+  </script>
+  <script type="text/javascript" src="./engine.js"></script>
+  <script type="text/javascript" src="./engine.js.map"></script>
+  <script>
+    window.Engine = module.exports;
+  </script>
   <script type="text/javascript" src="app.js"></script>
 
 </body>
