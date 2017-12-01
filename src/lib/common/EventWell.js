@@ -4,10 +4,8 @@ class EventWell {
   constructor (num) {
     this.eventWell = []
     this.wellDepth = num
-    this.initTimer()
-  }
-  initTimer () {
-    setInterval(() => {
+
+    this.timer = setInterval(() => {
       this.eventWell.shift()
     }, 1000)
   }

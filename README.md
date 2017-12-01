@@ -1,5 +1,5 @@
 
-#  flight shooting game
+# shooting game
 a shoot game use ECMAScript 6
 
 Using  electron to support windows/linux

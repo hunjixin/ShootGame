@@ -106,10 +106,10 @@ class EObject {
   }
   render (drawContext) {
     if(!this.isDisplay) return
+    var radis= Math.floor(Math.min(this.width,this.height)*0.02)
     if (this.backgroundColor) {
       drawContext.save()
-  
-      var radis= Math.floor(Math.min(this.width,this.height)*0.08)
+
       this.polygon(drawContext,this.position.x,this.position.y,this.width+1,this.height+1,radis)
     
       drawContext.fillStyle = this.backgroundColor
@@ -117,7 +117,7 @@ class EObject {
       drawContext.restore()
     }
 
-    this.drawBordor(drawContext)
+    this.drawBordor(drawContext,radis)
     if (this.icon) {
       this.drawBakcgroundImage(drawContext)
     }
@@ -148,11 +148,10 @@ class EObject {
       })
     }
   }
-  drawBordor(drawContext){
+  drawBordor(drawContext,radis){
     if(this.borderColor&&this.borderSize>0)
     {
       drawContext.save()
-      var radis= Math.floor(Math.min(this.width,this.height)*0.08)
       this.polygon(drawContext,this.position.x-1,this.position.y-1,this.width+1,this.height+1,radis)
       drawContext.strokeStyle = this.borderColor
       drawContext.stroke()
