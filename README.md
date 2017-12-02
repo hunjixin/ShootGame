@@ -48,7 +48,7 @@ There will be a  package, The specific package name depends on the current machi
 
 Example
 -------
-[https://github.com/hunjixin/ShootGame/settings/](https://github.com/hunjixin/ShootGame/settings/)
+[https://hunjixin.github.io/ShootGame/](https://hunjixin.github.io/ShootGame/)
 </br>
 
 
