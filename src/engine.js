@@ -69,7 +69,7 @@ function Engine () {
               stageManager.stage.restart()
             }
           })
-          context.objectManager.addElement(modal)
+          modal.open()
         }
       }
     })

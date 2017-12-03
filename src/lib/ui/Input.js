@@ -81,6 +81,8 @@ class Input extends Control {
     var dText = this.text
     if (this.isFocus && this.isShowCarrot()) {
       dText = dText + '|'
+    }else{
+      dText = dText + ' '
     }
     var inTextHeight = this.height - 4
     drawContext.font = inTextHeight + 'px Arial'

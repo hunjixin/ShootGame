@@ -22,6 +22,7 @@ class Cell extends Control {
       var span = this.height - childControl.height
       childControl.position.y = this.position.y + span / 2
     }
+    super.addChild(childControl)
   }
 }
 

@@ -19,23 +19,20 @@ class EObject {
     this.fixed = {x: false,y: false}  //x,y position constraint
     this.position = {x: 0,y: 0}  //position
     this.collisionArea = []      //collision area
-    this.children = []           //child element
     this.zIndex = 0              //layer index
     this.borderColor="black"     //border color
     this.borderSize=1            //border size
     //property above can be override
     lodash.merge(this, option)
+    this.children = []           //child element
     //property below can't be override
-    if(this.parent&&!this.zIndex){
-      this.zIndex=this.parent.zIndex+1
-      this.parent.children.push(this)
+    if(option&&option.parent){
+      this.changeParent(option.parent)
     }
-    if(this.children&&this.children instanceof Array)
+    if(option&&option.children&&option.children instanceof Array)
     {
-        for (var i = 0; i < this.children.length; i++) {
-          var child = this.children[i];
-          child.parent=this
-          if(!child.zIndex) child.zIndex=this.zIndex+1
+        for (var i = 0; i < option.children.length; i++) {
+          this.addChild(option.children[i])
         }
     }
     this._xpath                  //x position function
@@ -95,13 +92,13 @@ class EObject {
   show () {
     this.isDisplay = true
     this.children.forEach((control)=>{
-      control.isDisplay = true
+      control.show()
     })
   }
   hide () {
     this.isDisplay = false
     this.children.forEach((control)=>{
-      control.isDisplay = false
+      control.hide()
     })
   }
   render (drawContext) {
@@ -110,7 +107,7 @@ class EObject {
     if (this.backgroundColor) {
       drawContext.save()
 
-      this.polygon(drawContext,this.position.x,this.position.y,this.width+1,this.height+1,radis)
+      this.lineRect(drawContext,this.position.x,this.position.y,this.width+1,this.height+1,radis)
     
       drawContext.fillStyle = this.backgroundColor
       drawContext.fill()
@@ -152,7 +149,7 @@ class EObject {
     if(this.borderColor&&this.borderSize>0)
     {
       drawContext.save()
-      this.polygon(drawContext,this.position.x-1,this.position.y-1,this.width+1,this.height+1,radis)
+      this.lineRect(drawContext,this.position.x-1,this.position.y-1,this.width+1,this.height+1,radis)
       drawContext.strokeStyle = this.borderColor
       drawContext.stroke()
       drawContext.restore() 
@@ -166,7 +163,7 @@ class EObject {
         0,0,this.icon.width,this.icon.height
     }
   }
-  polygon(ctx,x, y, width, height, radius){
+  lineRect(ctx,x, y, width, height, radius){
     ctx.beginPath();
     ctx.moveTo(x, y+radius);
     ctx.lineTo(x, y+height-radius);
@@ -207,8 +204,25 @@ class EObject {
   getEvent (eventName) {
     return context.losEvent[eventName]
   }
-
+  addChild(child){
+    child.parent=this
+    if(!child.zIndex) child.zIndex=this.zIndex+1
+    if(!this.isDisplay) {
+      child.hide()
+    }
+    this.children.push(child)
+  }
+  changeParent(parent){
+    if(this.zIndex<this.parent.zIndex+1)
+        this.zIndex=this.parent.zIndex+1
+    if(!parent.isDisplay) {
+      this.hide()
+    }
+    this.parent=parent
+    this.parent.children.push(this)
+  }
   cancelControl (childControl) {
+    this.destroy()
     util.removeArr(this.children, childControl)
   }
   destroy(){
