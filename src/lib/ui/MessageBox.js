@@ -11,7 +11,13 @@ import Input from './Input.js'
 class MessageBox extends BaseModal {
   constructor (option) {
     super(option)
-    
+
+    var col=1
+    if(option.cancel){
+        col=2
+        this.cancel=option.cancel
+    }
+       
     var grid=new Grid({
       parent:this,
       position: {
@@ -20,7 +26,7 @@ class MessageBox extends BaseModal {
       },
       width:this.width,
       height: this.height,
-      col:1,
+      col:col,
       row:3
     })
 
@@ -28,7 +34,8 @@ class MessageBox extends BaseModal {
       gridLayout:{
         row:0,
         col:0,
-        rowSpan:2
+        rowSpan:2,
+        colSpan:col
       },
       text: 'Degbu',
       width: 90,
@@ -51,6 +58,23 @@ class MessageBox extends BaseModal {
         }
       }
     }))
+    if(this.cancel){
+        grid.AddCellContent(new Button({
+            gridLayout:{
+              row:2,
+              col:1
+            },
+            text: '取消',
+            width: 90,
+            height: 30,
+            event: {
+              click: (obj, eventInfo) => {
+                context.objectManager.removeElement(this)
+                if (this.confirm)  this.confirm()
+              }
+            }
+          }))
+    }
   }
   render(draw){
        var me =this

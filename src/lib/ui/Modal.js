@@ -85,6 +85,7 @@ class Modal extends BaseModal {
             width: context.option.ctxWidth - 40,
             height: context.option.ctxHeight / 3,
             zIndex: 3,
+            cancel:2,
             confirm: function () {
               console.log("xxxxxxxxxxxxxx")
             }
