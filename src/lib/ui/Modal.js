@@ -11,27 +11,27 @@ import Input from './Input.js'
 import MessageBox from './MessageBox.js'
 
 class Modal extends BaseModal {
-  constructor (option) {
+  constructor(option) {
     super(option)
     this.cancel = option.cancel
     this.confirmBtn = option.confirmBtn
 
-    var grid=new Grid({
-      parent:this,
+    var grid = new Grid({
+      parent: this,
       position: {
         x: this.position.x,
-        y: this.position.y 
+        y: this.position.y
       },
-      width:this.width,
+      width: this.width,
       height: this.height,
-      col:2,
-      row:5
+      col: 2,
+      row: 5
     })
 
     grid.AddCellContent(new Label({
-      gridLayout:{
-        row:0,
-        col:0
+      gridLayout: {
+        row: 0,
+        col: 0
       },
       text: 'Degbu',
       width: 90,
@@ -39,18 +39,18 @@ class Modal extends BaseModal {
     }))
 
     grid.AddCellContent(new CheckBox({
-      gridLayout:{
-        row:0,
-        col:1
+      gridLayout: {
+        row: 0,
+        col: 1
       },
       width: 30,
       height: 30
     }))
 
     grid.AddCellContent(new Label({
-      gridLayout:{
-        row:1,
-        col:0
+      gridLayout: {
+        row: 1,
+        col: 0
       },
       text: '难度',
       width: 90,
@@ -58,18 +58,18 @@ class Modal extends BaseModal {
     }))
 
     grid.AddCellContent(new Input({
-      gridLayout:{
-        row:1,
-        col:1
+      gridLayout: {
+        row: 1,
+        col: 1
       },
       width: 90,
       height: 30
     }))
 
     grid.AddCellContent(new Button({
-      gridLayout:{
-        row:3,
-        col:0
+      gridLayout: {
+        row: 3,
+        col: 0
       },
       text: '测试',
       width: 90,
@@ -85,7 +85,7 @@ class Modal extends BaseModal {
             width: context.option.ctxWidth - 40,
             height: context.option.ctxHeight / 3,
             zIndex: 3,
-            cancel:2,
+            cancel: 2,
             confirm: function () {
               console.log("xxxxxxxxxxxxxx")
             }
@@ -96,9 +96,9 @@ class Modal extends BaseModal {
     }))
 
     grid.AddCellContent(new Button({
-      gridLayout:{
-        row:4,
-        col:0
+      gridLayout: {
+        row: 4,
+        col: 0
       },
       text: '确定',
       width: 90,
@@ -106,15 +106,15 @@ class Modal extends BaseModal {
       event: {
         click: (obj, eventInfo) => {
           this.close()
-          if (this.confirm)  this.confirm()
+          if (this.confirm) this.confirm()
         }
       }
     }))
 
     grid.AddCellContent(new Button({
-      gridLayout:{
-        row:4,
-        col:1
+      gridLayout: {
+        row: 4,
+        col: 1
       },
       text: '取消',
       width: 90,

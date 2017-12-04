@@ -9,33 +9,33 @@ import CheckBox from './CheckBox.js'
 import Grid from './Grid.js'
 import Input from './Input.js'
 class MessageBox extends BaseModal {
-  constructor (option) {
+  constructor(option) {
     super(option)
 
-    var col=1
-    if(option.cancel){
-        col=2
-        this.cancel=option.cancel
+    var col = 1
+    if (option.cancel) {
+      col = 2
+      this.cancel = option.cancel
     }
-       
-    var grid=new Grid({
-      parent:this,
+
+    var grid = new Grid({
+      parent: this,
       position: {
         x: this.position.x,
-        y: this.position.y 
+        y: this.position.y
       },
-      width:this.width,
+      width: this.width,
       height: this.height,
-      col:col,
-      row:3
+      col: col,
+      row: 3
     })
 
     grid.AddCellContent(new Label({
-      gridLayout:{
-        row:0,
-        col:0,
-        rowSpan:2,
-        colSpan:col
+      gridLayout: {
+        row: 0,
+        col: 0,
+        rowSpan: 2,
+        colSpan: col
       },
       text: 'Degbu',
       width: 90,
@@ -44,41 +44,41 @@ class MessageBox extends BaseModal {
 
 
     grid.AddCellContent(new Button({
-      gridLayout:{
-        row:2,
-        col:0
+      gridLayout: {
+        row: 2,
+        col: 0
       },
       text: '确定',
       width: 90,
       height: 30,
       event: {
         click: (obj, eventInfo) => {
-          context.objectManager.removeElement(this)
-          if (this.confirm)  this.confirm()
+          context.UiObjectManager.removeView(this)
+          if (this.confirm) this.confirm()
         }
       }
     }))
-    if(this.cancel){
-        grid.AddCellContent(new Button({
-            gridLayout:{
-              row:2,
-              col:1
-            },
-            text: '取消',
-            width: 90,
-            height: 30,
-            event: {
-              click: (obj, eventInfo) => {
-                context.objectManager.removeElement(this)
-                if (this.confirm)  this.confirm()
-              }
-            }
-          }))
+    if (this.cancel) {
+      grid.AddCellContent(new Button({
+        gridLayout: {
+          row: 2,
+          col: 1
+        },
+        text: '取消',
+        width: 90,
+        height: 30,
+        event: {
+          click: (obj, eventInfo) => {
+            context.UiObjectManager.removeView(this)
+            if (this.confirm) this.confirm()
+          }
+        }
+      }))
     }
   }
-  render(draw){
-       var me =this
-      super.render(draw)
+  render(draw) {
+    var me = this
+    super.render(draw)
   }
 }
 

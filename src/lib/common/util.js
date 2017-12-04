@@ -1,15 +1,39 @@
 var util = {
   // 两个四边型是否重叠
   isChonghe: function (rect1, rect2) {
-    if (util.inArea({x: rect1.x,y: rect1.y}, rect2)) return true
-    if (util.inArea({x: rect1.x + rect1.width,y: rect1.y}, rect2)) return true
-    if (util.inArea({x: rect1.x,y: rect1.y + rect1.height}, rect2)) return true
-    if (util.inArea({x: rect1.x + rect1,y: rect1 + rect1.height.y}, rect2)) return true
+    if (util.inArea({
+        x: rect1.x,
+        y: rect1.y
+      }, rect2)) return true
+    if (util.inArea({
+        x: rect1.x + rect1.width,
+        y: rect1.y
+      }, rect2)) return true
+    if (util.inArea({
+        x: rect1.x,
+        y: rect1.y + rect1.height
+      }, rect2)) return true
+    if (util.inArea({
+        x: rect1.x + rect1,
+        y: rect1 + rect1.height.y
+      }, rect2)) return true
 
-    if (util.inArea({x: rect2.x,y: rect2.y}, rect1)) return true
-    if (util.inArea({x: rect2.x + rect2.width,y: rect2.y}, rect1)) return true
-    if (util.inArea({x: rect2.x,y: rect2.y + rect2.height}, rect1)) return true
-    if (util.inArea({x: rect2.x + rect2,y: rect2 + rect2.height.y}, rect1)) return true
+    if (util.inArea({
+        x: rect2.x,
+        y: rect2.y
+      }, rect1)) return true
+    if (util.inArea({
+        x: rect2.x + rect2.width,
+        y: rect2.y
+      }, rect1)) return true
+    if (util.inArea({
+        x: rect2.x,
+        y: rect2.y + rect2.height
+      }, rect1)) return true
+    if (util.inArea({
+        x: rect2.x + rect2,
+        y: rect2 + rect2.height.y
+      }, rect1)) return true
 
     return false
   },
@@ -27,13 +51,13 @@ var util = {
        }
      }*/
     // 是否包含
-    for (var i = 0;i < 3;i++) {
+    for (var i = 0; i < 3; i++) {
       if (util.pointInTriangle(area2, area1[i])) {
         return true
       }
     }
 
-    for (var i = 0;i < 3;i++) {
+    for (var i = 0; i < 3; i++) {
       if (util.pointInTriangle(area1, area2[i])) {
         return true
       }
@@ -56,19 +80,20 @@ var util = {
     }
 
     // 线段所在直线的交点坐标 (x , y)      
-    var x = ((b.x - a.x) * (d.x - c.x) * (c.y - a.y)
-      + (b.y - a.y) * (d.x - c.x) * a.x
-      - (d.y - c.y) * (b.x - a.x) * c.x) / denominator
-    var y = -((b.y - a.y) * (d.y - c.y) * (c.x - a.x)
-      + (b.x - a.x) * (d.y - c.y) * a.y
-      - (d.x - c.x) * (b.y - a.y) * c.y) / denominator
+    var x = ((b.x - a.x) * (d.x - c.x) * (c.y - a.y) +
+      (b.y - a.y) * (d.x - c.x) * a.x -
+      (d.y - c.y) * (b.x - a.x) * c.x) / denominator
+    var y = -((b.y - a.y) * (d.y - c.y) * (c.x - a.x) +
+      (b.x - a.x) * (d.y - c.y) * a.y -
+      (d.x - c.x) * (b.y - a.y) * c.y) / denominator
 
     /** 2 判断交点是否在两条线段上 **/
     if (
       // 交点在线段1上  
       (x - a.x) * (x - b.x) <= 0 && (y - a.y) * (y - b.y) <= 0
       // 且交点也在线段2上  
-      && (x - c.x) * (x - d.x) <= 0 && (y - c.y) * (y - d.y) <= 0
+      &&
+      (x - c.x) * (x - d.x) <= 0 && (y - c.y) * (y - d.y) <= 0
     ) {
 
       // 返回交点p  
@@ -108,8 +133,11 @@ var util = {
     }
     return false
   },
-  isEffect: function (plain, action , eventInfo) {
-    var pos = {x: eventInfo.position.x,y: eventInfo.position.y}
+  isEffect: function (plain, action, eventInfo) {
+    var pos = {
+      x: eventInfo.position.x,
+      y: eventInfo.position.y
+    }
     var absolutePosition = plain.getPositionAbsolute ? plain.getPositionAbsolute() : plain.position
     var rect = {
       x: absolutePosition.x,
@@ -129,16 +157,16 @@ var util = {
     return (y - headOffset) / (option.ctxHeight - headOffset) * option.ctxHeight
   },
   isAndroid: function () {
-    if ( (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+    if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
       return true
-    }else {
+    } else {
       return false
     }
   },
   isElectron: function () {
-    if ( (navigator.userAgent.match(/(Electron)/i))) {
+    if ((navigator.userAgent.match(/(Electron)/i))) {
       return true
-    }else {
+    } else {
       return false
     }
   },

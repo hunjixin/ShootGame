@@ -5,7 +5,7 @@ import context from '../common/context.js'
 import Cell from './Cell.js'
 
 class Grid extends Control {
-  constructor (option) {
+  constructor(option) {
     super(option)
     this.col = option.col
     this.row = option.row
@@ -15,20 +15,23 @@ class Grid extends Control {
     this.rowHeight = (this.height - this.row + 1) / this.row
     this.CreateCells()
   }
-  CreateCells () {
+  CreateCells() {
     for (var i = 0; i < this.row; i++) {
       for (var j = 0; j < this.col; j++) {
         if (!this.cells[i]) this.cells[i] = []
         this.cells[i][j] = new Cell({
           parent: this,
-          position: {x: this.position.x + this.colWidth * j + j,y: this.position.y + this.rowHeight * i + i},
+          position: {
+            x: this.position.x + this.colWidth * j + j,
+            y: this.position.y + this.rowHeight * i + i
+          },
           width: this.colWidth,
           height: this.rowHeight
         })
       }
     }
   }
-  AddCellContent (childControl) {
+  AddCellContent(childControl) {
     var row = childControl.gridLayout.row
     var column = childControl.gridLayout.col
     var colSpan = childControl.gridLayout.colSpan ? childControl.gridLayout.colSpan : 1
@@ -46,10 +49,10 @@ class Grid extends Control {
         }
       }
     }
-    
+
     this.cells[row][column].addControl(childControl)
   }
-  removeCell (row, col) {
+  removeCell(row, col) {
     this.cancelControl(this.cells[row][col])
     this.cells[row][col] = null
   }

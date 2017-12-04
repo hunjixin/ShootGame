@@ -5,5 +5,5 @@ import context from '../../common/context.js'
 
 var shotTypes = ['umShot', 'gzShot', 'common']
 
-module.exports =shotTypes
+module.exports = shotTypes
 export default shotTypes

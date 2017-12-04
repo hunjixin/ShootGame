@@ -4,10 +4,10 @@ import context from './../common/context.js'
 import Input from './Input.js'
 
 class NumberInput extends Input {
-  constructor (option) {
+  constructor(option) {
     super(option)
   }
-  _getInput (eventParams) {
+  _getInput(eventParams) {
     if (isNaN(parseInt(this.text + eventParams.key))) {
       this.text = this.text + eventParams.key
     }

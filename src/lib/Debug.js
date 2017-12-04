@@ -2,7 +2,7 @@ import util from './common/util.js'
 import resource from './common/resource.js'
 import context from './common/context.js'
 
-function StateInfo () {
+function StateInfo() {
   this.enemies = {
     all: {},
     resolve: {}
@@ -21,7 +21,7 @@ function StateInfo () {
     var sumLog = function (obj) {
       var keys = Object.keys(obj)
       var sum = 0
-      for (var i = 0;i < keys.length;i++) {
+      for (var i = 0; i < keys.length; i++) {
         sum += obj[keys[i]]
       }
       return sum
@@ -58,12 +58,13 @@ function StateInfo () {
     this.currentEnemyNum = 0
   }
 }
-function DebugSetting () {
+
+function DebugSetting() {
   this.isDebug = {
     message: '显示调试信息',
     value: true
   }
-  this.stageTime = {
+  this.viewTime = {
     message: '关卡时长',
     value: 20 // unit ms
   }
@@ -89,7 +90,7 @@ function DebugSetting () {
   }
 }
 
-module.exports ={
+module.exports = {
   StateInfo: StateInfo,
   DebugSetting: DebugSetting
 }

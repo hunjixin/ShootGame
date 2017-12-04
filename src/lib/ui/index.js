@@ -1,4 +1,3 @@
-
 import Bar from './Bar.js'
 import Modal from './Modal.js'
 import Button from './Button.js'
@@ -9,4 +8,14 @@ import Label from './Label.js'
 import MessageBox from './MessageBox.js'
 import NumberInput from './NumberInput.js'
 
-module.exports={ Modal,Bar,Button,TextBlock,Grid,Input,Label,MessageBox,NumberInput}
+module.exports = {
+    Modal,
+    Bar,
+    Button,
+    TextBlock,
+    Grid,
+    Input,
+    Label,
+    MessageBox,
+    NumberInput
+}

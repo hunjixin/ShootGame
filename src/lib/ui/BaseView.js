@@ -1,15 +1,16 @@
+import Control from './Control.js'
 import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
-import EObject from '../EObject.js'
-class Control extends EObject {
+
+class BaseView extends Control {
     constructor(option) {
         super(option)
-        this.on('click', function (params) {
-            // option.cancel()
-        })
+        this.worldOffset = {
+            x: 0,
+            y: 0
+        }
     }
-
 }
 
-module.exports = Control
+module.exports = BaseView

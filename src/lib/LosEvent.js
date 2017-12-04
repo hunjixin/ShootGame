@@ -3,72 +3,74 @@ import context from './common/context.js'
 import lodash from 'lodash'
 import EventWell from './common/EventWell.js'
 class LosEvent {
-  constructor (_option) {
+  constructor(_option) {
     // super()
     this.eventContainer = []
     this.init(_option)
     this.focusTarget
-    this.clickWell=new EventWell(2);
-    this.keyWell=new EventWell(3);
+    this.clickWell = new EventWell(2);
+    this.keyWell = new EventWell(3);
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
   }
-  init (_option) {
+  init(_option) {
     _option.attachEvent.click = this.clickFunc()
     _option.attachEvent.move = this.moveFunc()
     _option.attachEvent.mouseDown = this.moveDownFunc()
     _option.attachEvent.mouseUp = this.moveUpFunc()
     _option.attachEvent.keyUp = this.keyUpFunc()
   }
-  hasTarget (target) {
+  hasTarget(target) {
     return lodash.filter(this.eventContainer, (item) => {
-        return item.target == target
-      }).length > 0
+      return item.target == target
+    }).length > 0
   }
-  findTarget (target) {
+  findTarget(target) {
     return lodash.filter(this.eventContainer, (item) => {
       return item.target == target
     })[0]
   }
   // 附加事件中 object-action-callback
-  attachEvent (target, action, callback) {
+  attachEvent(target, action, callback) {
     if (!this.hasTarget(target))
-      this.eventContainer.push({target: target,actions: []})
+      this.eventContainer.push({
+        target: target,
+        actions: []
+      })
     var actions = this.findTarget(target).actions
-    if (-1 === actions.indexOf(action))  actions.push(action)
+    if (-1 === actions.indexOf(action)) actions.push(action)
   }
-  deAttchEvent (target, action, funcs) {
+  deAttchEvent(target, action, funcs) {
     var items = this.findTarget(target)
 
     if (action) {
-      for (var i = 0;i < items.actions.length;i++) {
+      for (var i = 0; i < items.actions.length; i++) {
         if (items.actions[i] == action) {
           if (funcs) {
             util.removeArr(items.target[action], funcs)
-          }else {
+          } else {
             util.removeArr(items.actions, items.actions[i])
             return
           }
         }
       }
-    }else {
+    } else {
       this.deAttchAllEvent(items)
     }
   }
-  deAttchAllEvent (target) {
-    util.removeArr(this.eventContainer , target)
+  deAttchAllEvent(target) {
+    util.removeArr(this.eventContainer, target)
   }
   // 触发事件中 action-eventInfo
-  triggerEvent (action, eventInfo) {
+  triggerEvent(action, eventInfo) {
     var targets = lodash.filter(this.eventContainer, (item) => {
-      return item.target.isDisplay
-        && util.isEffect(item.target, action, eventInfo)
-        && item.actions.indexOf(action) > -1
+      return item.target.isDisplay &&
+        util.isEffect(item.target, action, eventInfo) &&
+        item.actions.indexOf(action) > -1
     })
 
     if (targets.length == 0) {
       return
-    }
-    else if (targets.length > 1) {
+    } else if (targets.length > 1) {
       targets.sort((a, b) => b.target.zIndex - a.target.zIndex)
     }
     this.invokeEventListiner(targets[0].target, action, eventInfo)
@@ -78,10 +80,13 @@ class LosEvent {
       this.focusTarget = targets[0].target
       this.invokeEventListiner(targets[0].target, 'focus', eventInfo)
 
-      this.clickWell.attach({action,eventInfo})
+      this.clickWell.attach({
+        action,
+        eventInfo
+      })
     }
   }
-  invokeEventListiner (target, action, eventInfo) {
+  invokeEventListiner(target, action, eventInfo) {
     if (target[action] && target[action] instanceof Array) {
       target[action].forEach(func => {
         if (func instanceof Function) {
@@ -90,59 +95,68 @@ class LosEvent {
       })
     }
   }
-  triggerNamedEvent (action, eventInfo) {
+  triggerNamedEvent(action, eventInfo) {
     var targets = lodash.filter(this.eventContainer, (item) => {
-      return item.target.isDisplay
-        &&item.target.isFocus
-        && item.actions.indexOf(action) > -1
+      return item.target.isDisplay &&
+        item.target.isFocus &&
+        item.actions.indexOf(action) > -1
     })
-    if(targets.length==0) return
-    targets.forEach((targetItem)=>{
+    if (targets.length == 0) return
+    targets.forEach((targetItem) => {
       this.invokeEventListiner(targetItem.target, action, eventInfo)
     })
   }
-  triggerKeyEvent (action, eventInfo) {
+  triggerKeyEvent(action, eventInfo) {
     var targets = lodash.filter(this.eventContainer, (item) => {
-      return item.target.isDisplay
-        && item.actions.indexOf(action) > -1
+      return item.target.isDisplay &&
+        item.actions.indexOf(action) > -1
     })
-    if(targets.length==0) return
-    targets.forEach((targetItem)=>{
+    if (targets.length == 0) return
+    targets.forEach((targetItem) => {
       this.invokeEventListiner(targetItem.target, action, eventInfo)
-      this.keyWell.attach({action:eventInfo.key,eventInfo})
+      this.keyWell.attach({
+        action: eventInfo.key,
+        eventInfo
+      })
     })
   }
   // 外部事件转内部事件驱动  
   // 包装按键按下，抬起，移动事件
-  pacakgeEvent (event) {
+  pacakgeEvent(event) {
     var evnetInfo = {
-      position: {x: 0,y: 0}
+      position: {
+        x: 0,
+        y: 0
+      }
     }
     if (util.isAndroid()) {
       evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
       evnetInfo.position.y = event.gesture.center.pageY, context.option, context.headOffset
-    }else if (util.isElectron()) {
+    } else if (util.isElectron()) {
       evnetInfo.position.x = event.pageX
       evnetInfo.position.y = event.pageY, context.option, context.headOffset
-    }else {
+    } else {
       evnetInfo.position.x = event.offsetX
       evnetInfo.position.y = event.offsetY, context.option, context.headOffset
     }
     return evnetInfo
   }
   // 包装单击事件
-  pacakgeClick (event) {
+  pacakgeClick(event) {
     var evnetInfo = {
-      position: {x: 0,y: 0}
+      position: {
+        x: 0,
+        y: 0
+      }
     }
 
     if (util.isAndroid()) {
       evnetInfo.position.x = event.pageX - event.target.offsetLeft
       evnetInfo.position.y = event.y
-    }else if (util.isElectron()) {
+    } else if (util.isElectron()) {
       evnetInfo.position.x = event.pageX
       evnetInfo.position.y = event.pageY
-    }else {
+    } else {
       evnetInfo.position.x = event.offsetX
       evnetInfo.position.y = event.offsetY
     }
@@ -150,33 +164,36 @@ class LosEvent {
   }
 
   // 移动事件
-  moveFunc () {
+  moveFunc() {
     return (eventInfo) => {
       this.triggerEvent('mouseMove', this.pacakgeEvent(eventInfo))
     }
   }
   // 按下事件
-  moveDownFunc () {
+  moveDownFunc() {
     return (eventInfo) => {
       this.triggerEvent('mouseDown', this.pacakgeEvent(eventInfo))
     }
   }
   // 抬起事件
-  moveUpFunc () {
+  moveUpFunc() {
     return (eventInfo) => {
       this.triggerEvent('mouseUp', this.pacakgeEvent(eventInfo))
     }
   }
   // 点击事件
-  clickFunc () {
+  clickFunc() {
     return (eventInfo) => {
       this.triggerEvent('click', this.pacakgeClick(eventInfo))
     }
   }
   // 点击事件
-  keyUpFunc () {
+  keyUpFunc() {
     return (eventInfo) => {
-      this.triggerKeyEvent('keyUp',{keyCode: eventInfo.keyCode,key:eventInfo.key})
+      this.triggerKeyEvent('keyUp', {
+        keyCode: eventInfo.keyCode,
+        key: eventInfo.key
+      })
     }
   }
 }

@@ -1,17 +1,18 @@
 import EObject from './EObject.js'
+import BaseView from './ui/BaseView.js'
+import ViewCoord from './coord/ViewCoord.js'
 import util from './common/util.js'
 import context from './common/context.js'
 import resource from './common/resource.js'
 import TimeLine from './TimeLine.js'
-import { Boss,Player, createEnemy } from './shotGame/'
-import { ShotorFactory, Bullet, Shot } from './shotGame/shot/'
-import { Bar,Button,TextBlock} from './ui/'
+import {Boss,Player,createEnemy} from './shotGame/'
+import {ShotorFactory,Bullet,Shot} from './shotGame/shot/'
+import {Bar,Button,Modal,TextBlock} from './ui/'
 
-
-class Stage extends EObject {
-  constructor (stageConfig) {
-    super(stageConfig)
-
+class View extends BaseView {
+  constructor(viewConfig) {
+    super(viewConfig)
+    this.coord = viewConfig.coord
     this.isRunning = 2 // 三种状态 1 预备/2 进行 /3 结束
     this.position.x = 0
     this.position.y = context.headOffset
@@ -32,42 +33,98 @@ class Stage extends EObject {
       width: this.width / 2,
       height: 40,
       icon: resource.button,
-      borderSize:0,
-      event:{
-        click:(eventInfo)=> {
+      borderSize: 0,
+      event: {
+        click: (eventInfo) => {
           this.resetButton.hide()
-          if(this.player.hp>0) {
+          if (this.player.hp > 0) {
             this.start()
-          }else{
+          } else {
             this.restart()
           }
         }
       }
     })
+    // bar
+    this.bar = new Bar({
+      icon: resource.head,
+      position: {
+        x: -5,
+        y: 0
+      },
+      width:  context.option.ctxWidth + 10,
+      height: context.headOffset,
+      children: [new Button({
+        name: 'setting',
+        position: {
+          x: context.option.ctxWidth - context.headOffset,
+          y: 2
+        },
+        width: context.headOffset,
+        height: context.headOffset - 4,
+        icon: resource.setting,
+        event: {
+          'click': function (eventInfo) {
+            context.viewManager.view.stop()
+            var modal = new Modal({
+              title: '设置页面',
+              position: {
+                x: 10,
+                y: context.option.ctxHeight / 4
+              },
+              width: context.option.ctxWidth - 20,
+              height: context.option.ctxHeight / 2,
+              zIndex: 2,
+              confirm: function () {
+                context.viewManager.view.restart()
+              },
+              cancel: function () {
+                context.viewManager.view.restart()
+              }
+            })
+            modal.open()
+          }
+        }
+      })]
+    })
+
+    this.textBlock = new TextBlock({
+      position: {
+        x: 0,
+        y: context.headOffset
+      }
+    })
+
+    context.UiObjectManager.addView(this.resetButton)
+    context.UiObjectManager.addView(this.bar)
+    context.UiObjectManager.addView(this.textBlock)
 
     var plainMoveState = {
       isMouseDown: false,
-      position: {x: 0,y: 0}
+      position: {
+        x: 0,
+        y: 0
+      }
     }
     this.player = new Player(this)
     this.player.setShotInterVal(1)
     // 注册事件
     // 玩家开始移动
-    this.player.on('mouseDown', eventInfo=> {
-      if ( this.isRunning == 1)  plainMoveState.isMouseDown = true
+    this.player.on('mouseDown', eventInfo => {
+      if (this.isRunning == 1) plainMoveState.isMouseDown = true
     })
     // 玩家停止移动
-    this.on('mouseUp', eventInfo=> {
-      if ( this.isRunning == 1)  plainMoveState.isMouseDown = false
+    this.on('mouseUp', eventInfo => {
+      if (this.isRunning == 1) plainMoveState.isMouseDown = false
     })
     // 玩家移动中
-    this.on('mouseMove',eventInfo=> {
-      if ( this.isRunning == 1 && plainMoveState.isMouseDown === true) {
+    this.on('mouseMove', eventInfo => {
+      if (this.isRunning == 1 && plainMoveState.isMouseDown === true) {
         this.player.position.x = eventInfo.position.x - this.player.width / 2
         this.player.position.y = eventInfo.position.y - this.player.height / 2 - context.headOffset
       }
     })
-    this.icon = stageConfig.icon
+    this.icon = viewConfig.icon
     this.boss
     this.time = 10
 
@@ -79,15 +136,15 @@ class Stage extends EObject {
     this.spoils = []
 
     this.hasCreateBoss = false
-    var checkTm = setInterval( ()=> {
-      if (this.isStageTimeOut()) {
+    var checkTm = setInterval(() => {
+      if (this.isViewTimeOut()) {
         clearInterval(checkTm)
         this.createBoss()
         this.hasCreateBoss = true
       }
     }, 100)
   }
-  enemyDie (enemy) {
+  enemyDie(enemy) {
     var self = this
     enemy.isDie = true
     var bullet = new Bullet({
@@ -112,36 +169,37 @@ class Stage extends EObject {
     if (spoil) {
       if (context.stateInfo.spoils.all[spoil.type])
         context.stateInfo.spoils.all[spoil.type]++
-      else context.stateInfo.spoils.all[spoil.type] = 0
+        else context.stateInfo.spoils.all[spoil.type] = 0
       self.spoils.push(spoil)
     }
 
     if (context.stateInfo.enemies.resolve[enemy.type])
       context.stateInfo.enemies.resolve[enemy.type]++
-    else
-      context.stateInfo.enemies.resolve[enemy.type] = 1
+      else
+        context.stateInfo.enemies.resolve[enemy.type] = 1
   }
   /**
-     * 对象移动
-     */
-  objectMove () {
+   * 对象移动
+   */
+  objectMove() {
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
     var spoils = this.spoils
-    if (context.stageManager.canGoNextStage()) {
-      context.stageManager.next()
+    if (context.viewManager.canGoNextView()) {
+      context.viewManager.next()
     }
     // 生成新的个体
     var pShots = this.player.getShot()
     if (pShots) {
       shots.push.apply(shots, pShots)
-      for (var i = 0;i < pShots.length;i++) {
+      for (var i = 0; i < pShots.length; i++) {
         if (context.stateInfo.emitShot.all[pShots[i].type])
           context.stateInfo.emitShot.all[pShots[i].type]++
-        else context.stateInfo.emitShot.all[pShots[i].type] = 1
+          else context.stateInfo.emitShot.all[pShots[i].type] = 1
       }
     }
+
     this.update()
 
     this.player.update()
@@ -150,31 +208,41 @@ class Stage extends EObject {
     context.stateInfo.currentEnemyNum = this.enemies.length
   }
   // 对象清理
-  clearObject () {
+  clearObject() {
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
     var spoils = this.spoils
     // 删除越界的对象  
-    for (var i = shots.length - 1;i > -1;i--) {
+    for (var i = shots.length - 1; i > -1; i--) {
       var oneShot = shots[i]
-      if (oneShot.isDie || !util.inArea(oneShot.position, {x: -10,y: -10,width: this.width + 10,height: this.height + 10})) {
+      if (oneShot.isDie || !util.inArea(oneShot.position, {
+          x: -10,
+          y: -10,
+          width: this.width + 10,
+          height: this.height + 10
+        })) {
         util.removeArr(shots, oneShot)
       }
     }
 
-    for (var i = enemies.length - 1;i > -1;i--) {
+    for (var i = enemies.length - 1; i > -1; i--) {
       var enemy = enemies[i]
       if (enemy.isDie) {
         util.removeArr(enemies, enemy)
         continue
       }
-      if (!util.inArea(enemy.position, {x: -100,y: -100,width: this.width + 100,height: this.height + 100})) {
+      if (!util.inArea(enemy.position, {
+          x: -100,
+          y: -100,
+          width: this.width + 100,
+          height: this.height + 100
+        })) {
         util.removeArr(enemies, enemy)
       }
     }
 
-    for (var i = spoils.length - 1;i > -1;i--) {
+    for (var i = spoils.length - 1; i > -1; i--) {
       var spoil = spoils[i]
       if (spoil.isDie) {
         util.removeArr(spoils, spoil)
@@ -182,19 +250,19 @@ class Stage extends EObject {
       }
     }
   }
-  stop () {
+  stop() {
     this.timeLine.stop()
     this.isRunning = 2
   }
-  restart () {
+  restart() {
     this.timeLine.start()
     this.isRunning = 1
   }
-  start () {
+  start() {
     this.timeLine.start()
     this.isRunning = 1
   }
-  drawScene () {
+  drawScene() {
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
@@ -232,12 +300,12 @@ class Stage extends EObject {
     }
     return canvas
   }
-  destroy () {
+  destroy() {
     this.player.off('mouseDown')
     this.off('mouseUp')
     this.off('mouseMove')
   }
-  reset () {
+  reset() {
     this.timeLine.reset()
     this.shots.length = 0
     this.enemies.length = 0
@@ -245,15 +313,15 @@ class Stage extends EObject {
     this.spoils.length = 0
     this.isRunning = 0
   }
-  createBoss () {
+  createBoss() {
     var boss = new Boss()
     this.boss = boss
     this.enemies.push(boss)
   }
-  isStageTimeOut () {
+  isViewTimeOut() {
     return this.timeLine.getRunningTime() / 1000 > this.time
   }
-  update () {
+  update() {
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
@@ -265,7 +333,7 @@ class Stage extends EObject {
       var newEmeny = createEnemy(parseInt(rad.charAt(0)) + 2)
       if (context.stateInfo.enemies.all[newEmeny.type])
         context.stateInfo.enemies.all[newEmeny.type]++
-      else context.stateInfo.enemies.all[newEmeny.type] = 1
+        else context.stateInfo.enemies.all[newEmeny.type] = 1
       enemies.push(newEmeny)
     }
 
@@ -274,7 +342,7 @@ class Stage extends EObject {
       var newEmeny = createEnemy(1)
       if (context.stateInfo.enemies.all[newEmeny.type])
         context.stateInfo.enemies.all[newEmeny.type]++
-      else context.stateInfo.enemies.all[newEmeny.type] = 1
+        else context.stateInfo.enemies.all[newEmeny.type] = 1
       enemies.push(newEmeny)
     }
 
@@ -301,21 +369,20 @@ class Stage extends EObject {
       enemy.update()
     }
   }
-  render (drawContext) {
+  render(drawContext) {
     var canvas = this.drawScene()
     drawContext.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height,
       this.position.x, this.position.y, this.width, this.height)
-    this.resetButton.render(drawContext)
   }
   /**
    * 根据id查找敌人
    * @param {*敌人id} oid 
    */
-  findEnemyByOid (oid) {
+  findEnemyByOid(oid) {
     var enemies = this.enemies
     if (enemies) {
-      for (var i = 0;i < enemies.length;i++) {
+      for (var i = 0; i < enemies.length; i++) {
         if (enemies[i].Oid == oid) {
           return enemies[i]
         }
@@ -323,34 +390,34 @@ class Stage extends EObject {
     }
   }
   // 检测碰撞
-  checkCollection () {
+  checkCollection() {
     var plainRect = this.player.getAbsoluteCollisionArea()[0]
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
     var spoils = this.spoils
 
-    for (var i = enemies.length - 1;i > -1;i--) {
+    for (var i = enemies.length - 1; i > -1; i--) {
       var enemy = enemies[i]
       if (enemy.isDie) continue
       var enemyRect = enemy.getAbsoluteCollisionArea()[0]
       // 检查子弹和飞机的碰撞
-      for (var j = shots.length - 1;j > -1;j--) {
+      for (var j = shots.length - 1; j > -1; j--) {
         var oneShot = shots[j]
         if (oneShot.isDie) continue
         var shotRect = oneShot.getAbsoluteCollisionArea()[0]
         if (this.player.Oid == oneShot.belong && util.isChonghe(shotRect, enemyRect)) {
           enemy.Hp = enemy.Hp - oneShot.attack * this.player.shotEx
           oneShot.Hp--
-          if (enemy.Hp <= 0) {
-            this.enemyDie(enemy)
-          }
+            if (enemy.Hp <= 0) {
+              this.enemyDie(enemy)
+            }
           // 子弹生命  穿甲弹
           if (oneShot.Hp <= 0) {
             oneShot.isDie = true
             if (context.stateInfo.emitShot.resolve[oneShot.type])
               context.stateInfo.emitShot.resolve[oneShot.type]++
-            else context.stateInfo.emitShot.resolve[oneShot.type] = 1
+              else context.stateInfo.emitShot.resolve[oneShot.type] = 1
             util.removeArr(shots, oneShot)
           }
         }
@@ -358,8 +425,8 @@ class Stage extends EObject {
       // 检查玩家和飞机的碰撞
       if (util.isChonghe(plainRect, enemyRect)) {
         enemy.Hp--
-        this.player.Hp--
-        util.isChonghe(plainRect, enemyRect)
+          this.player.Hp--
+          util.isChonghe(plainRect, enemyRect)
         if (enemy.Hp <= 0) {
           enemy.isDie = true
           util.removeArr(enemies, enemy)
@@ -368,22 +435,25 @@ class Stage extends EObject {
     }
 
     // 检查玩家是否被击中
-    for (var j = shots.length - 1;j > -1;j--) {
+    for (var j = shots.length - 1; j > -1; j--) {
       var oneShot = shots[j]
       if (oneShot.isDie) continue
-      if (this.player.Oid != oneShot.belong && util.inArea({x: oneShot.position.x + oneShot.width / 2,y: oneShot.position.y}, plainRect)) {
+      if (this.player.Oid != oneShot.belong && util.inArea({
+          x: oneShot.position.x + oneShot.width / 2,
+          y: oneShot.position.y
+        }, plainRect)) {
         var ene = this.findEnemyByOid(oneShot.belong)
         var shotEx = ene ? ene.shotEx : 1
         this.player.Hp = this.player.Hp - oneShot.attack * shotEx
         oneShot.Hp--
-        if (oneShot.Hp <= 0) {
-          oneShot.isDie = true
-          util.removeArr(shots, oneShot)
-        }
+          if (oneShot.Hp <= 0) {
+            oneShot.isDie = true
+            util.removeArr(shots, oneShot)
+          }
       }
     }
     // 检查玩家是否获取战利品
-    for (var j = spoils.length - 1;j > -1;j--) {
+    for (var j = spoils.length - 1; j > -1; j--) {
       var oneSpoil = spoils[j]
       if (oneSpoil.isDie) continue
       var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0]
@@ -393,7 +463,7 @@ class Stage extends EObject {
         oneSpoil.Effect(this.player)
         if (context.stateInfo.spoils.resolve[oneSpoil.type])
           context.stateInfo.spoils.resolve[oneSpoil.type]++
-        else context.stateInfo.spoils.resolve[oneSpoil.type] = 1
+          else context.stateInfo.spoils.resolve[oneSpoil.type] = 1
       }
     }
 
@@ -404,9 +474,8 @@ class Stage extends EObject {
   }
 }
 
-function StageManager () {
-  this.stagesConfig = [
-    {
+function ViewManager() {
+  this.viewsConfig = [{
       icon: resource.bg.bg1
     },
     {
@@ -416,44 +485,44 @@ function StageManager () {
       icon: resource.bg.bg3
     }
   ]
-  this.currentStageIndex = 0
+  this.currentViewIndex = 0
   /**
    * 判断关卡是否超时   单位s
    */
-  this.isStageTimeOut = function () {
-    return this.stage.isStageTimeOut()
+  this.isViewTimeOut = function () {
+    return this.view.isViewTimeOut()
   }
-  this.canGoNextStage = function () {
-    var isBossEsixt = this.stage.enemies.indexOf(this.stage.boss)
-    return -1 === isBossEsixt && this.stage.isStageTimeOut() && this.stage.hasCreateBoss == true
+  this.canGoNextView = function () {
+    var isBossEsixt = this.view.enemies.indexOf(this.view.boss)
+    return -1 === isBossEsixt && this.view.isViewTimeOut() && this.view.hasCreateBoss == true
   }
   this.init = function () {
-    if(this.stage) this.stage.destroy()
-    context.objectManager.removeElement(this.stage)
-    var stage = new Stage(this.stagesConfig[0])
-    stage.isRunning = 0
-    this.stage = stage
-    context.objectManager.addElement(stage)
+    if (this.view) this.view.destroy()
+    context.UiObjectManager.removeView(this.view)
+    var view = new View(this.viewsConfig[0])
+    view.isRunning = 0
+    this.view = view
+    context.UiObjectManager.addView(view)
   }
   this.next = function () {
-    this.currentStageIndex++
-    if (this.stagesConfig.length > this.currentStageIndex) {
-      this.stage.destroy()
-      context.objectManager.removeElement(this.stage)
-      var stage = new Stage(this.stagesConfig[this.currentStageIndex])
-      this.stage = stage
-      context.objectManager.addElement(stage)
-    }
+    this.currentViewIndex++
+      if (this.viewsConfig.length > this.currentViewIndex) {
+        this.view.destroy()
+        context.UiObjectManager.removeView(this.view)
+        var view = new View(this.viewsConfig[this.currentViewIndex])
+        this.view = view
+        context.UiObjectManager.addView(view)
+      }
   }
   this.reset = function () {
-    this.currentStageIndex = 0
-    context.objectManager.removeElement(this.stage)
-    var stage = new Stage(this.stagesConfig[this.currentStageIndex])
-    this.stage = stage
-    context.objectManager.addElement(stage)
+    this.currentViewIndex = 0
+    context.UiObjectManager.removeView(this.view)
+    var view = new View(this.viewsConfig[this.currentViewIndex])
+    this.view = view
+    context.UiObjectManager.addView(view)
   }
 }
 module.exports = {
-  Stage: Stage,
-  StageManager: StageManager
+  View: View,
+  ViewManager: ViewManager
 }

@@ -18,7 +18,7 @@ set ionicImageDir=%ionicRootDir%\image
 set webRootDir=%basePath%\publishHouse\web
 set webImageDir=%basePath%\publishHouse\web\image\
 
-set testDir=%basePath%\test\lib
+set testDir=%basePath%\spec\lib
 
 if "%1" == %help1% (
   goto:losHelp
@@ -121,7 +121,7 @@ GOTO:EOF
     del  "%ionicRootDir%\js\engine.js" 
     rmdir /s /q  %ionicImageDir%
 
-    rmdir /s /q "%basePath%\test\lib"
+    rmdir /s /q "%basePath%\spec\lib"
 
     del  "%webRootDir%\engine.js"  
     rmdir /s /q  %webImageDir%
@@ -134,4 +134,9 @@ GOTO:EOF
      cd ..\ionic
      npm install 
      cd ..\..
+GOTO:EOF 
+
+:test
+   .\node_modules\jasmine\bin\jasmine.js
+
 GOTO:EOF 

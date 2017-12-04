@@ -4,12 +4,12 @@ import resource from '../common/resource.js'
 import context from '../common/context.js'
 
 class Cell extends Control {
-  constructor (option) {
+  constructor(option) {
     super(option)
     this.isCheck = option.isCheck
     this.borderSize = 1
   }
-  addControl (childControl) {
+  addControl(childControl) {
     if (!childControl.width || childControl.width > this.width)
       childControl.width = this.width
     else {

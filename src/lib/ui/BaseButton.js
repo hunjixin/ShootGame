@@ -4,14 +4,14 @@ import resource from '../common/resource.js'
 import context from '../common/context.js'
 
 class BaseButton extends Control {
-    constructor (option) {
-      super(option)
-      this.text=option.text
-    }
-    render(drawContext){
-        super.render(drawContext)
-        this.drawText(drawContext)
-    }
+  constructor(option) {
+    super(option)
+    this.text = option.text
   }
+  render(drawContext) {
+    super.render(drawContext)
+    this.drawText(drawContext)
+  }
+}
 
-  module.exports = BaseButton
+module.exports = BaseButton

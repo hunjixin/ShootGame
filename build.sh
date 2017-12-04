@@ -18,7 +18,7 @@ ionicImageDir="$ionicRootDir/image"
 webRootDir="$basePath/publishHouse/web"
 webImageDir="$basePath/publishHouse/web/image"
 
-testDir="$basePath/test/lib"
+testDir="$basePath/spec"
 
 init(){
      npm install
@@ -74,7 +74,7 @@ clean(){
     rm -f  "$ionicRootDir/js/engine.js" 
     rm -rf  $ionicImageDir
 
-    rm -rf "$basePath/test/lib"
+    rm -rf "$basePath/spec/lib"
 
     rm -r  "$webRootDir/engine.js"  
     rm -rf  $webImageDir

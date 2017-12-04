@@ -1,5 +1,5 @@
 module.exports = {
-    umShot: 'umShot',
-    gzShot: 'gzShot',
-    addHp: 'addHp'
-  }
+  umShot: 'umShot',
+  gzShot: 'gzShot',
+  addHp: 'addHp'
+}

@@ -3,7 +3,7 @@ import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from './../common/context.js'
 class Input extends Control {
-  constructor (option) {
+  constructor(option) {
     super(option)
     this.text = ''
     this.shakeCount = 10
@@ -37,21 +37,21 @@ class Input extends Control {
         if (this.text) {
           this.text = this.text.substr(0, this.text.length - 1)
         }
-      }else {
+      } else {
         this._getInput(eventParams)
       }
     })
     this._ilen = 0
   }
-  _getInput (eventParams) {
+  _getInput(eventParams) {
     this.text = this.text + eventParams.key
   }
-  isShowCarrot () {
+  isShowCarrot() {
     return Math.floor(context.tick / 10) % 2 == 0
   }
-  render (drawContext) {
+  render(drawContext) {
     super.render(drawContext)
-    if (!this.text)return
+    if (!this.text) return
     drawContext.save()
 
     var inTextHeight = this.height - 4
@@ -65,7 +65,7 @@ class Input extends Control {
     if (this._canvas.width <= this.width) {
       drawContext.drawImage(this._canvas, // 绘制
         startX, this.position.y, this._canvas.width, this.height)
-    }else {
+    } else {
       var offset = this._canvas.width - this.width
       drawContext.drawImage(this._canvas, // 绘制
         offset, 0, this.width, this.height,
@@ -75,13 +75,13 @@ class Input extends Control {
 
     drawContext.restore()
   }
-  drawInner (drawContext) {
+  drawInner(drawContext) {
     var tmpContext = this._canvas.getContext('2d')
     tmpContext.save()
     var dText = this.text
     if (this.isFocus && this.isShowCarrot()) {
       dText = dText + '|'
-    }else{
+    } else {
       dText = dText + ' '
     }
     var inTextHeight = this.height - 4

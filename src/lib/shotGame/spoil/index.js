@@ -5,11 +5,11 @@ import SpoilType from './SpoilType.js'
 import UmShotSpoil from './UmShotSpoil.js'
 
 class SpoilManager {
-  constructor () {}
-  createSpoil (obj) {
+  constructor() {}
+  createSpoil(obj) {
     if (Math.random() < 0.5) return undefined
     var types = Object.values(SpoilType)
-    var t = types[ (Math.random() * types.length).toString().charAt(0) - '0']
+    var t = types[(Math.random() * types.length).toString().charAt(0) - '0']
     var spoil
     switch (t) {
       case SpoilType.umShot:
@@ -24,7 +24,7 @@ class SpoilManager {
     }
     var factor = 5 * Math.random() * Math.sign(Math.random() - 0.5)
     spoil.setXPath(
-      (x)=> {
+      (x) => {
         return factor * (Math.cos(spoil._moveTick / 15) + Math.random() - 0.5)
       }
     )
@@ -38,4 +38,5 @@ module.exports = {
   HpSpoil,
   SpoilType,
   UmShotSpoil,
-SpoilManager}
+  SpoilManager
+}
