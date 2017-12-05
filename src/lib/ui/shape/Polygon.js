@@ -1,7 +1,4 @@
 import Point from './Point.js'
-import util from '../common/util.js'
-import resource from '../common/resource.js'
-import context from '../common/context.js'
 
 class Polygon {
   constructor(points) {
