@@ -3,11 +3,9 @@ import resource from './lib/common/resource.js'
 import context from './lib/common/context.js'
 
 import LosEvent from './lib/LosEvent.js'
-import EObject from './lib/EObject.js'
 import {ShotTypes} from './lib/shotGame/shot/'
-import {Spoil, SpoilManager} from './lib/shotGame/spoil/'
-import {Bar, Button,Modal, TextBlock} from './lib/ui/'
-import {View, ViewManager} from './lib/View.js'
+import {SpoilManager} from './lib/shotGame/spoil/'
+import {ViewManager} from './lib/View.js'
 import {StateInfo,DebugSetting} from './lib/Debug.js'
 import ViewCoord from './lib/coord/ViewCoord.js'
 
@@ -15,9 +13,7 @@ function Engine() {
   var option = {}
 
   var viewManager
-  var textBlock
   var drawContext
-  var bar
 
   this.Create = function (_option) {
     // canvas context
