@@ -14,8 +14,7 @@ angular.module('gameDem',['ionic'])
 
     $scope.keyUp=document.keyUp;
 
-    var en = new Engine()
-    en.Create({
+    var en = new ShotGame({
       id: 'myCanvas',
       attachEvent: $scope,
       showConsoleView:function(){console.log('not support')},

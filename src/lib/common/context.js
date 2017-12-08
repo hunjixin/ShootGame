@@ -6,6 +6,7 @@ class UiObjectManager {
     }
     addView(element) {
         this.uiRoot.push(element)
+        this.uiRoot.sort((a,b)=>a.zIndex-b.zIndex)
     }
     removeView(element) {
         if (!element) return

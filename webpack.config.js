@@ -26,13 +26,13 @@ module.exports = [
     name: 'lib',
     devtool: devtool,
     entry: [
-      './src/engine.js'
+      './src/shotGame/ShotGame.js'
     ],
     output: {
       path: publishPath,
-      filename: 'engine.js',
+      filename: 'shotGame.js',
       libraryTarget: "commonjs2",
-      library: "Engine"
+      library: "ShotGame"
     },
     module: requireModule,
     devServer: { contentBase: './src'},

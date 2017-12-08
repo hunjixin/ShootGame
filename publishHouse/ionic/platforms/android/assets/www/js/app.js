@@ -23,8 +23,7 @@ angular.module('starter', ['ionic'])
     })
   }).controller('crash', ['$scope', '$ionicModal' ,
   function ($scope, $ionicModal) {
-    var en = new Engine()
-    en.Create({
+    var en = new ShotGame({
       id: 'myCanvas',
       attachEvent: $scope
     })

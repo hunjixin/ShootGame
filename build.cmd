@@ -51,17 +51,17 @@ GOTO:EOF
 
     ::  m electron
     echo "copy electron file"
-    copy  "%basePath%\lib\engine.js"  "%electronRootDir%\src\engine.js"   
+    copy  "%basePath%\lib\shotGame.js"  "%electronRootDir%\src\shotGame.js"   
     copy  "%basePath%\image\"  "%electronRootDir%\dist\image\" /Y
 
     ::  ionic
     echo "copy ionic file" 
-    copy  "%basePath%\lib\engine.js"  "%ionicRootDir%\js\engine.js" 
+    copy  "%basePath%\lib\shotGame.js"  "%ionicRootDir%\js\shotGame.js" 
     copy  "%basePath%\image\"  %ionicImageDir% /Y
     
     ::  web
     echo "copy web file"
-    copy  "%basePath%\lib\engine.js"  "%webRootDir%\engine.js"   
+    copy  "%basePath%\lib\shotGame.js"  "%webRootDir%\shotGame.js"   
     copy  "%basePath%\image\"  %webImageDir% /Y
 
     ::  test
@@ -100,13 +100,13 @@ GOTO:EOF
 GOTO:EOF
 
 :clean
-    rmdir /s /q "%basePath%\lib"
-    rmdir /s /q "%basePath%\build"
+    ::rmdir /s /q "%basePath%\lib"
+    ::rmdir /s /q "%basePath%\build"
 
-    del  "%basePath%\publishHouse\electron\src\engine.js"
+    del  "%basePath%\publishHouse\electron\src\shotGame.js"
     rmdir /s /q "%basePath%\publishHouse\electron\image"
 
-    del  "%basePath%\publishHouse\ionic\www\js\engine.js"
+    del  "%basePath%\publishHouse\ionic\www\js\shotGame.js"
     rmdir /s /q "%basePath%\publishHouse\ionic\www\img"
 
     rmdir /s /q "%basePath%\shotdown-win32-x64"
@@ -115,15 +115,15 @@ GOTO:EOF
     rmdir /s /q  "%basePath%/lib"
     rmdir /s /q  "%basePath%/build"
 
-    del  "%electronRootDir%\src\engine.js"  
+    del  "%electronRootDir%\src\shotGame.js"  
     rmdir /s /q "%electronRootDir%\dist"
 
-    del  "%ionicRootDir%\js\engine.js" 
+    del  "%ionicRootDir%\js\shotGame.js" 
     rmdir /s /q  %ionicImageDir%
 
     rmdir /s /q "%basePath%\spec\lib"
 
-    del  "%webRootDir%\engine.js"  
+    del  "%webRootDir%\shotGame.js"  
     rmdir /s /q  %webImageDir%
 GOTO:EOF 
 

@@ -40,17 +40,17 @@ losBuild(){
 
     #electron
     echo "copy electron file"
-    cp -f  "$basePath/lib/engine.js"  "$electronRootDir/src/engine.js"  
+    cp -f  "$basePath/lib/shotGame.js"  "$electronRootDir/src/shotGame.js"  
     cp -f -R  "$basePath/image/."  "$electronRootDir/dist/image/"
 
     #ionic
     echo "copy ionic file" 
-    cp -f  "$basePath/lib/engine.js"  "$ionicRootDir/js/engine.js" 
+    cp -f  "$basePath/lib/shotGame.js"  "$ionicRootDir/js/shotGame.js" 
     cp -f -R  "$basePath/image/."  $ionicImageDir
     
     #web
     echo "copy web file"
-    cp -f  "$basePath/lib/engine.js"  "$webRootDir/engine.js"  
+    cp -f  "$basePath/lib/shotGame.js"  "$webRootDir/shotGame.js"  
     cp -f -R  "$basePath/image/."  $webImageDir
 
     # test
@@ -65,18 +65,18 @@ losBuild(){
     cd ../..
 }
 clean(){
-    rm -rf "$basePath/lib"
-    rm -rf "$basePath/build"
+    #rm -rf "$basePath/lib"
+    #rm -rf "$basePath/build"
 
-    rm -f  "$electronRootDir/src/engine.js"  
+    rm -f  "$electronRootDir/src/shotGame.js"  
     rm -rf "$electronRootDir/dist"
 
-    rm -f  "$ionicRootDir/js/engine.js" 
+    rm -f  "$ionicRootDir/js/shotGame.js" 
     rm -rf  $ionicImageDir
 
     rm -rf "$basePath/spec/lib"
 
-    rm -r  "$webRootDir/engine.js"  
+    rm -r  "$webRootDir/shotGame.js"  
     rm -rf  $webImageDir
 }
 
