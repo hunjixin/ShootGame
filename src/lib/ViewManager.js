@@ -22,12 +22,12 @@ class ViewManager {
   /**
    * 判断关卡是否超时   单位s
    */
-  isViewTimeOut () {
-    return this.view.isViewTimeOut()
+  isStageTimeOut () {
+    return this.view.isStageTimeOut()
   }
   canGoNextView () {
-    var isBossEsixt = this.view.enemies.indexOf(this.view.boss)
-    return -1 === isBossEsixt && this.view.isViewTimeOut() && this.view.hasCreateBoss == true
+    var isBossEsixt = this.view.gameWorld.enemies.indexOf(this.view.boss)
+    return -1 === isBossEsixt && this.view.isStageTimeOut() && this.view.gameWorld.hasCreateBoss == true
   }
   init () {
     if (this.view) this.view.destroy()

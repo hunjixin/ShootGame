@@ -49,8 +49,8 @@ class Input extends Control {
   isShowCarrot() {
     return Math.floor(context.tick / 10) % 2 == 0
   }
-  render(drawContext) {
-    super.render(drawContext)
+  render(view,drawContext) {
+    super.render(view,drawContext)
     if (!this.text) return
     drawContext.save()
 

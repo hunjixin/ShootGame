@@ -1,8 +1,8 @@
-import EObject from '../lib/EObject.js'
+import GameObject from '../lib/GameObject.js'
 import context from '../lib/common/context.js'
 import {ShotorFactory} from './shot/'
 
-class BasePlain extends EObject {
+class BasePlain extends GameObject {
   constructor(enableShot) {
     super()
     this.borderColor = null

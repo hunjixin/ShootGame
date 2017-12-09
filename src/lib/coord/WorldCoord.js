@@ -14,5 +14,5 @@ class WorldCoord extends Coord {
 
     }
 }
-
+export default WorldCoord
 module.exports = WorldCoord

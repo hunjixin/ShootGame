@@ -1,9 +1,9 @@
-import EObject from '../../lib/EObject.js'
+import GameObject from '../../lib/GameObject.js'
 
 /**
  * 子弹
  */
-class Shot extends EObject {
+class Shot extends GameObject {
   constructor() {
     super()
     this.speedX = 0

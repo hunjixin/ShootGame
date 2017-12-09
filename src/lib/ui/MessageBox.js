@@ -76,10 +76,6 @@ class MessageBox extends BaseModal {
       }))
     }
   }
-  render(draw) {
-    var me = this
-    super.render(draw)
-  }
 }
 
 module.exports = MessageBox

@@ -23,10 +23,10 @@ class TextBlock extends Control {
         this.textArray.push(texts.toString())
       }
     }
-    this.render = function (drawContext) {
-      for (var index = 0; index < this.textArray.length; index++) {
-        drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y)
-      }
+  }
+  render(view,drawContext) {
+    for (var index = 0; index < this.textArray.length; index++) {
+      drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y)
     }
   }
 }

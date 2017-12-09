@@ -64,7 +64,7 @@ function DebugSetting() {
     message: '显示调试信息',
     value: true
   }
-  this.viewTime = {
+  this.stageTime = {
     message: '关卡时长',
     value: 20 // unit ms
   }

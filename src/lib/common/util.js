@@ -173,6 +173,11 @@ var util = {
   randInt: function (min, max) {
     if (min > max) return max
     return parseInt(Math.random() * (max - min)) + min
+  },
+  delayCall:function(func,time,...args){
+      setTimeout(() => {
+        func.apply(null,args)
+      }, time);
   }
 }
 

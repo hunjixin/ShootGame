@@ -1,6 +1,6 @@
-import EObject from '../../lib/EObject.js'
+import GameObject from '../../lib/GameObject.js'
 
-class Spoil extends EObject {
+class Spoil extends GameObject {
   constructor(obj, type) {
     super({})
     this.speedY = 3

@@ -106,7 +106,7 @@ class EObject {
       control.hide()
     })
   }
-  render(drawContext) {
+  render(view,drawContext) {
     if (!this.isDisplay) return
     var radis = Math.floor(Math.min(this.width, this.height) * 0.02)
     if (this.backgroundColor) {
@@ -145,7 +145,7 @@ class EObject {
     }
     if (this.children) {
       this.children.forEach((control) => {
-        control.render(drawContext)
+        control.render(view,drawContext)
       })
     }
   }

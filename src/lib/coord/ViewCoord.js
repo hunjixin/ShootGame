@@ -14,5 +14,5 @@ class ViewCoord extends Coord {
 
     }
 }
-
+export default ViewCoord
 module.exports = ViewCoord

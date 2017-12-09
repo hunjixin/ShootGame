@@ -6,7 +6,7 @@ import LosEvent from './LosEvent.js'
 import { StateInfo, DebugSetting } from './Debug.js'
 import ViewCoord from './coord/ViewCoord.js'
 import ViewManager from './ViewManager.js'
-class GameCore {
+class EngineCore {
   constructor (_option) {
     this.option = {}
     this.drawContext
@@ -34,13 +34,13 @@ class GameCore {
     })
 
     // view
-    context.viewManager = new ViewManager()
+    context.viewManager = new ViewManager(this)
   }
   Start () {
     // 拦截作用 必要时可以扩展出去
     var before = (callback) => {
       return () => {
-        if (context.viewManager.view.isRunning == 1) callback()
+        if (context.gameWorld.isRunning == 1) callback()
       }
     }
 
@@ -50,30 +50,31 @@ class GameCore {
     }, 50)
 
     this.checkTm = setInterval(before(() => {
-      context.viewManager.view.checkCollection()
+      context.gameWorld.checkCollection()
     }), 50)
 
     this.moveTm = setInterval(before(() => {
-      context.viewManager.view.objectMove()
+      context.gameWorld.objectMove()
     }), 50)
 
     this.clearTm = setInterval(before(() => {
-      context.viewManager.view.clearObject()
+      context.gameWorld.clearObject(context.viewManager.view)
     }), 5000)
   }
   draw () {
     context.UiObjectManager.forEach((item) => {
-      item.render(this.drawContext)
+      item.render(context.viewManager.view,this.drawContext)
     })
   }
 
   destory () {
     context.viewManager.view.destroy()
+    context.gameWorld.destory()
     clearInterval(this.clearTm)
     clearInterval(this.drawTm)
     clearInterval(this.moveTm)
     clearInterval(this.checkTm)
   }
 }
-export default GameCore
-module.exports = GameCore
+export default EngineCore
+module.exports = EngineCore

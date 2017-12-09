@@ -1,6 +1,6 @@
-import EObject from '../../lib/EObject.js'
+import GameObject from '../../lib/GameObject.js'
 
-class Bullet extends EObject {
+class Bullet extends GameObject {
   constructor(option) {
     super(option)
     this.collisionArea = [{
