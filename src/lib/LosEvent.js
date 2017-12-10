@@ -3,21 +3,22 @@ import context from './common/context.js'
 import lodash from 'lodash'
 import EventWell from './common/EventWell.js'
 class LosEvent {
-  constructor(_option) {
+  constructor(viewContext,attachEvent) {
     // super()
+    this.viewContext=viewContext
     this.eventContainer = []
-    this.init(_option)
+    this.init(attachEvent)
     this.focusTarget
-    this.clickWell = new EventWell(2);
-    this.keyWell = new EventWell(3);
+    this.clickWell = new EventWell(viewContext,2);
+    this.keyWell = new EventWell(viewContext,3);
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
   }
-  init(_option) {
-    _option.attachEvent.click = this.clickFunc()
-    _option.attachEvent.move = this.moveFunc()
-    _option.attachEvent.mouseDown = this.moveDownFunc()
-    _option.attachEvent.mouseUp = this.moveUpFunc()
-    _option.attachEvent.keyUp = this.keyUpFunc()
+  init(attachEvent) {
+    attachEvent.click = this.clickFunc()
+    attachEvent.move = this.moveFunc()
+    attachEvent.mouseDown = this.moveDownFunc()
+    attachEvent.mouseUp = this.moveUpFunc()
+    attachEvent.keyUp = this.keyUpFunc()
   }
   hasTarget(target) {
     return lodash.filter(this.eventContainer, (item) => {
@@ -62,9 +63,11 @@ class LosEvent {
   }
   // 触发事件中 action-eventInfo
   triggerEvent(action, eventInfo) {
+    var that=this
     var targets = lodash.filter(this.eventContainer, (item) => {
+      var adas=that
       return item.target.isDisplay &&
-        util.isEffect(item.target, action, eventInfo) &&
+        util.isEffect(that.viewContext.view.stage,item.target, action, eventInfo) &&
         item.actions.indexOf(action) > -1
     })
 

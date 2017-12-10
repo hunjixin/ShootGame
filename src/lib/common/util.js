@@ -133,12 +133,12 @@ var util = {
     }
     return false
   },
-  isEffect: function (plain, action, eventInfo) {
+  isEffect: function (stage,plain, action, eventInfo) {
     var pos = {
       x: eventInfo.position.x,
       y: eventInfo.position.y
     }
-    var absolutePosition = plain.getPositionAbsolute ? plain.getPositionAbsolute() : plain.position
+    var absolutePosition = plain.getPositionAbsolute ? plain.getPositionAbsolute(stage) : plain.position
     var rect = {
       x: absolutePosition.x,
       y: absolutePosition.y,
@@ -153,9 +153,7 @@ var util = {
       arr.splice(index, 1)
     }
   },
-  sceneYTransform: function (y, option, headOffset) {
-    return (y - headOffset) / (option.ctxHeight - headOffset) * option.ctxHeight
-  },
+
   isAndroid: function () {
     if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
       return true

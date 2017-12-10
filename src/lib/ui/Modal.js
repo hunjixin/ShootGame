@@ -76,21 +76,7 @@ class Modal extends BaseModal {
       height: 30,
       event: {
         click: (obj, eventInfo) => {
-          var box = new MessageBox({
-            title: '设置页面',
-            position: {
-              x: 20,
-              y: context.option.ctxHeight / 3
-            },
-            width: context.option.ctxWidth - 40,
-            height: context.option.ctxHeight / 3,
-            zIndex: 3,
-            cancel: 2,
-            confirm: function () {
-              console.log("xxxxxxxxxxxxxx")
-            }
-          })
-          box.open()
+
         }
       }
     }))

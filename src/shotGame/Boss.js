@@ -12,9 +12,9 @@ class Boss extends BasePlain {
     this.type = 'boss'
     this.fixed.y = true
     this.setShotInterVal(util.randInt(10, 20))
-    this.width = context.option.ctxWidth * 0.6
+    this.width = this.viewContext.screenWidth * 0.6
     this.height = this.width * 0.6
-    this.position.x = context.option.ctxWidth * 0.5
+    this.position.x =  this.viewContext.screenWidth * 0.5
     this.position.y = 0
     this.collisionArea = [{
       x: 0,

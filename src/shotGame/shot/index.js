@@ -31,6 +31,7 @@ function ShotorFactory() {
       shot.width = 5
       shot.height = 15
       shot.icon = resource.shot
+      shot.gameWorld=ePlayer.gameWorld
       shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
       shot.position.y = ePlayer.position.y + ePlayer.height - 15
       shot.collisionArea = [{
@@ -52,7 +53,8 @@ function ShotorFactory() {
     shot.belong = ePlayer.Oid
     shot.Hp = 100000000
     shot.width = 100
-    shot.height = context.viewManager.view.height
+    shot.gameWorld=ePlayer.gameWorld
+    shot.height = context.stageManager.stage.height
     shot.icon = resource.gz
     shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
     shot.position.y = 0
@@ -78,7 +80,7 @@ function ShotorFactory() {
     }, 1000)
     // 1.5秒后消失
     setTimeout(function () {
-      shot.position.y = context.viewManager.view.height
+      shot.position.y = context.stageManager.stage.height
       shot.isDie = true
       clearTimeout(tm)
     }, 1500)
@@ -93,6 +95,7 @@ function ShotorFactory() {
     shot.width = 8
     shot.height = 24
     shot.speedY = sp
+    shot.gameWorld=ePlayer.gameWorld
     shot.icon = resource.shot
     shot.position.x = ePlayer.position.x + ePlayer.width / 2 - shot.width / 2
     shot.collisionArea = [{
@@ -111,6 +114,7 @@ function ShotorFactory() {
     shot.width = 5
     shot.height = 15
     shot.icon = resource.eshot
+    shot.gameWorld=enemy.gameWorld
     shot.speedY = (Math.abs(enemy.speedY) + 8) * Math.sign(enemy.speedY)
     shot.position.x = enemy.position.x + enemy.width / 2 - shot.width / 2
     shot.position.y = enemy.position.y + enemy.height - 15

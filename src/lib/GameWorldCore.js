@@ -3,7 +3,8 @@ import TimeLine from './TimeLine.js'
 
 class GameWorldCore {
 
-  constructor (view) {
+  constructor (option) {
+   this.constraintAreas=option.constraintAreas
    this.worldCoord=new WorldCoord()
    this.timeLine = new TimeLine()
    this.stageTime = 10
@@ -38,7 +39,7 @@ class GameWorldCore {
   /**
    * 对象清理
    */
-  clearObject (view) {}
+  clearObject (constraintArea) {}
 
   /**
    * 游戏世界和ui世界的接口

@@ -2,39 +2,42 @@ import GameWorldCore from '../lib/GameWorldCore.js'
 import util from '../lib/common/util.js'
 import context from '../lib/common/context.js'
 import resource from '../lib/common/resource.js'
-
-import { Boss, Player, createEnemy } from './index.js'
+import { SpoilManager } from './spoil/'
+import { Boss, Player, EnemyFactory } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
 
 class GameWorld extends GameWorldCore {
-  constructor () {
-    super()
+  constructor (option) {
+    super(option)
+    this.stageManager = option.stageManager
     this.shots = []
     this.enemies = []
     this.bullets = []
     this.spoils = []
     this.boss
-    this.hasCreateBoss=false
+    this.hasCreateBoss = false
+
+    this.spoilManager = new SpoilManager()
     this.player = new Player(this)
     this.player.setShotInterVal(1)
 
     var checkTm = setInterval(() => {
-      if (this.isStageTimeOut()) {
+      if (this.stageManager.isStageTimeOut()) {
         clearInterval(checkTm)
         this.createBoss()
-        this.hasCreateBoss=true
+        this.hasCreateBoss = true
       }
     }, 100)
+
+    this.ememyFactory = new EnemyFactory(this)
   }
-  placeAtByView (view) {
-    this.player.view = view
-    this.player.placeAtWorld((view.width - this.player.width) / 2, view.height - this.player.height)
-  }
+
   enemyDie (enemy) {
     var self = this
     enemy.isDie = true
     var bullet = new Bullet({
       isDie: false,
+      gameWorld:this,
       icon: resource.bullet,
       width: 8,
       height: 8,
@@ -50,7 +53,7 @@ class GameWorld extends GameWorldCore {
       util.removeArr(self.bullets, bullet)
     }, 500, enemy, bullet)
     // 判断是否产生战利品
-    var spoil = context.spoilManager.createSpoil(enemy)
+    var spoil = this.spoilManager.createSpoil(enemy)
     if (spoil) {
       if (context.stateInfo.spoils.all[spoil.type])
         context.stateInfo.spoils.all[spoil.type]++
@@ -71,8 +74,8 @@ class GameWorld extends GameWorldCore {
     var shots = this.shots
     var bullets = this.bullets
     var spoils = this.spoils
-    if (context.viewManager.canGoNextView()) {
-      context.viewManager.next()
+    if (this.stageManager.canGoNextStage()) {
+      this.stageManager.next()
     }
     // 生成新的个体
     var pShots = this.player.getShot()
@@ -93,88 +96,83 @@ class GameWorld extends GameWorldCore {
     context.stateInfo.currentEnemyNum = this.enemies.length
   }
   // 对象清理
-  clearObject (view) {
-    var enemies = this.enemies
-    var shots = this.shots
-    var bullets = this.bullets
-    var spoils = this.spoils
-    // 删除越界的对象  
-    for (var i = shots.length - 1; i > -1; i--) {
-      var oneShot = shots[i]
-      if (oneShot.isDie || !util.inArea(oneShot.position, {
-          x: -10,
-          y: -10,
-          width: view.width + 10,
-          height: view.height + 10
-        })) {
-        util.removeArr(shots, oneShot)
+  clearObject () {
+    this.constraintAreas.forEach(constraintArea => {
+      var enemies = this.enemies
+      var shots = this.shots
+      var bullets = this.bullets
+      var spoils = this.spoils
+      // 删除越界的对象  
+      for (var i = shots.length - 1; i > -1; i--) {
+        var oneShot = shots[i]
+        if (oneShot.isDie || !util.inArea(oneShot.position, constraintArea)) {
+          util.removeArr(shots, oneShot)
+        }
       }
-    }
 
-    for (var i = enemies.length - 1; i > -1; i--) {
-      var enemy = enemies[i]
-      if (enemy.isDie) {
-        util.removeArr(enemies, enemy)
-        continue
+      for (var i = enemies.length - 1; i > -1; i--) {
+        var enemy = enemies[i]
+        if (enemy.isDie) {
+          util.removeArr(enemies, enemy)
+          continue
+        }
+        if (!util.inArea(enemy.position, constraintArea)) {
+          util.removeArr(enemies, enemy)
+        }
       }
-      if (!util.inArea(enemy.position, {
-          x: -100,
-          y: -100,
-          width: view.width + 100,
-          height: view.height + 100
-        })) {
-        util.removeArr(enemies, enemy)
-      }
-    }
 
-    for (var i = spoils.length - 1; i > -1; i--) {
-      var spoil = spoils[i]
-      if (spoil.isDie) {
-        util.removeArr(spoils, spoil)
-        continue
+      for (var i = spoils.length - 1; i > -1; i--) {
+        var spoil = spoils[i]
+        if (spoil.isDie) {
+          util.removeArr(spoils, spoil)
+          continue
+        }
       }
-    }
+    })
   }
   // 游戏世界和ui世界的接口
-  drawScene (view) {
+  drawScene (stage) {
     var canvas = document.createElement('canvas')
     var drawContext = canvas.getContext('2d')
-    canvas.height = view.height
-    canvas.width = view.width
+    canvas.height = stage.height
+    canvas.width = stage.width
     // 背景
-    drawContext.drawImage(view.icon, 0, 0, view.width, view.height)
+    drawContext.drawImage(stage.icon, 0, 0, stage.width, stage.height)
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {
-        shot.render(view, drawContext)
+        shot.render(stage, drawContext)
       }
     })
     // 飞机
-    this.player.render(view, drawContext)
+    this.player.render(stage, drawContext)
     // 敌军
     this.enemies.forEach(enemy => {
       if (!enemy.isDie) {
-        enemy.render(view, drawContext)
+        enemy.render(stage, drawContext)
       }
     })
     // 战利品
     this.spoils.forEach(spoil => {
       if (!spoil.isDie) {
-        spoil.render(view, drawContext)
+        spoil.render(stage, drawContext)
       }
     })
     // 死亡
     this.bullets.forEach(bullet => {
       if (!bullet.isDie) {
-        bullet.render(view, drawContext)
+        bullet.render(stage, drawContext)
       }
     })
     return canvas
   }
   // 销毁
-  destroy () {}
+  destroy () {
+    this.player.destroy()
+  }
   // 重置
   reset () {
+    this.player.reset()
     this.shots.length = 0
     this.enemies.length = 0
     this.bullets.length = 0
@@ -190,7 +188,7 @@ class GameWorld extends GameWorldCore {
     if (Math.random() < 0.07) // 百分之七生成敌军
     {
       var rad = Math.random() * 3 + ''
-      var newEmeny = createEnemy(parseInt(rad.charAt(0)) + 2)
+      var newEmeny = this.ememyFactory.createEnemy(parseInt(rad.charAt(0)) + 2)
       if (context.stateInfo.enemies.all[newEmeny.type])
         context.stateInfo.enemies.all[newEmeny.type]++
       else context.stateInfo.enemies.all[newEmeny.type] = 1
@@ -199,7 +197,7 @@ class GameWorld extends GameWorldCore {
 
     if (Math.random() < 0.01) // 百分之一生成强力敌军
     {
-      var newEmeny = createEnemy(1)
+      var newEmeny = this.ememyFactory.createEnemy(1)
       if (context.stateInfo.enemies.all[newEmeny.type])
         context.stateInfo.enemies.all[newEmeny.type]++
       else context.stateInfo.enemies.all[newEmeny.type] = 1

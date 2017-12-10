@@ -42,12 +42,6 @@ class BasePlain extends GameObject {
       return undefined
     }
   }
-  getPositionAbsolute() {
-    return {
-      x: this.position.x,
-      y: this.position.y + context.headOffset
-    }
-  }
 }
 
 export default BasePlain

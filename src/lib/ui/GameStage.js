@@ -5,16 +5,11 @@ import context from '../common/context.js'
 import resource from '../common/resource.js'
 import TimeLine from '../TimeLine.js'
 
-class BaseView extends Control {
-  constructor (gameWorld,viewConfig) {
-    super(viewConfig)
+class GameStage extends Control {
+  constructor (gameWorld,stageConfig) {
+    super(stageConfig)
     this.gameWorld=gameWorld
-    // this.coord = viewConfig.coord
-    this.position.x = 0
-    this.position.y = context.headOffset
-    this.width = context.option.ctxWidth
-    this.height = context.option.ctxHeight - context.headOffset
-    this.icon = viewConfig.icon
+
   }
 
   stop () {
@@ -44,5 +39,5 @@ class BaseView extends Control {
   destroy () {}
 }
 
-export default BaseView
-module.exports = BaseView
+export default GameStage
+module.exports = GameStage

@@ -1,22 +1,41 @@
 import EObject from '../lib/EObject.js'
-import BaseView from '../lib/ui/BaseView.js'
+import UIView from '../lib/ui/UIView.js'
 import ViewCoord from '../lib/coord/ViewCoord.js'
 import util from '../lib/common/util.js'
 import context from '../lib/common/context.js'
 import resource from '../lib/common/resource.js'
 import TimeLine from '../lib/TimeLine.js'
-import { Boss, Player, createEnemy } from './index.js'
+import { Boss, Player } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
+import Stage from './Stage.js'
+class View extends UIView {
+  constructor (viewOption, gameWorld) {
+    super(viewOption, gameWorld)
 
-class View extends BaseView {
-  constructor (gameWorld,viewConfig) {
-    super(gameWorld,viewConfig)
+    this.gameWorld = gameWorld
+    this.headOffset = 20
+    this.stage = new Stage(this.gameWorld,
+      Object.assign({
+        position: {
+          x: 0,
+          y: this.headOffset
+        },
+        width: this.width,
+        height: this.height - this.headOffset,
+        headOffset:this.headOffset
+      },
+        {parent: this,zIndex: 4}))
+    viewOption.stageManager.register('next', (args) => {
+      Object.assign(this.stage, args)
+      this.stage.reset()
+    })
 
-    //reset button    
+    // reset button    
     this.resetButton = new Button({
+      parent: this,
       name: 'reset',
-      zIndex: 2,
+      zIndex: 7,
       position: {
         x: this.width / 4,
         y: this.height / 2 + this.position.y
@@ -25,6 +44,7 @@ class View extends BaseView {
       height: 40,
       icon: resource.button,
       borderSize: 0,
+      gameWorld: gameWorld,
       event: {
         click: (eventInfo) => {
           this.resetButton.hide()
@@ -38,39 +58,44 @@ class View extends BaseView {
     })
     // bar
     this.bar = new Bar({
+      parent: this,
+      zIndex: 6,
+      gameWorld: gameWorld,
       icon: resource.head,
       position: {
         x: -5,
         y: 0
       },
-      width: context.option.ctxWidth + 10,
-      height: context.headOffset,
+      width: this.viewContext.screenWidth + 10,
+      height: this.headOffset,
       children: [new Button({
+        viewContext: viewOption.viewContext,
         name: 'setting',
         position: {
-          x: context.option.ctxWidth - context.headOffset,
-          y: 2
+          x: this.viewContext.screenWidth - this.headOffset,
+          y: 0
         },
-        width: context.headOffset,
-        height: context.headOffset - 4,
+        width: this.headOffset,
+        height: this.headOffset,
         icon: resource.setting,
         event: {
           'click': function (eventInfo) {
-            context.viewManager.view.stop()
+            this.gameWorld.stageManager.stage.stop()
             var modal = new Modal({
+              viewContext: viewOption.viewContext,
               title: '设置页面',
               position: {
                 x: 10,
-                y: context.option.ctxHeight / 4
+                y: this.viewContext.screenHeight / 4
               },
-              width: context.option.ctxWidth - 20,
-              height: context.option.ctxHeight / 2,
+              width: this.viewContext.screenWidth - 20,
+              height: this.viewContext.screenHeight / 2,
               zIndex: 2,
               confirm: function () {
-                context.viewManager.view.restart()
+                this.gameWorld.stageManager.stage.restart()
               },
               cancel: function () {
-                context.viewManager.view.restart()
+                this.gameWorld.stageManager.stage.restart()
               }
             })
             modal.open()
@@ -78,55 +103,19 @@ class View extends BaseView {
         }
       })]
     })
-    //debug text
+    // debug text
     this.textBlock = new TextBlock({
-      zIndex: 1,
+      parent: this,
+      zIndex: 5,
       position: {
         x: 0,
-        y: context.headOffset
+        y: this.headOffset
       }
     })
-
-    context.UiObjectManager.addView(this.resetButton)
-    context.UiObjectManager.addView(this.bar)
-    context.UiObjectManager.addView(this.textBlock)
-
-    this.isMouseDown=false
-    // 注册事件
-    // 玩家开始移动
-    this.gameWorld.player.on('mouseDown', eventInfo => {
-      if (this.gameWorld.isRunning == 1) this.isMouseDown = true
-    })
-    // 玩家停止移动
-    this.on('mouseUp', eventInfo => {
-      if (this.gameWorld.isRunning == 1) this.isMouseDown = false
-    })
-    // 玩家移动中
-    this.on('mouseMove', eventInfo => {
-      if (this.gameWorld.isRunning == 1 && this.isMouseDown === true) {
-        this.gameWorld.player.position.x = eventInfo.position.x - this.gameWorld.player.width / 2
-        this.gameWorld.player.position.y = eventInfo.position.y - this.gameWorld.player.height / 2 - context.headOffset
-      }
-    })
-  }
-
-  destroy () {
-    this.gameWorld.player.off('mouseDown')
-    this.off('mouseUp')
-    this.off('mouseMove')
   }
   reset () {
     super.reset()
-    this.shots.length = 0
-    this.enemies.length = 0
-    this.bullets.length = 0
-    this.spoils.length = 0
-  }
-  render (view,drawContext) {
-    var canvas = this.gameWorld.drawScene(view)
-    drawContext.drawImage(canvas, // 绘制
-      0, 0, canvas.width, canvas.height,
-      this.position.x, this.position.y, this.width, this.height)
+    this.gameWorld.stageManager.reset()
   }
 }
 
