@@ -4,7 +4,7 @@ import context from './common/context.js'
 
 class StageManager {
   constructor (gameWorld, stageConfig) {
-    this.gameWorld = gameWorld
+    this.gameWorld 
     this.currentStageIndex = 0
     this.stage
     this.invokor = {}

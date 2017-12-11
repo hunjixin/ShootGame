@@ -7,15 +7,15 @@ import BasePlain from './BasePlain.js'
  * @param {*玩家} isShot 
  */
 class Player extends BasePlain {
-  constructor(option) {
+  constructor(gameWorld) {
     super(true)
+    this.gameWorld=gameWorld
     this.fixed.y = true
     this.icon = resource.plainImg
     this.width = 30
     this.height = 24
     this.AllHp = 12
     this.Hp = this.AllHp
-    this.position =option.position
     this.collisionArea = [{
       x: 0,
       y: 0,

@@ -26,8 +26,8 @@ class Stage extends GameStage {
     // 玩家移动中
     this.on('mouseMove', eventInfo => {
       if (this.gameWorld.isRunning == 1 && this.isMouseDown === true) {
-        this.gameWorld.player.position.x = eventInfo.position.x - this.gameWorld.player.width / 2
-        this.gameWorld.player.position.y = eventInfo.position.y - this.gameWorld.player.height / 2 - stageConfig.headOffset
+        this.gameWorld.player.position.x = this.viewContext.XViewToGameWorld(eventInfo.position.x)- this.gameWorld.player.width / 2
+        this.gameWorld.player.position.y =  this.viewContext.YViewToGameWorld(eventInfo.position.y) - this.gameWorld.player.height / 2 
       }
     })
     this.gameWorld.player.placeAtWorld((this.width - this.gameWorld.player.width) / 2, this.height - this.gameWorld.player.height)

@@ -10,22 +10,20 @@ class ShotGame extends EngineCore {
   constructor (option) {
     super(option)
 
-    this.gameWorld = context.gameWorld = new GameWorld({})
-    this.gameWorld.constraintAreas = this.maxBound(option.views)
-    this.stageManager = new StageManager(this.gameWorld, [
+    this.gameWorld = context.gameWorld = new GameWorld({stageManager:new StageManager(this.gameWorld, [
       {
         icon: resource.bg.bg1
       },
       {
         icon: resource.bg.bg1
       }
-    ])
-    this.gameWorld.stageManager = this.stageManager
+    ])})
 
     var views = option.views
+    this.gameWorld.constraintAreas = this.maxBound(views)
     this.createViews(views)
 
-    this.stageManager.init()
+    this.gameWorld.stageManager.init()
   }
   maxBound (viewConfig) {
     var area = []
@@ -66,7 +64,7 @@ class ShotGame extends EngineCore {
     return views
   }
   createView (viewConfig) {
-    var viewOption = new ViewContext()
+    var viewContext = new ViewContext()
     var canvasId = viewConfig.id
 
     var canvas = document.getElementById(canvasId)
@@ -74,13 +72,14 @@ class ShotGame extends EngineCore {
     canvas.width = viewConfig.width
     canvas.height = viewConfig.height
 
-    var viewContext = {
+    Object.assign(viewContext,{
       id: canvasId,
       canvas: canvas,
       screenWidth: canvas.width,
       screenHeight: canvas.height,
       drawContext: drawContext
-    }
+    })
+    var viewOption={}
     viewContext.losEvent = new LosEvent(viewContext, viewConfig.attachEvent)
     Object.assign(viewOption, {
       width: canvas.width,
@@ -93,7 +92,7 @@ class ShotGame extends EngineCore {
         height: canvas.height - 20,
         icon: resource.bg.bg1
       },
-      stageManager: this.stageManager
+      stageManager: this.gameWorld.stageManager
     })
     var view = new View(viewOption, this.gameWorld)
     viewContext.view=view

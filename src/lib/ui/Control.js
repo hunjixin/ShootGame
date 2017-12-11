@@ -41,7 +41,9 @@ class Control extends EObject {
     this.destroy()
     util.removeArr(this.children, childControl)
   }
-
+  getViewArea(viewContext){
+    return this.position
+  }
   destroy () {
     this.viewContext.losEvent.deAttchEvent(this)
     if (this.children) {

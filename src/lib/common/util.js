@@ -133,20 +133,6 @@ var util = {
     }
     return false
   },
-  isEffect: function (stage,plain, action, eventInfo) {
-    var pos = {
-      x: eventInfo.position.x,
-      y: eventInfo.position.y
-    }
-    var absolutePosition = plain.getPositionAbsolute ? plain.getPositionAbsolute(stage) : plain.position
-    var rect = {
-      x: absolutePosition.x,
-      y: absolutePosition.y,
-      width: plain.width,
-      height: plain.height
-    }
-    return util.inArea(pos, rect)
-  },
   removeArr: function (arr, val) {
     var index = arr.indexOf(val)
     if (index > -1) {

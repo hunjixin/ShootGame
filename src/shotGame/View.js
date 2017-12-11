@@ -14,23 +14,26 @@ class View extends UIView {
     super(viewOption, gameWorld)
 
     this.gameWorld = gameWorld
-    this.headOffset = 20
+    this.gameWorldOffset={
+      x:0,
+      y:0
+    }
+    this.headOffset = 40
     this.stage = new Stage(this.gameWorld,
       Object.assign({
         position: {
-          x: 0,
+          x: 40,
           y: this.headOffset
         },
-        width: this.width,
-        height: this.height - this.headOffset,
-        headOffset:this.headOffset
+        width: this.width-40,
+        height: this.height - this.headOffset-10,
       },
         {parent: this,zIndex: 4}))
     viewOption.stageManager.register('next', (args) => {
       Object.assign(this.stage, args)
       this.stage.reset()
     })
-
+  
     // reset button    
     this.resetButton = new Button({
       parent: this,
@@ -113,6 +116,7 @@ class View extends UIView {
       }
     })
   }
+
   reset () {
     super.reset()
     this.gameWorld.stageManager.reset()

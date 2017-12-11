@@ -3,35 +3,35 @@ import context from './common/context.js'
 import lodash from 'lodash'
 import EventWell from './common/EventWell.js'
 class LosEvent {
-  constructor(viewContext,attachEvent) {
+  constructor (viewContext, attachEvent) {
     // super()
-    this.viewContext=viewContext
+    this.viewContext = viewContext
     this.eventContainer = []
     this.init(attachEvent)
     this.focusTarget
-    this.clickWell = new EventWell(viewContext,2);
-    this.keyWell = new EventWell(viewContext,3);
+    this.clickWell = new EventWell(viewContext, 2)
+    this.keyWell = new EventWell(viewContext, 3)
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
   }
-  init(attachEvent) {
+  init (attachEvent) {
     attachEvent.click = this.clickFunc()
     attachEvent.move = this.moveFunc()
     attachEvent.mouseDown = this.moveDownFunc()
     attachEvent.mouseUp = this.moveUpFunc()
     attachEvent.keyUp = this.keyUpFunc()
   }
-  hasTarget(target) {
+  hasTarget (target) {
     return lodash.filter(this.eventContainer, (item) => {
-      return item.target == target
-    }).length > 0
+        return item.target == target
+      }).length > 0
   }
-  findTarget(target) {
+  findTarget (target) {
     return lodash.filter(this.eventContainer, (item) => {
       return item.target == target
     })[0]
   }
   // 附加事件中 object-action-callback
-  attachEvent(target, action, callback) {
+  attachEvent (target, action, callback) {
     if (!this.hasTarget(target))
       this.eventContainer.push({
         target: target,
@@ -40,7 +40,7 @@ class LosEvent {
     var actions = this.findTarget(target).actions
     if (-1 === actions.indexOf(action)) actions.push(action)
   }
-  deAttchEvent(target, action, funcs) {
+  deAttchEvent (target, action, funcs) {
     var items = this.findTarget(target)
 
     if (action) {
@@ -58,16 +58,23 @@ class LosEvent {
       this.deAttchAllEvent(items)
     }
   }
-  deAttchAllEvent(target) {
+  deAttchAllEvent (target) {
     util.removeArr(this.eventContainer, target)
   }
   // 触发事件中 action-eventInfo
-  triggerEvent(action, eventInfo) {
-    var that=this
+  triggerEvent (action, eventInfo) {
+    var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
-      var adas=that
+
+      var viewPosition = item.target.getViewArea(that.viewContext)
+
       return item.target.isDisplay &&
-        util.isEffect(that.viewContext.view.stage,item.target, action, eventInfo) &&
+        util.inArea(eventInfo.position, {
+          x: viewPosition.x,
+          y: viewPosition.y,
+          width: item.target.width,
+          height: item.target.height
+        }) &&
         item.actions.indexOf(action) > -1
     })
 
@@ -85,11 +92,10 @@ class LosEvent {
 
       this.clickWell.attach({
         action,
-        eventInfo
-      })
+      eventInfo})
     }
   }
-  invokeEventListiner(target, action, eventInfo) {
+  invokeEventListiner (target, action, eventInfo) {
     if (target[action] && target[action] instanceof Array) {
       target[action].forEach(func => {
         if (func instanceof Function) {
@@ -98,7 +104,7 @@ class LosEvent {
       })
     }
   }
-  triggerNamedEvent(action, eventInfo) {
+  triggerNamedEvent (action, eventInfo) {
     var targets = lodash.filter(this.eventContainer, (item) => {
       return item.target.isDisplay &&
         item.target.isFocus &&
@@ -109,7 +115,7 @@ class LosEvent {
       this.invokeEventListiner(targetItem.target, action, eventInfo)
     })
   }
-  triggerKeyEvent(action, eventInfo) {
+  triggerKeyEvent (action, eventInfo) {
     var targets = lodash.filter(this.eventContainer, (item) => {
       return item.target.isDisplay &&
         item.actions.indexOf(action) > -1
@@ -119,13 +125,12 @@ class LosEvent {
       this.invokeEventListiner(targetItem.target, action, eventInfo)
       this.keyWell.attach({
         action: eventInfo.key,
-        eventInfo
-      })
+      eventInfo})
     })
   }
   // 外部事件转内部事件驱动  
   // 包装按键按下，抬起，移动事件
-  pacakgeEvent(event) {
+  pacakgeEvent (event) {
     var evnetInfo = {
       position: {
         x: 0,
@@ -134,18 +139,18 @@ class LosEvent {
     }
     if (util.isAndroid()) {
       evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
-      evnetInfo.position.y = event.gesture.center.pageY, context.option, context.headOffset
+      evnetInfo.position.y = event.gesture.center.pageY
     } else if (util.isElectron()) {
       evnetInfo.position.x = event.pageX
-      evnetInfo.position.y = event.pageY, context.option, context.headOffset
+      evnetInfo.position.y = event.pageY
     } else {
-      evnetInfo.position.x = event.offsetX
-      evnetInfo.position.y = event.offsetY, context.option, context.headOffset
+      evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
+      evnetInfo.position.y =  event.gesture.center.pageY
     }
     return evnetInfo
   }
   // 包装单击事件
-  pacakgeClick(event) {
+  pacakgeClick (event) {
     var evnetInfo = {
       position: {
         x: 0,
@@ -167,31 +172,31 @@ class LosEvent {
   }
 
   // 移动事件
-  moveFunc() {
+  moveFunc () {
     return (eventInfo) => {
       this.triggerEvent('mouseMove', this.pacakgeEvent(eventInfo))
     }
   }
   // 按下事件
-  moveDownFunc() {
+  moveDownFunc () {
     return (eventInfo) => {
       this.triggerEvent('mouseDown', this.pacakgeEvent(eventInfo))
     }
   }
   // 抬起事件
-  moveUpFunc() {
+  moveUpFunc () {
     return (eventInfo) => {
       this.triggerEvent('mouseUp', this.pacakgeEvent(eventInfo))
     }
   }
   // 点击事件
-  clickFunc() {
+  clickFunc () {
     return (eventInfo) => {
       this.triggerEvent('click', this.pacakgeClick(eventInfo))
     }
   }
   // 点击事件
-  keyUpFunc() {
+  keyUpFunc () {
     return (eventInfo) => {
       this.triggerKeyEvent('keyUp', {
         keyCode: eventInfo.keyCode,

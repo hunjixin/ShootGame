@@ -10,6 +10,7 @@ class GameWorld extends GameWorldCore {
   constructor (option) {
     super(option)
     this.stageManager = option.stageManager
+    this.stageManager.gameWorld=this
     this.shots = []
     this.enemies = []
     this.bullets = []

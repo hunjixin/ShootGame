@@ -38,6 +38,9 @@ class GameObject extends EObject {
       y: this.position.y+stage.position.y
     }
   }
+  getViewArea(viewContext){
+    return viewContext.GameObjectToView(this.position)
+  }
 }
 
 module.exports = GameObject
