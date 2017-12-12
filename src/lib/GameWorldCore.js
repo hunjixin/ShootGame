@@ -1,14 +1,37 @@
 import WorldCoord from './coord/WorldCoord.js'
 import TimeLine from './TimeLine.js'
-
+import util from './common/util.js'
 class GameWorldCore {
 
   constructor (option) {
-   this.constraintAreas=option.constraintAreas
-   this.worldCoord=new WorldCoord()
-   this.timeLine = new TimeLine()
-   this.stageTime = 10
-   this.isRunning = 2 // 三种状态 1 预备/2 进行 /3 结束
+    this.constraintAreas = option.constraintAreas
+    this.worldCoord = new WorldCoord()
+    this.timeLine = new TimeLine()
+    this.stageTime = 10
+    this.isRunning = 2 // 三种状态 1 预备/2 进行 /3 结束
+    this.objectStageMap ={}
+    this.stages = []
+    this.worldStore=[]
+  }
+  checkStage () {
+    this.stages.forEach(stage => {
+      var area = {x: stage.gameWorldOffset.x,y: stage.gameWorldOffset.y,width: stage.width,height: stage.height}
+      this.worldStore.forEach(plain=>{
+         if(checkArea(area,plain)){
+           if(this.objectStageMap[plain.Oid])
+           {
+             if(!this.objectStageMap[plain.Oid].indexOf(stage))
+                this.objectStageMap[plain.Oid].push(stage)
+           }else{
+              this.objectStageMap[plain.Oid]=[stage]
+           }
+         }
+      })
+    })
+  }
+  
+  checkArea (area, gameObject) {
+    return util.isChonghe(area, {x: gameObject.position.x,y: gameObject.position.y,width: gameObject.width,height: gameObject.height})
   }
   stop () {
     this.timeLine.stop()
@@ -39,7 +62,9 @@ class GameWorldCore {
   /**
    * 对象清理
    */
-  clearObject (constraintArea) {}
+  clearObject (constraintArea) {
+    this.objectStageMap={}
+  }
 
   /**
    * 游戏世界和ui世界的接口

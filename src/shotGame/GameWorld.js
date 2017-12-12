@@ -32,7 +32,9 @@ class GameWorld extends GameWorldCore {
 
     this.ememyFactory = new EnemyFactory(this)
   }
-
+  maxBound(){
+    
+  }
   enemyDie (enemy) {
     var self = this
     enemy.isDie = true
@@ -133,12 +135,15 @@ class GameWorld extends GameWorldCore {
   }
   // 游戏世界和ui世界的接口
   drawScene (stage) {
+
     var canvas = document.createElement('canvas')
     var drawContext = canvas.getContext('2d')
     canvas.height = stage.height
     canvas.width = stage.width
     // 背景
-    drawContext.drawImage(stage.icon, 0, 0, stage.width, stage.height)
+    
+    drawContext.drawImage(stage.icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.width, stage.height,
+    0,0,stage.width,stage.height)
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {

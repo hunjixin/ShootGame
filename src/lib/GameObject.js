@@ -5,6 +5,14 @@ import EObject from './EObject.js'
 class GameObject extends EObject {
   constructor (option) {
     super(option)
+
+    if (option && option.event) {
+      Object.keys(option.event).forEach((actionName) => {
+        if (option.event[actionName] instanceof Function) {
+          this.on(this.viewContext,actionName, option.event[actionName])
+        }
+      })
+    }
   }
   placeAtWorld (positionOrX, y) {
     if (arguments.length == 2) {
@@ -38,8 +46,9 @@ class GameObject extends EObject {
       y: this.position.y+stage.position.y
     }
   }
-  getViewArea(viewContext){
-    return viewContext.GameObjectToView(this.position)
+  getViewArea(){
+    if(!this.stage) return false
+    return this.stage.GameObjectToView(this.position)
   }
 }
 

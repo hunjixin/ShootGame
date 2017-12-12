@@ -6,10 +6,9 @@ import resource from '../common/resource.js'
 import TimeLine from '../TimeLine.js'
 
 class GameStage extends Control {
-  constructor (gameWorld,stageConfig) {
+  constructor (gameWorld, stageConfig) {
     super(stageConfig)
-    this.gameWorld=gameWorld
-
+    this.gameWorld = gameWorld
   }
 
   stop () {
@@ -32,10 +31,33 @@ class GameStage extends Control {
     return this.gameWorld.isStageTimeOut()
   }
 
-  render (view,drawContext) {
-    super.render(view,drawContext)
+  render (view, drawContext) {
+    super.render(view, drawContext)
   }
-
+  GameObjectToView (position) {
+    return {
+      x: this.XGameObjectToView(position.x),
+      y: this.YGameObjectToView(position.y)
+    }
+  }
+  XGameObjectToView (x) {
+    return  x-this.gameWorldOffset.x + this.position.x
+  }
+  YGameObjectToView (y) {
+    return y -this.gameWorldOffset.y+ this.position.y
+  }
+  ViewToGameWorld (position) {
+    return {
+      x: this.XViewToGameWorld(position.x),
+      y: this.YViewToGameWorld(position.y)
+    }
+  }
+  XViewToGameWorld (x) {
+    return x - this.position.x + this.gameWorldOffset.x
+  }
+  YViewToGameWorld (y) {
+    return y - this.position.y + this.gameWorldOffset.y
+  }
   destroy () {}
 }
 

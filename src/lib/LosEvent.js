@@ -3,14 +3,13 @@ import context from './common/context.js'
 import lodash from 'lodash'
 import EventWell from './common/EventWell.js'
 class LosEvent {
-  constructor (viewContext, attachEvent) {
+  constructor (attachEvent) {
     // super()
-    this.viewContext = viewContext
     this.eventContainer = []
     this.init(attachEvent)
     this.focusTarget
-    this.clickWell = new EventWell(viewContext, 2)
-    this.keyWell = new EventWell(viewContext, 3)
+    this.clickWell = new EventWell(this, 2)
+    this.keyWell = new EventWell(this, 3)
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
   }
   init (attachEvent) {
@@ -66,33 +65,30 @@ class LosEvent {
     var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
 
-      var viewPosition = item.target.getViewArea(that.viewContext)
+      var viewPosition = item.target.getViewArea()
+      var isEffect = item.target.isDisplay &&
+      util.inArea(eventInfo.position, {
+        x: viewPosition.x,
+        y: viewPosition.y,
+        width: item.target.width,
+        height: item.target.height
+      })
 
-      return item.target.isDisplay &&
-        util.inArea(eventInfo.position, {
-          x: viewPosition.x,
-          y: viewPosition.y,
-          width: item.target.width,
-          height: item.target.height
-        }) &&
-        item.actions.indexOf(action) > -1
+      if (isEffect && item.target[action]) {
+        this.invokeEventListiner(item.target, action, eventInfo)
+      }
     })
 
     if (targets.length == 0) {
       return
-    } else if (targets.length > 1) {
-      targets.sort((a, b) => b.target.zIndex - a.target.zIndex)
     }
-    this.invokeEventListiner(targets[0].target, action, eventInfo)
 
     if (action == 'click') {
       if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo)
       this.focusTarget = targets[0].target
       this.invokeEventListiner(targets[0].target, 'focus', eventInfo)
 
-      this.clickWell.attach({
-        action,
-      eventInfo})
+      this.clickWell.attach({ action, eventInfo})
     }
   }
   invokeEventListiner (target, action, eventInfo) {
@@ -145,7 +141,7 @@ class LosEvent {
       evnetInfo.position.y = event.pageY
     } else {
       evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
-      evnetInfo.position.y =  event.gesture.center.pageY
+      evnetInfo.position.y = event.gesture.center.pageY
     }
     return evnetInfo
   }

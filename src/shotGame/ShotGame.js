@@ -80,7 +80,7 @@ class ShotGame extends EngineCore {
       drawContext: drawContext
     })
     var viewOption={}
-    viewContext.losEvent = new LosEvent(viewContext, viewConfig.attachEvent)
+    viewContext.losEvent = new LosEvent(viewConfig.attachEvent)
     Object.assign(viewOption, {
       width: canvas.width,
       height: canvas.height,

@@ -1,7 +1,7 @@
 class EventWell {
-  constructor(viewContext,num) {
+  constructor(losEvent,num) {
     this.eventWell = []
-    this.viewContext=viewContext
+    this.losEvent=losEvent
     this.wellDepth = num
 
     this.timer = setInterval(() => {
@@ -19,7 +19,7 @@ class EventWell {
     for (var i = 1; i < this.eventWell.length; i++) {
       var eventItem = this.eventWell[i]
       action = action + ' ' + eventItem.action
-      this.viewContext.losEvent.triggerNamedEvent(action, eventItem.eventInfo)
+      this.losEvent.triggerNamedEvent(action, eventItem.eventInfo)
     }
   }
 }

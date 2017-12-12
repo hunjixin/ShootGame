@@ -43,14 +43,6 @@ class EObject {
     this._xpath // x position function
     this._ypath // x position function 
     this._moveTick = 0 // tick
-
-    if (option && option.event) {
-      Object.keys(option.event).forEach((actionName) => {
-        if (option.event[actionName] instanceof Function) {
-          this.on(actionName, option.event[actionName])
-        }
-      })
-    }
   }
   move () {
     this.moveY()

@@ -14,19 +14,15 @@ class View extends UIView {
     super(viewOption, gameWorld)
 
     this.gameWorld = gameWorld
-    this.gameWorldOffset={
-      x:0,
-      y:0
-    }
     this.headOffset = 40
     this.stage = new Stage(this.gameWorld,
       Object.assign({
         position: {
-          x: 40,
+          x: 150,
           y: this.headOffset
         },
         width: this.width-40,
-        height: this.height - this.headOffset-10,
+        height: this.height - this.headOffset-220,
       },
         {parent: this,zIndex: 4}))
     viewOption.stageManager.register('next', (args) => {
@@ -70,16 +66,16 @@ class View extends UIView {
         y: 0
       },
       width: this.viewContext.screenWidth + 10,
-      height: this.headOffset,
+      height:20,
       children: [new Button({
         viewContext: viewOption.viewContext,
         name: 'setting',
         position: {
-          x: this.viewContext.screenWidth - this.headOffset,
+          x: this.viewContext.screenWidth - 20,
           y: 0
         },
-        width: this.headOffset,
-        height: this.headOffset,
+        width: 20,
+        height:20,
         icon: resource.setting,
         event: {
           'click': function (eventInfo) {

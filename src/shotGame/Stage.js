@@ -13,8 +13,18 @@ class Stage extends GameStage {
   constructor (gameWorld,stageConfig) {
     super(gameWorld,stageConfig)
 
+    this.gameWorldOffset={
+      x:100,
+      y:100
+    }
+
     this.isMouseDown=false
     // 注册事件
+   
+    //聚焦stage
+    this.on('mouseDown', eventInfo => {
+       this.gameWorld.player.stage=this
+    })
     // 玩家开始移动
     this.gameWorld.player.on(this.viewContext,'mouseDown', eventInfo => {
       if (this.gameWorld.isRunning == 1) this.isMouseDown = true
@@ -26,8 +36,8 @@ class Stage extends GameStage {
     // 玩家移动中
     this.on('mouseMove', eventInfo => {
       if (this.gameWorld.isRunning == 1 && this.isMouseDown === true) {
-        this.gameWorld.player.position.x = this.viewContext.XViewToGameWorld(eventInfo.position.x)- this.gameWorld.player.width / 2
-        this.gameWorld.player.position.y =  this.viewContext.YViewToGameWorld(eventInfo.position.y) - this.gameWorld.player.height / 2 
+        this.gameWorld.player.position.x = this.XViewToGameWorld(eventInfo.position.x)- this.gameWorld.player.width / 2
+        this.gameWorld.player.position.y =  this.YViewToGameWorld(eventInfo.position.y) - this.gameWorld.player.height / 2 
       }
     })
     this.gameWorld.player.placeAtWorld((this.width - this.gameWorld.player.width) / 2, this.height - this.gameWorld.player.height)
