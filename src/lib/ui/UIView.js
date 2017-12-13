@@ -36,7 +36,7 @@ class UIView extends Control {
   }
 
   render () {
-    super.render(this, this.viewContext.drawContext)
+    super.render(this.viewContext.drawContext)
   }
 
   destroy () {}

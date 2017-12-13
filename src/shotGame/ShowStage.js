@@ -10,16 +10,13 @@ import { ShotorFactory, Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 
 class ShowStage extends GameStage {
-  constructor (gameWorld,stageConfig) {
-    super(gameWorld,stageConfig)
-    this.gameWorldOffset={
-      x:0,
-      y:0
-    }
-
- }
-
-  render (view,drawContext) {
+  constructor (gameWorld, stageConfig) {
+    super(gameWorld, stageConfig)
+  }
+  reset () {
+    super.reset()
+  }
+  render (drawContext) {
     var canvas = this.gameWorld.drawScene(this)
     drawContext.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height,

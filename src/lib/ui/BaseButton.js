@@ -8,8 +8,8 @@ class BaseButton extends Control {
     super(option)
     this.text = option.text
   }
-  render(view,drawContext) {
-    super.render(view,drawContext)
+  render(drawContext) {
+    super.render(drawContext)
     this.drawText(drawContext)
   }
 }

@@ -65,7 +65,7 @@ class LosEvent {
     var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
 
-      var viewPosition = item.target.getViewArea()
+      var viewPosition = item.target.getAbsolutePosition(context.currentStage)
       var isEffect = item.target.isDisplay &&
       util.inArea(eventInfo.position, {
         x: viewPosition.x,

@@ -18,6 +18,9 @@ class StageManager {
       return this.stage.isStageTimeOut()
     }
   }
+  getCurrenStageConfig(){
+    return this.stageConfig[this.currentStageIndex]
+  }
   canGoNextStage () {
     var isBossEsixt = this.gameWorld.enemies.indexOf(this.gameWorld.boss)
     return -1 === isBossEsixt && this.gameWorld.isStageTimeOut() && this.gameWorld.hasCreateBoss == true

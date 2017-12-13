@@ -99,27 +99,28 @@ class EObject {
     })
   }
 
-  render (view, drawContext) {
+  render (drawContext,position) {
     if (!this.isDisplay) return
+    if(!position) position=this.position
     var radis = Math.floor(Math.min(this.width, this.height) * 0.02)
     if (this.backgroundColor) {
       drawContext.save()
-
-      this.lineRect(drawContext, this.position.x, this.position.y, this.width + 1, this.height + 1, radis)
+      
+      this.lineRect(drawContext, area.x, area.y, this.width + 1, this.height + 1, radis)
 
       drawContext.fillStyle = this.backgroundColor
       drawContext.fill()
       drawContext.restore()
     }
 
-    this.drawBordor(drawContext, radis)
+    this.drawBordor(drawContext, position,radis)
     if (this.icon) {
-      this.drawBakcgroundImage(drawContext)
+      this.drawBakcgroundImage(drawContext,position)
     }
 
     if (context.setting.isDebug.value) {
       if (this.collisionArea && this.collisionArea.length > 0) {
-        var rec = this.getAbsoluteCollisionArea()[0]
+        var rec ={x:position.x,y:position.y,width:this.width,height:this.height}//area;// this.getAbsoluteCollisionArea()[0]
         drawContext.beginPath()
         drawContext.moveTo(rec.x, rec.y)
         drawContext.lineTo(rec.x + rec.width, rec.y)
@@ -138,27 +139,28 @@ class EObject {
     }
     if (this.children) {
       this.children.forEach((control) => {
-        control.render(view, drawContext)
+        control.render(drawContext)
       })
     }
   }
-  drawBordor (drawContext, radis) {
+  drawBordor (drawContext,position, radis) {
     if (this.borderColor && this.borderSize > 0) {
       drawContext.save()
-      this.lineRect(drawContext, this.position.x - 1, this.position.y - 1, this.width + 1, this.height + 1, radis)
+      this.lineRect(drawContext,position.x - 1, position.y - 1, this.width + 1, this.height + 1, radis)
       drawContext.strokeStyle = this.borderColor
       drawContext.stroke()
       drawContext.restore()
     }
   }
-  drawBakcgroundImage (drawContext) {
+  drawBakcgroundImage (drawContext,position) {
     if (this.icon) {
       drawContext.drawImage(this.icon,
-        this.position.x, this.position.y,
+        position.x,position.y,
         this.width, this.height),
       0, 0, this.icon.width, this.icon.height
     }
   }
+
   lineRect (ctx, x, y, width, height, radius) {
     ctx.beginPath()
     ctx.moveTo(x, y + radius)

@@ -9,8 +9,8 @@ class Bar extends Control {
     this.borderSize = 0
     this.gameWorld=option.gameWorld
   }
-  render(view,drawContext) {
-    super.render(view,drawContext)
+  render(drawContext) {
+    super.render(drawContext)
     //hp
     for (var index = 0; index < this.gameWorld.player.Hp; index++) {
       var width = (resource.hp.width - 15) * index

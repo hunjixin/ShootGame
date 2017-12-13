@@ -22,7 +22,8 @@ class UiObjectManager {
 
 let context = {
     UiObjectManager: new UiObjectManager(),
-    tick: 0
+    tick: 0,
+    currentStage:"",
 }
 export default context
 module.exports = context

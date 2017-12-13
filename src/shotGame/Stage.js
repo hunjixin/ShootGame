@@ -13,17 +13,12 @@ class Stage extends GameStage {
   constructor (gameWorld,stageConfig) {
     super(gameWorld,stageConfig)
 
-    this.gameWorldOffset={
-      x:100,
-      y:100
-    }
-
     this.isMouseDown=false
     // 注册事件
-   
+    context.currentStage=this;
     //聚焦stage
     this.on('mouseDown', eventInfo => {
-       this.gameWorld.player.stage=this
+      context.currentStage=this;
     })
     // 玩家开始移动
     this.gameWorld.player.on(this.viewContext,'mouseDown', eventInfo => {
@@ -36,18 +31,19 @@ class Stage extends GameStage {
     // 玩家移动中
     this.on('mouseMove', eventInfo => {
       if (this.gameWorld.isRunning == 1 && this.isMouseDown === true) {
-        this.gameWorld.player.position.x = this.XViewToGameWorld(eventInfo.position.x)- this.gameWorld.player.width / 2
-        this.gameWorld.player.position.y =  this.YViewToGameWorld(eventInfo.position.y) - this.gameWorld.player.height / 2 
+        this.gameWorld.player.position.x = this.XViewToGameWorld(eventInfo.position.x-this.position.x)- this.gameWorld.player.width / 2
+        this.gameWorld.player.position.y =  this.YViewToGameWorld(eventInfo.position.y-this.position.y) - this.gameWorld.player.height / 2 
       }
     })
-    this.gameWorld.player.placeAtWorld((this.width - this.gameWorld.player.width) / 2, this.height - this.gameWorld.player.height)
+    
+    this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.width - this.gameWorld.player.width) / 2), this.YViewToGameWorld(this.height - this.gameWorld.player.height))
   }
   reset () {
     super.reset()
-    this.gameWorld.player.placeAtWorld((this.width - this.gameWorld.player.width) / 2, this.height -this.gameWorld.player.height)
+    this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.width - this.gameWorld.player.width) / 2), this.YViewToGameWorld(this.height - this.gameWorld.player.height))
     this.gameWorld.reset()
   }
-  render (view,drawContext) {
+  render (drawContext) {
     var canvas = this.gameWorld.drawScene(this)
     drawContext.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height,

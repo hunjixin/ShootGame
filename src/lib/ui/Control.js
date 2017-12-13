@@ -52,6 +52,9 @@ class Control extends EObject {
   getViewArea () {
     return this.position
   }
+  getAbsolutePosition(stage){
+    return this.position
+  }
   destroy () {
     this.viewContext.losEvent.deAttchEvent(this)
     if (this.children) {

@@ -46,9 +46,18 @@ class GameObject extends EObject {
       y: this.position.y+stage.position.y
     }
   }
-  getViewArea(){
-    if(!this.stage) return false
-    return this.stage.GameObjectToView(this.position)
+  getViewArea(stage){
+    return stage.GameObjectToView(this.position)
+  }
+  getAbsolutePosition(stage){
+    var position=stage.GameObjectToView(this.position)
+    return {
+      x:position.x+stage.position.x,
+      y:position.y+stage.position.y
+    }
+  }
+  render(drawContext,stage){
+    super.render(drawContext,this.getViewArea(stage))
   }
 }
 

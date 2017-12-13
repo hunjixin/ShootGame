@@ -31,8 +31,8 @@ class GameStage extends Control {
     return this.gameWorld.isStageTimeOut()
   }
 
-  render (view, drawContext) {
-    super.render(view, drawContext)
+  render (drawContext) {
+    super.render(drawContext)
   }
   GameObjectToView (position) {
     return {
@@ -41,10 +41,10 @@ class GameStage extends Control {
     }
   }
   XGameObjectToView (x) {
-    return  x-this.gameWorldOffset.x + this.position.x
+    return  x-this.gameWorldOffset.x// + this.position.x
   }
   YGameObjectToView (y) {
-    return y -this.gameWorldOffset.y+ this.position.y
+    return y -this.gameWorldOffset.y//+ this.position.y
   }
   ViewToGameWorld (position) {
     return {
@@ -53,10 +53,10 @@ class GameStage extends Control {
     }
   }
   XViewToGameWorld (x) {
-    return x - this.position.x + this.gameWorldOffset.x
+    return x + this.gameWorldOffset.x
   }
   YViewToGameWorld (y) {
-    return y - this.position.y + this.gameWorldOffset.y
+    return y + this.gameWorldOffset.y
   }
   destroy () {}
 }

@@ -49,8 +49,14 @@ class EngineCore {
     }), 5000)
   }
   draw () {
+
     context.UiObjectManager.forEach((item) => {
-      item.render(item.viewContext, item.viewContext.drawContext)
+      var context=item.viewContext.drawContext  
+      context.clearRect(0,0,context.canvas.width,context.canvas.height);  
+    })
+
+    context.UiObjectManager.forEach((item) => {
+      item.render(item.viewContext.drawContext)
     })
   }
 

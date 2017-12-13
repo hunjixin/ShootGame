@@ -142,32 +142,32 @@ class GameWorld extends GameWorldCore {
     canvas.width = stage.width
     // 背景
     
-    drawContext.drawImage(stage.icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.width, stage.height,
+    drawContext.drawImage(this.stageManager.getCurrenStageConfig().icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.width, stage.height,
     0,0,stage.width,stage.height)
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {
-        shot.render(stage, drawContext)
+        shot.render(drawContext,stage)
       }
     })
     // 飞机
-    this.player.render(stage, drawContext)
+    this.player.render(drawContext,stage)
     // 敌军
     this.enemies.forEach(enemy => {
       if (!enemy.isDie) {
-        enemy.render(stage, drawContext)
+        enemy.render(drawContext,stage)
       }
     })
     // 战利品
     this.spoils.forEach(spoil => {
       if (!spoil.isDie) {
-        spoil.render(stage, drawContext)
+        spoil.render(drawContext,stage)
       }
     })
     // 死亡
     this.bullets.forEach(bullet => {
       if (!bullet.isDie) {
-        bullet.render(stage, drawContext)
+        bullet.render(drawContext,stage)
       }
     })
     return canvas

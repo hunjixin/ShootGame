@@ -9,27 +9,67 @@ import { Boss, Player } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 import Stage from './Stage.js'
+import ShowStage from './ShowStage.js'
 class View extends UIView {
   constructor (viewOption, gameWorld) {
     super(viewOption, gameWorld)
 
     this.gameWorld = gameWorld
     this.headOffset = 40
+
     this.stage = new Stage(this.gameWorld,
-      Object.assign({
+     {
         position: {
           x: 150,
           y: this.headOffset
         },
-        width: this.width-40,
-        height: this.height - this.headOffset-220,
-      },
-        {parent: this,zIndex: 4}))
+        gameWorldOffset:{
+          x:100,
+          y:100
+        },
+        width: this.width - 40,
+        height: this.height/2 - this.headOffset,
+        parent: this,
+        zIndex: 4
+      })
+
+      this.stage2 = new ShowStage(this.gameWorld,
+        {
+           position: {
+             x: 20,
+             y:  this.height/2
+           },
+           gameWorldOffset:{
+             x:20,
+             y:20
+           },
+           width: this.width/2-10,
+           height: this.height/2 - this.headOffset,
+           parent: this,
+           zIndex: 4
+         })
+
+         this.stage2 = new ShowStage(this.gameWorld,
+          {
+             position: {
+               x: this.width/2+20,
+               y:  this.height/2
+             },
+             gameWorldOffset:{
+               x:200,
+               y:50
+             },
+             width:  this.width/2-20,
+             height: this.height/2 - this.headOffset,
+             parent: this,
+             zIndex: 4
+           })
+            
     viewOption.stageManager.register('next', (args) => {
       Object.assign(this.stage, args)
       this.stage.reset()
     })
-  
+
     // reset button    
     this.resetButton = new Button({
       parent: this,
@@ -66,7 +106,7 @@ class View extends UIView {
         y: 0
       },
       width: this.viewContext.screenWidth + 10,
-      height:20,
+      height: 20,
       children: [new Button({
         viewContext: viewOption.viewContext,
         name: 'setting',
@@ -75,7 +115,7 @@ class View extends UIView {
           y: 0
         },
         width: 20,
-        height:20,
+        height: 20,
         icon: resource.setting,
         event: {
           'click': function (eventInfo) {
