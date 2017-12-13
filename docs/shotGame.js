@@ -22173,7 +22173,7 @@ var View = function (_UIView) {
         y: _this.height / 2
       },
       gameWorldOffset: {
-        x: 50,
+        x: 500,
         y: 50
       },
       width: _this.width / 2 - 20,
