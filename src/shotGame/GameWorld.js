@@ -10,7 +10,7 @@ class GameWorld extends GameWorldCore {
   constructor (option) {
     super(option)
     this.stageManager = option.stageManager
-    this.stageManager.gameWorld=this
+    this.stageManager.gameWorld = this
     this.shots = []
     this.enemies = []
     this.bullets = []
@@ -18,8 +18,20 @@ class GameWorld extends GameWorldCore {
     this.boss
     this.hasCreateBoss = false
 
-    this.spoilManager = new SpoilManager()
-    this.player = new Player(this)
+    this.spoilManager = new SpoilManager(this)
+    this.player = new Player({
+      gameWorld: this,
+      icon: resource.plainImg,
+      width: 30,
+      height: 24,
+      AllHp: 12,
+      Hp: this.AllHp,
+      shotType : {
+        type: 'umShot',
+        num: 5
+      }
+      
+    })
     this.player.setShotInterVal(1)
 
     var checkTm = setInterval(() => {
@@ -32,15 +44,14 @@ class GameWorld extends GameWorldCore {
 
     this.ememyFactory = new EnemyFactory(this)
   }
-  maxBound(){
-    
-  }
+  maxBound () {}
   enemyDie (enemy) {
     var self = this
     enemy.isDie = true
     var bullet = new Bullet({
+      gameWorld: this,
       isDie: false,
-      gameWorld:this,
+      gameWorld: this,
       icon: resource.bullet,
       width: 8,
       height: 8,
@@ -135,39 +146,38 @@ class GameWorld extends GameWorldCore {
   }
   // 游戏世界和ui世界的接口
   drawScene (stage) {
-
     var canvas = document.createElement('canvas')
     var drawContext = canvas.getContext('2d')
     canvas.height = stage.height
     canvas.width = stage.width
     // 背景
-    
+
     drawContext.drawImage(this.stageManager.getCurrenStageConfig().icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.width, stage.height,
-    0,0,stage.width,stage.height)
+      0, 0, stage.width, stage.height)
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {
-        shot.render(drawContext,stage)
+        shot.render(drawContext, stage)
       }
     })
     // 飞机
-    this.player.render(drawContext,stage)
+    this.player.render(drawContext, stage)
     // 敌军
     this.enemies.forEach(enemy => {
       if (!enemy.isDie) {
-        enemy.render(drawContext,stage)
+        enemy.render(drawContext, stage)
       }
     })
     // 战利品
     this.spoils.forEach(spoil => {
       if (!spoil.isDie) {
-        spoil.render(drawContext,stage)
+        spoil.render(drawContext, stage)
       }
     })
     // 死亡
     this.bullets.forEach(bullet => {
       if (!bullet.isDie) {
-        bullet.render(drawContext,stage)
+        bullet.render(drawContext, stage)
       }
     })
     return canvas
@@ -186,7 +196,29 @@ class GameWorld extends GameWorldCore {
   }
   // Boss生成
   createBoss () {
-    this.boss = new Boss()
+    this.boss = new Boss({
+      gameWorld: this,
+      width: this.viewContext.screenWidth * 0.6,
+      height: this.width * 0.6,
+      position: {
+        x: this.viewContext.screenWidth * 0.5,
+        y: 0
+      },
+      speedY: 0,
+      icon: resource.enes[1],
+      Hp: 200 + 200 * Math.random(),
+      shotType :{
+        type: 'umShot',
+        num: 4
+      }
+    })
+    var factor = 5 * Math.random()
+    this.boss.setXPath(
+      (x) => {
+        return factor * (Math.cos(this.boss._moveTick / 15))
+      }
+    )
+    this.boss.setShotInterVal(util.randInt(10, 20))
     this.enemies.push(this.boss)
   }
   // 世界更新

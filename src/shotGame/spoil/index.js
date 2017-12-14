@@ -5,7 +5,9 @@ import SpoilType from './SpoilType.js'
 import UmShotSpoil from './UmShotSpoil.js'
 
 class SpoilManager {
-  constructor() {}
+  constructor() {
+    this.gameWorld=this
+  }
   createSpoil(obj) {
     if (Math.random() < 0.5) return undefined
     var types = Object.values(SpoilType)

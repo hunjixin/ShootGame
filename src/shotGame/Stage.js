@@ -6,7 +6,7 @@ import context from '../lib/common/context.js'
 import resource from '../lib/common/resource.js'
 import TimeLine from '../lib/TimeLine.js'
 import { Boss, Player } from './index.js'
-import { ShotorFactory, Bullet, Shot } from './shot/'
+import { Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 
 class Stage extends GameStage {

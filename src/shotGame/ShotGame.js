@@ -10,13 +10,13 @@ class ShotGame extends EngineCore {
   constructor (option) {
     super(option)
 
-    this.gameWorld = context.gameWorld = new GameWorld({stageManager:new StageManager(this.gameWorld, [
-      {
-        icon: resource.bg.bg1
-      },
-      {
-        icon: resource.bg.bg1
-      }
+    this.gameWorld = context.gameWorld = new GameWorld({stageManager: new StageManager(this.gameWorld, [
+        {
+          icon: resource.bg.bg1
+        },
+        {
+          icon: resource.bg.bg1
+        }
     ])})
 
     var views = option.views
@@ -64,7 +64,6 @@ class ShotGame extends EngineCore {
     return views
   }
   createView (viewConfig) {
-    var viewContext = new ViewContext()
     var canvasId = viewConfig.id
 
     var canvas = document.getElementById(canvasId)
@@ -72,15 +71,15 @@ class ShotGame extends EngineCore {
     canvas.width = viewConfig.width
     canvas.height = viewConfig.height
 
-    Object.assign(viewContext,{
+    var viewContext = new ViewContext({
       id: canvasId,
       canvas: canvas,
-      screenWidth: canvas.width,
-      screenHeight: canvas.height,
-      drawContext: drawContext
+      drawContext:drawContext,
+      losEvent: new LosEvent(viewConfig.attachEvent)
     })
-    var viewOption={}
-    viewContext.losEvent = new LosEvent(viewConfig.attachEvent)
+
+    var viewOption = {}
+
     Object.assign(viewOption, {
       width: canvas.width,
       height: canvas.height,
@@ -95,11 +94,10 @@ class ShotGame extends EngineCore {
       stageManager: this.gameWorld.stageManager
     })
     var view = new View(viewOption, this.gameWorld)
-    viewContext.view=view
+    viewContext.view = view
     context.UiObjectManager.addView(view)
     return view
   }
-
 }
 
 module.exports = ShotGame

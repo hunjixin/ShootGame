@@ -6,7 +6,7 @@ import context from '../lib/common/context.js'
 import resource from '../lib/common/resource.js'
 import TimeLine from '../lib/TimeLine.js'
 import { Boss, Player } from './index.js'
-import { ShotorFactory, Bullet, Shot } from './shot/'
+import { Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 import Stage from './Stage.js'
 import ShowStage from './ShowStage.js'
@@ -56,7 +56,7 @@ class View extends UIView {
                y:  this.height/2
              },
              gameWorldOffset:{
-               x:200,
+               x:500,
                y:50
              },
              width:  this.width/2-20,

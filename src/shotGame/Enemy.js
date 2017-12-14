@@ -4,8 +4,8 @@ import BasePlain from './BasePlain.js'
  * @param {*是否发射} isShot 
  */
 class Enemy extends BasePlain {
-  constructor(isShot) {
-    super()
+  constructor(option,isShot) {
+    super(option)
     this.type = 'common'
     this.speedX = 0
     this.shotSpeedFactor = 0.6

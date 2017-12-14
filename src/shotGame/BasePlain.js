@@ -3,19 +3,21 @@ import context from '../lib/common/context.js'
 import {ShotorFactory} from './shot/'
 
 class BasePlain extends GameObject {
-  constructor(enableShot) {
+  constructor(option) {
     super()
     this.borderColor = null
+    this.enableShot=false
     this.AllHp = 1 // 总HP
     this.Hp = 1 // 当前Hp
     this.isDie = false // 是否死亡
     this.shotInterVal = 10 // 发射周期
-    this.enableShot = enableShot // 是否发射
-    this.shotor = new ShotorFactory()
+    this.shotor = new ShotorFactory(option.gameWorld)
     this.shotSpeedFactor = 1
     this.shots = []
     this.shotEx = 1
     this.shotTick = 0
+
+    Object.assign(this,option)
   }
   setShotInterVal(val, minVal) {
     if (minVal < 1) minVal = 1
@@ -41,6 +43,9 @@ class BasePlain extends GameObject {
     } else {
       return undefined
     }
+  }
+  shotFactory(){
+   return this.enableShot
   }
 }
 
