@@ -2,6 +2,8 @@ import util from './common/util.js'
 import context from './common/context.js'
 import lodash from 'lodash'
 import EventWell from './common/EventWell.js'
+import MessageEmitter from './MessageEmitter'
+
 class LosEvent {
   constructor (attachEvent) {
     // super()
@@ -11,6 +13,7 @@ class LosEvent {
     this.clickWell = new EventWell(this, 2)
     this.keyWell = new EventWell(this, 3)
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
+    this.messageEmitter=new MessageEmitter()
   }
   init (attachEvent) {
     attachEvent.click = this.clickFunc()
