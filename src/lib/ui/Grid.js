@@ -3,7 +3,7 @@ import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
 import Cell from './Cell.js'
-
+import Rect from './shape/Rect.js'
 class Grid extends Control {
   constructor(option) {
     super(option)
@@ -11,8 +11,8 @@ class Grid extends Control {
     this.row = option.row
     this.borderSize = 1
     this.cells = []
-    this.colWidth = (this.width - this.col + 1) / this.col
-    this.rowHeight = (this.height - this.row + 1) / this.row
+    this.colWidth = (this.shape.width - this.col + 1) / this.col
+    this.rowHeight = (this.shape.height - this.row + 1) / this.row
     this.CreateCells()
   }
   CreateCells() {
@@ -21,12 +21,12 @@ class Grid extends Control {
         if (!this.cells[i]) this.cells[i] = []
         this.cells[i][j] = new Cell({
           parent: this,
-          position: {
-            x: this.position.x + this.colWidth * j + j,
-            y: this.position.y + this.rowHeight * i + i
-          },
-          width: this.colWidth,
-          height: this.rowHeight
+          shape:new Rect(
+            this.shape.x + this.colWidth * j + j,
+            this.shape.y + this.rowHeight * i + i,
+            this.colWidth,
+            this.rowHeight,
+          )
         })
       }
     }
@@ -36,11 +36,13 @@ class Grid extends Control {
     var column = childControl.gridLayout.col
     var colSpan = childControl.gridLayout.colSpan ? childControl.gridLayout.colSpan : 1
     var rowSpan = childControl.gridLayout.rowSpan ? childControl.gridLayout.rowSpan : 1
-
-    this.cells[row][column].position.x = this.position.x + this.colWidth * column + column
-    this.cells[row][column].position.y = this.position.y + this.rowHeight * row + row
-    this.cells[row][column].width = this.colWidth * colSpan
-    this.cells[row][column].height = this.rowHeight * rowSpan
+   
+    this.cells[row][column].shape=new Rect(
+      this.shape.x + this.colWidth * column + column,
+      this.shape.y + this.rowHeight * row + row,
+      this.colWidth * colSpan,
+      this.rowHeight * rowSpan
+    )
 
     for (var i = row; i < row + rowSpan; i++) {
       for (var j = column; j < column + colSpan; j++) {

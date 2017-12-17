@@ -5,12 +5,15 @@ import resource from '../lib/common/resource.js'
 import { SpoilManager } from './spoil/'
 import { Boss, Player, EnemyFactory } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
+import Rect from '../lib/ui/shape/Rect.js'
+import {DebugSetting} from '../lib/Debug.js'
 
 class GameWorld extends GameWorldCore {
   constructor (option) {
     super(option)
     this.stageManager = option.stageManager
     this.stageManager.gameWorld = this
+    this.debugInfo=new DebugSetting()
     this.shots = []
     this.enemies = []
     this.bullets = []
@@ -22,10 +25,9 @@ class GameWorld extends GameWorldCore {
     this.player = new Player({
       gameWorld: this,
       icon: resource.plainImg,
-      width: 30,
-      height: 24,
+      shape:new Rect(0,0,40,34),
       AllHp: 12,
-      Hp: this.AllHp,
+      hp: this.AllHp,
       shotType : {
         type: 'umShot',
         num: 5
@@ -53,12 +55,12 @@ class GameWorld extends GameWorldCore {
       isDie: false,
       gameWorld: this,
       icon: resource.bullet,
-      width: 8,
-      height: 8,
-      position: {
-        x: (enemy.position.x + enemy.width) / 2,
-        y: (enemy.position.y + enemy.height) / 2
-      }
+      shape:new Rect(
+        (enemy.shape.x + enemy.width) / 2,
+        (enemy.shape.y + enemy.height) / 2,
+        8,
+        8
+      ),
     })
     self.bullets.push(bullet)
 
@@ -119,7 +121,7 @@ class GameWorld extends GameWorldCore {
       // 删除越界的对象  
       for (var i = shots.length - 1; i > -1; i--) {
         var oneShot = shots[i]
-        if (oneShot.isDie || !util.inArea(oneShot.position, constraintArea)) {
+        if (oneShot.isDie || !util.inArea(oneShot.shape.getCenter(), constraintArea)) {
           util.removeArr(shots, oneShot)
         }
       }
@@ -130,7 +132,7 @@ class GameWorld extends GameWorldCore {
           util.removeArr(enemies, enemy)
           continue
         }
-        if (!util.inArea(enemy.position, constraintArea)) {
+        if (!util.inArea(enemy.shape.getCenter(), constraintArea)) {
           util.removeArr(enemies, enemy)
         }
       }
@@ -148,12 +150,12 @@ class GameWorld extends GameWorldCore {
   drawScene (stage) {
     var canvas = document.createElement('canvas')
     var drawContext = canvas.getContext('2d')
-    canvas.height = stage.height
-    canvas.width = stage.width
+    canvas.height = stage.shape.height
+    canvas.width = stage.shape.width
     // 背景
 
-    drawContext.drawImage(this.stageManager.getCurrenStageConfig().icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.width, stage.height,
-      0, 0, stage.width, stage.height)
+    drawContext.drawImage(this.stageManager.getCurrenStageConfig().icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.shape.width, stage.shape.height,
+      0, 0, stage.shape.width, stage.shape.height)
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {
@@ -184,7 +186,19 @@ class GameWorld extends GameWorldCore {
   }
   // 销毁
   destroy () {
+    super.destroy()
     this.player.destroy()
+  }
+
+  stop () {
+    super.stop()
+  }
+  restart () {
+    super.restart()
+    this.reset()
+  }
+  start () {
+    super.start()
   }
   // 重置
   reset () {
@@ -198,15 +212,15 @@ class GameWorld extends GameWorldCore {
   createBoss () {
     this.boss = new Boss({
       gameWorld: this,
-      width: this.viewContext.screenWidth * 0.6,
-      height: this.width * 0.6,
-      position: {
-        x: this.viewContext.screenWidth * 0.5,
-        y: 0
-      },
+      shape:new Rect(
+        this.viewContext.screenWidth * 0.5,
+        0,
+        this.viewContext.screenWidth * 0.6,
+        this.shape.width * 0.6,
+      ),
       speedY: 0,
       icon: resource.enes[1],
-      Hp: 200 + 200 * Math.random(),
+      hp: 200 + 200 * Math.random(),
       shotType :{
         type: 'umShot',
         num: 4
@@ -279,7 +293,6 @@ class GameWorld extends GameWorldCore {
   }
   // 检测碰撞
   checkCollection () {
-    var plainRect = this.player.getAbsoluteCollisionArea()[0]
     var enemies = this.enemies
     var shots = this.shots
     var bullets = this.bullets
@@ -288,20 +301,19 @@ class GameWorld extends GameWorldCore {
     for (var i = enemies.length - 1; i > -1; i--) {
       var enemy = enemies[i]
       if (enemy.isDie) continue
-      var enemyRect = enemy.getAbsoluteCollisionArea()[0]
+      var enemyRect = enemy.shape
       // 检查子弹和飞机的碰撞
       for (var j = shots.length - 1; j > -1; j--) {
         var oneShot = shots[j]
         if (oneShot.isDie) continue
-        var shotRect = oneShot.getAbsoluteCollisionArea()[0]
-        if (this.player.Oid == oneShot.belong && util.isChonghe(shotRect, enemyRect)) {
-          enemy.Hp = enemy.Hp - oneShot.attack * this.player.shotEx
-          oneShot.Hp--
-          if (enemy.Hp <= 0) {
+        if (this.player.Oid == oneShot.belong && util.isChonghe(oneShot.shape, enemyRect)) {
+          enemy.hp = enemy.hp - oneShot.attack * this.player.shotEx
+          oneShot.hp--
+          if (enemy.hp <= 0) {
             this.enemyDie(enemy)
           }
           // 子弹生命  穿甲弹
-          if (oneShot.Hp <= 0) {
+          if (oneShot.hp <= 0) {
             oneShot.isDie = true
             if (context.stateInfo.emitShot.resolve[oneShot.type])
               context.stateInfo.emitShot.resolve[oneShot.type]++
@@ -311,11 +323,11 @@ class GameWorld extends GameWorldCore {
         }
       }
       // 检查玩家和飞机的碰撞
-      if (util.isChonghe(plainRect, enemyRect)) {
-        enemy.Hp--
-        this.player.Hp--
-        util.isChonghe(plainRect, enemyRect)
-        if (enemy.Hp <= 0) {
+      if (util.isChonghe(this.player.shape, enemyRect)) {
+        enemy.hp--
+        this.player.hp--
+        util.isChonghe(this.player.shape, enemyRect)
+        if (enemy.hp <= 0) {
           enemy.isDie = true
           util.removeArr(enemies, enemy)
         }
@@ -327,14 +339,14 @@ class GameWorld extends GameWorldCore {
       var oneShot = shots[j]
       if (oneShot.isDie) continue
       if (this.player.Oid != oneShot.belong && util.inArea({
-          x: oneShot.position.x + oneShot.width / 2,
-          y: oneShot.position.y
-        }, plainRect)) {
+          x: oneShot.shape.x + oneShot.shape.width / 2,
+          y: oneShot.shape.y
+        },  this.player.shape)) {
         var ene = this.findEnemyByOid(oneShot.belong)
         var shotEx = ene ? ene.shotEx : 1
-        this.player.Hp = this.player.Hp - oneShot.attack * shotEx
-        oneShot.Hp--
-        if (oneShot.Hp <= 0) {
+        this.player.hp = this.player.hp - oneShot.attack * shotEx
+        oneShot.hp--
+        if (oneShot.hp <= 0) {
           oneShot.isDie = true
           util.removeArr(shots, oneShot)
         }
@@ -344,8 +356,7 @@ class GameWorld extends GameWorldCore {
     for (var j = spoils.length - 1; j > -1; j--) {
       var oneSpoil = spoils[j]
       if (oneSpoil.isDie) continue
-      var spoilRect = oneSpoil.getAbsoluteCollisionArea()[0]
-      if (util.isChonghe(spoilRect, plainRect)) {
+      if (util.isChonghe(oneSpoil.shape,  this.player.shape)) {
         oneSpoil.isDie = true
         util.removeArr(spoils, oneSpoil)
         oneSpoil.Effect(this.player)
@@ -355,9 +366,8 @@ class GameWorld extends GameWorldCore {
       }
     }
 
-    if (this.player.Hp <= 0) {
+    if (this.player.hp <= 0) {
       this.stop()
-      this.resetButton.show()
     }
   }
 }

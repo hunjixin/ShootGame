@@ -13,13 +13,6 @@ class Boss extends BasePlain {
     this.type = 'boss'
     this.fixed.y = true
     this.shotSpeedFactor = 0.1
-
-    this.collisionArea = [{
-      x: 0,
-      y: 0,
-      width: this.width,
-      height: this.height
-    }]
   }
   shotFactory () {
     return this.shotor.CreateShot(this)

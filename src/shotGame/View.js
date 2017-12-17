@@ -7,64 +7,88 @@ import resource from '../lib/common/resource.js'
 import TimeLine from '../lib/TimeLine.js'
 import { Boss, Player } from './index.js'
 import { Bullet, Shot } from './shot/'
-import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
+import { Bar, Button,Label, TextBlock } from '../lib/ui/'
+import Modal from './Modal.js'
 import Stage from './Stage.js'
 import ShowStage from './ShowStage.js'
+import Rect from '../lib/ui/shape/Rect.js'
 class View extends UIView {
   constructor (viewOption, gameWorld) {
     super(viewOption, gameWorld)
 
     this.gameWorld = gameWorld
-    this.headOffset = 40
+    this.headOffset = 20
 
+    var stageHeight = 600
+    var stageWidth = 300
     this.stage = new Stage(this.gameWorld,
-     {
-        position: {
-          x: 150,
-          y: this.headOffset
+      {
+        shape: new Rect(0, this.headOffset, stageWidth, stageHeight),
+        gameWorldOffset: {
+          x: 0,
+          y: 0
         },
-        gameWorldOffset:{
-          x:100,
-          y:100
-        },
-        width: this.width - 40,
-        height: this.height/2 - this.headOffset,
         parent: this,
         zIndex: 4
       })
 
-      this.stage2 = new ShowStage(this.gameWorld,
-        {
-           position: {
-             x: 20,
-             y:  this.height/2
-           },
-           gameWorldOffset:{
-             x:20,
-             y:20
-           },
-           width: this.width/2-10,
-           height: this.height/2 - this.headOffset,
-           parent: this,
-           zIndex: 4
-         })
+    new Label({
+        parent: this,
+        viewContext:this.viewContext,
+        gridLayout: {
+          row: 0,
+          col: 0
+        },
+        shape:new Rect(stageWidth+5, stageHeight /4,80,20),
+        text: 'top view ->'
+      })
 
-         this.stage2 = new ShowStage(this.gameWorld,
-          {
-             position: {
-               x: this.width/2+20,
-               y:  this.height/2
-             },
-             gameWorldOffset:{
-               x:500,
-               y:50
-             },
-             width:  this.width/2-20,
-             height: this.height/2 - this.headOffset,
-             parent: this,
-             zIndex: 4
-           })
-            
+    new Label({
+        parent: this,
+        viewContext:this.viewContext,
+        gridLayout: {
+          row: 0,
+          col: 0
+        },
+        shape:new Rect(stageWidth+5, stageHeight /2,80,20),
+        text: '<- full view'
+      })
+
+    new Label({
+        parent: this,
+        viewContext:this.viewContext,
+        gridLayout: {
+          row: 0,
+          col: 0
+        },
+        shape:new Rect(stageWidth+5, stageHeight*3/4,80,20),
+        text: 'bottom view ->'
+      })
+
+    this.stage2 = new ShowStage(this.gameWorld,
+      {
+        shape: new Rect(stageWidth + 80, 0, stageWidth, stageHeight / 2),
+        gameWorldOffset: {
+          x: 0,
+          y: 0
+        },
+        parent: this,
+        zIndex: 4
+      }
+    )
+
+    this.stage3 = new ShowStage(this.gameWorld,
+      {
+        shape: new Rect(stageWidth + 80, stageHeight / 2+20, stageWidth, stageHeight / 2-20),
+        gameWorldOffset: {
+          x: 0,
+          y: stageHeight / 2+20
+        },
+        parent: this,
+        zIndex: 4
+      }
+    )
+
     viewOption.stageManager.register('next', (args) => {
       Object.assign(this.stage, args)
       this.stage.reset()
@@ -72,15 +96,14 @@ class View extends UIView {
 
     // reset button    
     this.resetButton = new Button({
+      shape: new Rect(
+        stageWidth / 4,
+        stageHeight / 2 ,
+        stageWidth / 2,
+        40),
       parent: this,
       name: 'reset',
       zIndex: 7,
-      position: {
-        x: this.width / 4,
-        y: this.height / 2 + this.position.y
-      },
-      width: this.width / 2,
-      height: 40,
       icon: resource.button,
       borderSize: 0,
       gameWorld: gameWorld,
@@ -88,55 +111,54 @@ class View extends UIView {
         click: (eventInfo) => {
           this.resetButton.hide()
           if (this.gameWorld.player.hp > 0) {
-            this.start()
+            this.gameWorld.start()
           } else {
-            this.restart()
+            this.gameWorld.restart()
           }
         }
       }
     })
     // bar
     this.bar = new Bar({
+      shape: new Rect(
+        0,
+        0,
+        stageWidth,
+        20),
       parent: this,
       zIndex: 6,
       gameWorld: gameWorld,
       icon: resource.head,
-      position: {
-        x: -5,
-        y: 0
-      },
-      width: this.viewContext.screenWidth + 10,
-      height: 20,
       children: [new Button({
         viewContext: viewOption.viewContext,
         name: 'setting',
-        position: {
-          x: this.viewContext.screenWidth - 20,
-          y: 0
-        },
-        width: 20,
-        height: 20,
+        shape: new Rect(
+          stageWidth - 20,
+          0,
+          20,
+          20
+        ),
         icon: resource.setting,
         event: {
-          'click': function (eventInfo) {
-            this.gameWorld.stageManager.stage.stop()
+          'click': (eventInfo) => {
+            this.gameWorld.stop()
             var modal = new Modal({
               viewContext: viewOption.viewContext,
+              shape: new Rect(
+                10,
+                stageHeight / 4,
+                stageWidth - 20,
+                stageHeight / 2
+              ),
               title: '设置页面',
-              position: {
-                x: 10,
-                y: this.viewContext.screenHeight / 4
-              },
-              width: this.viewContext.screenWidth - 20,
-              height: this.viewContext.screenHeight / 2,
               zIndex: 2,
-              confirm: function () {
-                this.gameWorld.stageManager.stage.restart()
+              confirm: () => {
+                this.gameWorld.restart()
               },
-              cancel: function () {
-                this.gameWorld.stageManager.stage.restart()
+              cancel: () => {
+                this.gameWorld.restart()
               }
-            })
+            },context.setting)
             modal.open()
           }
         }
@@ -146,10 +168,15 @@ class View extends UIView {
     this.textBlock = new TextBlock({
       parent: this,
       zIndex: 5,
-      position: {
-        x: 0,
-        y: this.headOffset
-      }
+      shape: new Rect(
+        0,
+        this.headOffset,
+        200,
+        200
+      )
+    })
+    this.gameWorld.messageEmitter.on('stop', () => {
+      this.resetButton.show()
     })
   }
 

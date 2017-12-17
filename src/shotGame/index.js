@@ -6,7 +6,7 @@ import BasePlain from './BasePlain.js'
 import Boss from './Boss.js'
 import Enemy from './Enemy.js'
 import Player from './Player.js'
-
+import Rect from '../lib/ui/shape/Rect.js'
 class EnemyFactory {
   constructor (gameWorld) {
     this.gameWorld = gameWorld
@@ -17,44 +17,32 @@ class EnemyFactory {
     if (type == 1) {
       var enemy = new Enemy({
         gameWorld: this.gameWorld,
-        position: {
-          x: this.width * Math.random(),
-          y: -30
-        },
+        shape:new Rect(
+          this.width * Math.random(),
+          -30,
+          40,
+          60
+        ),
         speedY: util.randInt(3, 6),
         icon: resource.enes[type - 1],
-        width: 40,
-        height: 60,
-        Hp: 20 + 10 * Math.random()
+        hp: 20 + 10 * Math.random()
       }, true)
       enemy.setShotInterVal(util.randInt(5, 15))
-      enemy.collisionArea = [{
-        x: 0,
-        y: 0,
-        width: enemy.width,
-        height: enemy.height
-      }]
       return enemy
     } else if (type == 2 || type == 3 || type == 4) {
       var enemy = new Enemy({
         gameWorld: this.gameWorld,
-        position: {
-          x: this.width * Math.random(),
-          y: -15
-        },
+        shape:new Rect(
+          this.width * Math.random(),
+          -15,
+          20,
+          30
+        ),
         speedY: util.randInt(3, 6),
         icon: resource.enes[type - 1],
-        width: 20,
-        height: 30,
-        Hp: 2 + 5 * Math.random()
+        hp: 2 + 5 * Math.random()
       }, true)
       enemy.setShotInterVal(util.randInt(5, 15))
-      enemy.collisionArea = [{
-        x: 0,
-        y: 0,
-        width: enemy.width,
-        height: enemy.height
-      }]
       return enemy
     } else {
       var boss = new Boss()

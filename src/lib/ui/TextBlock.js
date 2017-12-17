@@ -26,7 +26,7 @@ class TextBlock extends Control {
   }
   render(view,drawContext) {
     for (var index = 0; index < this.textArray.length; index++) {
-      drawContext.strokeText(this.textArray[index], this.position.x + 10, 10 * (index + 1) + this.position.y)
+      drawContext.strokeText(this.textArray[index], this.shape.x + 10, 10 * (index + 1) + this.shape.y)
     }
   }
 }

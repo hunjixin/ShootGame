@@ -10,8 +10,8 @@ class Input extends Control {
     this.isFocus = false
     this.isAllSelect = false
     this._canvas = document.createElement('canvas')
-    this._canvas.width = this.width
-    this._canvas.height = this.height
+    this._canvas.width = this.shape.width
+    this._canvas.height = this.shape.height
     this.on('focus', () => {
       this.isFocus = true
     })
@@ -51,25 +51,25 @@ class Input extends Control {
   }
   render(drawContext) {
     super.render(drawContext)
-    if (!this.text) return
+
     drawContext.save()
 
-    var inTextHeight = this.height - 4
+    var inTextHeight = this.shape.height - 4
     drawContext.font = inTextHeight + 'px Arial'
     var textleng = drawContext.measureText(this.text).width
     if (!this._ilen) this._ilen = drawContext.measureText('|').width
-    var startX = this.position.x
-    var startY = this.position.y + this.height - 2
+    var startX = this.shape.x
+    var startY = this.shape.y + this.shape.height - 2
     this.drawInner(drawContext)
 
-    if (this._canvas.width <= this.width) {
+    if (this._canvas.width <= this.shape.width) {
       drawContext.drawImage(this._canvas, // 绘制
-        startX, this.position.y, this._canvas.width, this.height)
+        startX, this.shape.y, this._canvas.width, this.shape.height)
     } else {
-      var offset = this._canvas.width - this.width
+      var offset = this._canvas.width - this.shape.width
       drawContext.drawImage(this._canvas, // 绘制
-        offset, 0, this.width, this.height,
-        startX, this.position.y, this.width, this.height
+        offset, 0, this.shape.width, this.shape.height,
+        startX, this.shape.y, this.shape.width, this.shape.height
       )
     }
 
@@ -84,10 +84,10 @@ class Input extends Control {
     } else {
       dText = dText + ' '
     }
-    var inTextHeight = this.height - 4
+    var inTextHeight = this.shape.height - 4
     drawContext.font = inTextHeight + 'px Arial'
     var textleng = drawContext.measureText(dText).width
-    var startY = this.height - 2
+    var startY = this.shape.height - 2
 
     this._canvas.width = textleng
     tmpContext.width = textleng
@@ -96,7 +96,7 @@ class Input extends Control {
     if (this.isAllSelect) {
       tmpContext.save()
       tmpContext.fillStyle = 'lightblue'
-      tmpContext.fillRect(0, 0, textleng, this.height - 1)
+      tmpContext.fillRect(0, 0, textleng, this.shape.height - 1)
       tmpContext.restore()
     }
 

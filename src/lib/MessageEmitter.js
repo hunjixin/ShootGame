@@ -17,7 +17,7 @@ class MessageEmitter {
    */
   on (key, func) {
     if (!key) return
-    if (!func || func instanceof Function) return
+    if (!func || !(func instanceof Function)) return
     if (this.eventContainer[key] && -1 === this.eventContainer[key].indexOf(func)) {
       this.eventContainer[key].push(func)
     }else {
@@ -68,3 +68,6 @@ class MessageEmitter {
     }
   }
 }
+
+export default MessageEmitter
+module.exports = MessageEmitter

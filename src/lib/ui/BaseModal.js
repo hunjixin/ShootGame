@@ -9,7 +9,7 @@ class BaseModal extends Control {
     super(option)
     this.hide()
 
-    this.on('keyUp',this.viewContext, params => {
+    this.on('keyUp',params => {
       if (params.keyCode == 27) {
         this.close()
       }

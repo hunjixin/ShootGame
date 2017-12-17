@@ -125,9 +125,9 @@ var util = {
     return a >= 0 && a <= 1 && b >= 0 && b <= 1 && c >= 0 && c <= 1
   },
   // 点是否再四变形内
-  inArea: function (position, rect) {
-    if (position.x >= rect.x && position.x <= rect.x + rect.width) {
-      if (position.y >= rect.y && position.y <= rect.y + rect.height) {
+  inArea: function (point, rect) {
+    if (point.x >= rect.x && point.x <= rect.x + rect.width) {
+      if (point.y >= rect.y && point.y <= rect.y + rect.height) {
         return true
       }
     }

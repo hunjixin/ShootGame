@@ -1,31 +1,30 @@
 import GameObject from '../../lib/GameObject.js'
 import resource from '../../lib/common/resource.js'
 import Shot from './Shot.js'
+import Rect from '../../lib/ui/shape/Rect.js'
 
 /**
  * 子弹
  */
 class EnemyShot extends GameObject {
-  constructor() {
+  constructor(gameWorld) {
     super()
+    this.gameWorld=gameWorld
   }
   createShots(plain){
     var shot = new Shot()
     shot.belong = plain.Oid
-    shot.Hp = 1
-    shot.width = 5
-    shot.height = 15
+    shot.hp = 1
     shot.icon = resource.eshot
     shot.gameWorld=plain.gameWorld
     shot.speedY = (Math.abs(plain.speedY) + 8) * Math.sign(plain.speedY)
-    shot.position.x = plain.position.x + plain.width / 2 - shot.width / 2
-    shot.position.y = plain.position.y + plain.height - 15
-    shot.collisionArea = [{
-      x: 0,
-      y: 0,
-      width: shot.width,
-      height: shot.height
-    }]
+
+    shot.shape=new Rect(
+      plain.shape.x + plain.shape.width / 2 - shot.shape.width / 2,
+      plain.shape.y + plain.shape.height - 15,
+      5,
+      15
+    )
     return [shot]
   }
 }

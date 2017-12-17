@@ -3,7 +3,6 @@ import resource from './common/resource.js'
 import context from './common/context.js'
 
 import LosEvent from './LosEvent.js'
-import { StateInfo, DebugSetting } from './Debug.js'
 import ViewCoord from './coord/ViewCoord.js'
 class EngineCore {
   constructor (_option) {
@@ -12,16 +11,6 @@ class EngineCore {
     this.drawTm
     this.moveTm
     this.checkTm
-    this.create(_option)
-  }
-  create (_option) {
-    // canvas context
-    Object.assign(context, {
-      currentOid: 0,
-      stateInfo: new StateInfo(),
-      setting: new DebugSetting(),
-      tick: 0
-    })
   }
   Start () {
     // 拦截作用 必要时可以扩展出去

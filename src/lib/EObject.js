@@ -1,6 +1,6 @@
 import util from './common/util.js'
 import context from './common/context.js'
-
+import Rect from './ui/shape/Rect.js'
 import lodash from 'lodash'
 /**
  * 基类
@@ -12,19 +12,15 @@ class EObject {
     this.backgroundColor // background color
     this.icon // background image
     this.name = '' // name
-    this.width = 0 // width
-    this.height = 0 // height
+    this.shape = new Rect(0,0,0,0)   //shape
     this.speedY = 5 // Y speed
     this.speedX = 0 // X speed
     this.fixed = {
       x: false,
       y: false
-    } // x,y position constraint
-    this.position = {
-      x: 0,
-      y: 0
-    } // position
-    this.collisionArea = [] // collision area
+    } 
+
+
     this.zIndex = 0 // layer index
     this.borderColor = 'black' // border color
     this.borderSize = 1 // border size
@@ -40,8 +36,8 @@ class EObject {
         this.addChild(option.children[i])
       }
     }
-    this._xpath // x position function
-    this._ypath // x position function 
+    this._xpath // x  function
+    this._ypath // x  function 
     this._moveTick = 0 // tick
   }
   move () {
@@ -51,28 +47,18 @@ class EObject {
   moveX () {
     if (this.fixed.x) return
     if (this._xpath && this._xpath instanceof Function) {
-      this.position.x += this._xpath()
+      this.shape.x += this._xpath()
     } else {
-      this.position.x += this.speedX
+      this.shape.x += this.speedX
     }
   }
   moveY () {
     if (this.fixed.y) return
     if (this._ypath && this._ypath instanceof Function) {
-      this.position.y += this._ypath()
+      this.shape.y += this._ypath()
     } else {
-      this.position.y += this.speedY
+      this.shape.y += this.speedY
     }
-  }
-  getAbsoluteCollisionArea () {
-    return lodash.map(this.collisionArea, (area) => {
-      return {
-        x: this.position.x + area.x,
-        y: this.position.y + area.y,
-        width: area.width,
-        height: area.height
-      }
-    })
   }
   setXPath (xpath) {
     this._xpath = xpath
@@ -99,43 +85,40 @@ class EObject {
     })
   }
 
-  render (drawContext,position) {
+  render (drawContext,shape) {
     if (!this.isDisplay) return
-    if(!position) position=this.position
-    var radis = Math.floor(Math.min(this.width, this.height) * 0.02)
+    if(!shape) shape=this.shape
+    var radis = Math.floor(Math.min(shape.width, shape.height) * 0.02)
     if (this.backgroundColor) {
       drawContext.save()
       
-      this.lineRect(drawContext, area.x, area.y, this.width + 1, this.height + 1, radis)
+      this.lineRect(drawContext, shape.x, shape.y, shape.width + 1, shape.height + 1, radis)
 
       drawContext.fillStyle = this.backgroundColor
       drawContext.fill()
       drawContext.restore()
     }
 
-    this.drawBordor(drawContext, position,radis)
+    this.drawBordor(drawContext, shape,radis)
     if (this.icon) {
-      this.drawBakcgroundImage(drawContext,position)
+      this.drawBakcgroundImage(drawContext,shape)
     }
 
     if (context.setting.isDebug.value) {
-      if (this.collisionArea && this.collisionArea.length > 0) {
-        var rec ={x:position.x,y:position.y,width:this.width,height:this.height}//area;// this.getAbsoluteCollisionArea()[0]
-        drawContext.beginPath()
-        drawContext.moveTo(rec.x, rec.y)
-        drawContext.lineTo(rec.x + rec.width, rec.y)
+     drawContext.beginPath()
+      drawContext.moveTo(shape.x, shape.y)
+      drawContext.lineTo(shape.x + shape.width, shape.y)
 
-        drawContext.moveTo(rec.x + rec.width, rec.y)
-        drawContext.lineTo(rec.x + rec.width, rec.y + rec.height)
+      drawContext.moveTo(shape.x + shape.width, shape.y)
+      drawContext.lineTo(shape.x + shape.width, shape.y + shape.height)
 
-        drawContext.moveTo(rec.x + rec.width, rec.y + rec.height)
-        drawContext.lineTo(rec.x, rec.y + rec.height)
+      drawContext.moveTo(shape.x + shape.width, shape.y + shape.height)
+      drawContext.lineTo(shape.x, shape.y + shape.height)
 
-        drawContext.moveTo(rec.x, rec.y + rec.height)
-        drawContext.lineTo(rec.x, rec.y)
-        drawContext.strokeStyle = 'blue'
-        drawContext.stroke()
-      }
+      drawContext.moveTo(shape.x, shape.y + shape.height)
+      drawContext.lineTo(shape.x, shape.y)
+      drawContext.strokeStyle = 'blue'
+      drawContext.stroke()
     }
     if (this.children) {
       this.children.forEach((control) => {
@@ -143,20 +126,20 @@ class EObject {
       })
     }
   }
-  drawBordor (drawContext,position, radis) {
+  drawBordor (drawContext,shape, radis) {
     if (this.borderColor && this.borderSize > 0) {
       drawContext.save()
-      this.lineRect(drawContext,position.x - 1, position.y - 1, this.width + 1, this.height + 1, radis)
+      this.lineRect(drawContext,shape.x - 1, shape.y - 1, shape.width + 1, shape.height + 1, radis)
       drawContext.strokeStyle = this.borderColor
       drawContext.stroke()
       drawContext.restore()
     }
   }
-  drawBakcgroundImage (drawContext,position) {
+  drawBakcgroundImage (drawContext,shape) {
     if (this.icon) {
       drawContext.drawImage(this.icon,
-        position.x,position.y,
-        this.width, this.height),
+        shape.x,shape.y,
+        shape.width, shape.height),
       0, 0, this.icon.width, this.icon.height
     }
   }
@@ -174,27 +157,27 @@ class EObject {
     ctx.quadraticCurveTo(x, y, x, y + radius)
     ctx.closePath()
   }
-  drawText (drawContext) {
+  drawText (drawContext,shape) {
     if (!this.text) return
     drawContext.save()
 
-    drawContext.font = this.height * 0.6 + 'px Arial'
-    var offsetToButton = this.height * 0.2
+    drawContext.font = shape.height * 0.6 + 'px Arial'
+    var offsetToButton = shape.height * 0.2
     var requireWidth = drawContext.measureText(this.text)
-    var leftOffset = (this.width - requireWidth.width) / 2
-    drawContext.fillText(this.text, this.position.x + (leftOffset >= 0 ? leftOffset : 0), this.position.y + this.height - offsetToButton, this.width)
+    var leftOffset = (shape.width - requireWidth.width) / 2
+    drawContext.fillText(this.text, shape.x + (leftOffset >= 0 ? leftOffset : 0),shape.y + shape.height - offsetToButton, shape.width)
     drawContext.restore()
   }
 
-  on (viewContext, eventName, callback) {
-    if (!callback || !eventName) return
+  on (viewContext, eventName, fff) {
+    if (!fff || !eventName) return
     var func = (obj, eventInfo) => {
-      if (callback) callback.call(this, eventInfo)
+      if (fff) fff.call(this, eventInfo)
     }
     if (!this[eventName]) {
       this[eventName] = []
-      viewContext.losEvent.attachEvent(this, eventName, this[eventName])
     }
+    viewContext.losEvent.attachEvent(this, eventName, this[eventName])
     this[eventName].push(func)
   }
 

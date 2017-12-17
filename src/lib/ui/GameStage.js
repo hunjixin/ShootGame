@@ -34,22 +34,22 @@ class GameStage extends Control {
   render (drawContext) {
     super.render(drawContext)
   }
-  GameObjectToView (position) {
+  GameObjectToView (point) {
     return {
-      x: this.XGameObjectToView(position.x),
-      y: this.YGameObjectToView(position.y)
+      x: this.XGameObjectToView(point.x),
+      y: this.YGameObjectToView(point.y)
     }
   }
   XGameObjectToView (x) {
-    return  x-this.gameWorldOffset.x// + this.position.x
+    return  x-this.gameWorldOffset.x
   }
   YGameObjectToView (y) {
-    return y -this.gameWorldOffset.y//+ this.position.y
+    return y -this.gameWorldOffset.y
   }
-  ViewToGameWorld (position) {
+  ViewToGameWorld (point) {
     return {
-      x: this.XViewToGameWorld(position.x),
-      y: this.YViewToGameWorld(position.y)
+      x: this.XViewToGameWorld(point.x),
+      y: this.YViewToGameWorld(point.y)
     }
   }
   XViewToGameWorld (x) {

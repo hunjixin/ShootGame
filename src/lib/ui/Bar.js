@@ -12,9 +12,9 @@ class Bar extends Control {
   render(drawContext) {
     super.render(drawContext)
     //hp
-    for (var index = 0; index < this.gameWorld.player.Hp; index++) {
+    for (var index = 0; index < this.gameWorld.player.hp; index++) {
       var width = (resource.hp.width - 15) * index
-      drawContext.drawImage(resource.hp, width, 0, 20, this.height)
+      drawContext.drawImage(resource.hp, width, 0, 20, this.shape.height)
     }
   }
 }

@@ -61,7 +61,7 @@ function StateInfo() {
 function DebugSetting() {
   this.isDebug = {
     message: '显示调试信息',
-    value: true
+    value: false
   }
   this.stageTime = {
     message: '关卡时长',

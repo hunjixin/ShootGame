@@ -10,18 +10,18 @@ import { Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 
 class Stage extends GameStage {
-  constructor (gameWorld,stageConfig) {
-    super(gameWorld,stageConfig)
+  constructor (gameWorld, stageConfig) {
+    super(gameWorld, stageConfig)
 
-    this.isMouseDown=false
+    this.isMouseDown = false
     // 注册事件
-    context.currentStage=this;
-    //聚焦stage
+    context.currentStage = this
+    // 聚焦stage
     this.on('mouseDown', eventInfo => {
-      context.currentStage=this;
+      context.currentStage = this
     })
     // 玩家开始移动
-    this.gameWorld.player.on(this.viewContext,'mouseDown', eventInfo => {
+    this.gameWorld.player.on(this.viewContext, 'mouseDown', eventInfo => {
       if (this.gameWorld.isRunning == 1) this.isMouseDown = true
     })
     // 玩家停止移动
@@ -31,23 +31,29 @@ class Stage extends GameStage {
     // 玩家移动中
     this.on('mouseMove', eventInfo => {
       if (this.gameWorld.isRunning == 1 && this.isMouseDown === true) {
-        this.gameWorld.player.position.x = this.XViewToGameWorld(eventInfo.position.x-this.position.x)- this.gameWorld.player.width / 2
-        this.gameWorld.player.position.y =  this.YViewToGameWorld(eventInfo.position.y-this.position.y) - this.gameWorld.player.height / 2 
+        this.gameWorld.player.shape.x = this.XViewToGameWorld(eventInfo.position.x - this.shape.x) - this.gameWorld.player.shape.width / 2
+        this.gameWorld.player.shape.y = this.YViewToGameWorld(eventInfo.position.y - this.shape.y) - this.gameWorld.player.shape.height / 2
       }
     })
-    
-    this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.width - this.gameWorld.player.width) / 2), this.YViewToGameWorld(this.height - this.gameWorld.player.height))
+
+    this.gameWorld.messageEmitter.on('restart', () => {
+      this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.shape.width - this.gameWorld.player.shape.width) / 2), this.YViewToGameWorld(this.shape.height - this.gameWorld.player.shape.height))
+    })
+
+    this.gameWorld.messageEmitter.on('start', () => {
+      this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.shape.width - this.gameWorld.player.shape.width) / 2), this.YViewToGameWorld(this.shape.height - this.gameWorld.player.shape.height))
+    })
   }
   reset () {
     super.reset()
-    this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.width - this.gameWorld.player.width) / 2), this.YViewToGameWorld(this.height - this.gameWorld.player.height))
+    this.gameWorld.player.placeAtWorld(this.XViewToGameWorld((this.shape.width - this.gameWorld.player.shape.width) / 2), this.YViewToGameWorld(this.shape.height - this.gameWorld.player.shape.height))
     this.gameWorld.reset()
   }
   render (drawContext) {
     var canvas = this.gameWorld.drawScene(this)
     drawContext.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height,
-      this.position.x, this.position.y, this.width, this.height)
+      this.shape.x, this.shape.y, this.shape.width, this.shape.height)
   }
 }
 

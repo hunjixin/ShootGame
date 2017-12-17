@@ -6,6 +6,7 @@ import LosEvent from '../lib/LosEvent.js'
 import ViewContext from '../lib/common/ViewContext.js'
 import View from './View.js'
 import StageManager from '../lib/StageManager.js'
+import Rect from '../lib/ui/shape/Rect.js'
 class ShotGame extends EngineCore {
   constructor (option) {
     super(option)
@@ -20,7 +21,12 @@ class ShotGame extends EngineCore {
     ])})
 
     var views = option.views
-    this.gameWorld.constraintAreas = this.maxBound(views)
+    this.gameWorld.constraintAreas =[{
+      x:-100,
+      y:-100,
+      width:500,
+      height:900
+    }] //this.maxBound(views)
     this.createViews(views)
 
     this.gameWorld.stageManager.init()
@@ -81,14 +87,10 @@ class ShotGame extends EngineCore {
     var viewOption = {}
 
     Object.assign(viewOption, {
-      width: canvas.width,
-      height: canvas.height,
-      position: {x: 0,y: 0},
+      shape:new Rect(0,0, canvas.width,canvas.height),
       viewContext: viewContext,
       stageConfig: {
-        position: {x: 0,y: 20},
-        width: canvas.width,
-        height: canvas.height - 20,
+        shape:new Rect(0,20, canvas.width,canvas.height-20),
         icon: resource.bg.bg1
       },
       stageManager: this.gameWorld.stageManager

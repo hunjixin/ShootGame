@@ -1,5 +1,4 @@
 import Bar from './Bar.js'
-import Modal from './Modal.js'
 import Button from './Button.js'
 import TextBlock from './TextBlock.js'
 import Grid from './Grid.js'
@@ -7,9 +6,10 @@ import Input from './Input.js'
 import Label from './Label.js'
 import MessageBox from './MessageBox.js'
 import NumberInput from './NumberInput.js'
+import BaseModal from './BaseModal.js'
+import CheckBox from './CheckBox.js'
 
 module.exports = {
-    Modal,
     Bar,
     Button,
     TextBlock,
@@ -17,5 +17,7 @@ module.exports = {
     Input,
     Label,
     MessageBox,
-    NumberInput
+    NumberInput,
+    BaseModal,
+    CheckBox
 }

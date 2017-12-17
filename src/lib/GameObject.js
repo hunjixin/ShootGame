@@ -2,6 +2,7 @@ import util from './common/util.js'
 import resource from './common/resource.js'
 import context from './common/context.js'
 import EObject from './EObject.js'
+import Rect from './ui/shape/Rect.js'
 class GameObject extends EObject {
   constructor (option) {
     super(option)
@@ -16,9 +17,11 @@ class GameObject extends EObject {
   }
   placeAtWorld (positionOrX, y) {
     if (arguments.length == 2) {
-      this.position = {x: positionOrX,y: y}
+      this.shape.x=positionOrX,
+      this.shape.y=y
     }else {
-      this.position = positionOrX
+      this.shape.x=positionOrX.x,
+      this.shape.y=positionOrX.y
     }
   }
 
@@ -40,24 +43,20 @@ class GameObject extends EObject {
       })
     }
   }
-  getPositionAbsolute(stage) {
-    return {
-      x: this.position.x+stage.position.x,
-      y: this.position.y+stage.position.y
-    }
+  getAbsoluteShape(stage){
+    var point= stage.GameObjectToView(this.shape.getPosition())
+    return new Rect(
+      stage.shape.x+point.x,
+      stage.shape.y+ point.y,
+      this.shape.width,
+      this.shape.height)
   }
-  getViewArea(stage){
-    return stage.GameObjectToView(this.position)
-  }
-  getAbsolutePosition(stage){
-    var position=stage.GameObjectToView(this.position)
-    return {
-      x:position.x+stage.position.x,
-      y:position.y+stage.position.y
-    }
+  getPositiveShape(stage){
+    var point= stage.GameObjectToView(this.shape.getPosition())
+    return new Rect(point.x,point.y,this.shape.width,this.shape.height)
   }
   render(drawContext,stage){
-    super.render(drawContext,this.getViewArea(stage))
+    super.render(drawContext,this.getPositiveShape(stage))
   }
 }
 

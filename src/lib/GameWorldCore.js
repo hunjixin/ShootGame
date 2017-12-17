@@ -1,9 +1,11 @@
 import WorldCoord from './coord/WorldCoord.js'
 import TimeLine from './TimeLine.js'
 import util from './common/util.js'
+import MessageEmitter from './MessageEmitter.js'
 class GameWorldCore {
 
   constructor (option) {
+    this.messageEmitter=new MessageEmitter()
     this.constraintAreas = option.constraintAreas
     this.worldCoord = new WorldCoord()
     this.timeLine = new TimeLine()
@@ -15,7 +17,7 @@ class GameWorldCore {
   }
   checkStage () {
     this.stages.forEach(stage => {
-      var area = {x: stage.gameWorldOffset.x,y: stage.gameWorldOffset.y,width: stage.width,height: stage.height}
+      var area = {x: stage.gameWorldOffset.x,y: stage.gameWorldOffset.y,width: stage.shape.width,height: stage.shape.height}
       this.worldStore.forEach(plain=>{
          if(checkArea(area,plain)){
            if(this.objectStageMap[plain.Oid])
@@ -31,24 +33,31 @@ class GameWorldCore {
   }
   
   checkArea (area, gameObject) {
-    return util.isChonghe(area, {x: gameObject.position.x,y: gameObject.position.y,width: gameObject.width,height: gameObject.height})
+    return util.isChonghe(area, {x: gameObject.shape.x,y: gameObject.shape.y,width: gameObject.shape.width,height: gameObject.shape.height})
   }
   stop () {
     this.timeLine.stop()
     this.isRunning = 2
+    this.messageEmitter.emit("stop")
   }
   restart () {
     this.timeLine.start()
     this.isRunning = 1
+    this.reset() 
+    this.messageEmitter.emit("restart")
   }
   start () {
     this.timeLine.start()
     this.isRunning = 1
+    this.messageEmitter.emit("start")
   }
-  destroy () {}
+  destroy () {
+    this.messageEmitter.emit("destroy")
+  }
   reset () {
     this.timeLine.reset()
     this.isRunning = 0
+    this.messageEmitter.emit("reset")
   }
 
   isStageTimeOut () {
@@ -84,10 +93,9 @@ class GameWorldCore {
    * 重置
    */
   reset () {
-    this.shots.length = 0
-    this.enemies.length = 0
-    this.bullets.length = 0
-    this.spoils.length = 0
+    this.timeLine.reset()
+    this.isRunning = 0
+    this.messageEmitter.emit("reset")
   }
 
   /**

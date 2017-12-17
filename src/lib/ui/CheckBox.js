@@ -5,22 +5,24 @@ import context from '../common/context.js'
 import Polygon from './shape/Polygon.js'
 import Point from './shape/Point.js'
 class CheckBox extends Control {
-  constructor(option) {
+  constructor (option) {
     if (!option.event) option.event = {}
-    option.event.click = function () {
-      this.isCheck = !this.isCheck
-    }
     super(option)
+    this.on('click',()=>{
+      this.isCheck = !this.isCheck
+      if(this.onChange){
+        this.onChange(this.isCheck)
+      }
+    })
     this.isCheck = option.isCheck
     this.borderSize = 1
-
   }
-  render(drawContext) {
+  render (drawContext) {
     this.points = []
-    this.points.push(new Point(this.position.x, this.position.y + this.height * 1 / 3))
-    this.points.push(new Point(this.position.x + this.width / 3, this.position.y + this.height))
-    this.points.push(new Point(this.position.x + this.width, this.position.y))
-    this.points.push(new Point(this.position.x + this.width / 3, this.position.y + this.height * 2 / 3))
+    this.points.push(new Point(this.shape.x, this.shape.y + this.shape.height * 1 / 3))
+    this.points.push(new Point(this.shape.x + this.shape.width / 3, this.shape.y + this.shape.height))
+    this.points.push(new Point(this.shape.x + this.shape.width, this.shape.y))
+    this.points.push(new Point(this.shape.x + this.shape.width / 3, this.shape.y + this.shape.height * 2 / 3))
     var tickShape = new Polygon(this.points)
     super.render(drawContext)
     if (this.isCheck) {
@@ -28,6 +30,5 @@ class CheckBox extends Control {
     }
   }
 }
-
 
 module.exports = CheckBox

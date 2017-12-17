@@ -1,79 +1,75 @@
-import Control from './Control.js'
-import util from '../common/util.js'
-import resource from '../common/resource.js'
-import context from '../common/context.js'
-import BaseModal from './BaseModal.js'
-import Button from './Button.js'
-import Label from './Label.js'
-import CheckBox from './CheckBox.js'
-import Grid from './Grid.js'
-import Input from './Input.js'
-import MessageBox from './MessageBox.js'
+import {BaseModal,Input, Grid,Bar,CheckBox, Button,Label, TextBlock } from '../lib/ui/'
+import Rect from '../lib/ui/shape/Rect.js'
 
 class Modal extends BaseModal {
-  constructor(option) {
+  constructor(option,setting) {
     super(option)
     this.cancel = option.cancel
     this.confirmBtn = option.confirmBtn
-
+    this.setting=setting
     var grid = new Grid({
       parent: this,
-      position: {
-        x: this.position.x,
-        y: this.position.y
-      },
-      width: this.width,
-      height: this.height,
+      viewContext:this.viewContext,
+      shape:new Rect(
+        this.shape.x,
+        this.shape.y,
+        this.shape.width,
+        this.shape.height,
+      ),
       col: 2,
       row: 5
     })
 
     grid.AddCellContent(new Label({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 0,
         col: 0
       },
-      text: 'Degbu',
-      width: 90,
-      height: 30
+      shape:new Rect(0,0,90,30),
+      text: '调试'
     }))
 
     grid.AddCellContent(new CheckBox({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 0,
         col: 1
       },
-      width: 30,
-      height: 30
+      isCheck:this.setting.isDebug.value,
+      onChange:(isCheck)=>{
+          this.setting.isDebug.value=isCheck
+      },
+      shape:new Rect(0,0,30,30)
     }))
 
     grid.AddCellContent(new Label({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 1,
         col: 0
       },
       text: '难度',
-      width: 90,
-      height: 30
+      shape:new Rect(0,0,90,30)
     }))
 
     grid.AddCellContent(new Input({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 1,
         col: 1
       },
-      width: 90,
-      height: 30
+      shape:new Rect(0,0,90,30)
     }))
 
     grid.AddCellContent(new Button({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 3,
         col: 0
       },
       text: '测试',
-      width: 90,
-      height: 30,
+      shape:new Rect(0,0,90,30),
       event: {
         click: (obj, eventInfo) => {
 
@@ -82,13 +78,13 @@ class Modal extends BaseModal {
     }))
 
     grid.AddCellContent(new Button({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 4,
         col: 0
       },
       text: '确定',
-      width: 90,
-      height: 30,
+      shape:new Rect(0,0,90,30),
       event: {
         click: (obj, eventInfo) => {
           this.close()
@@ -98,13 +94,13 @@ class Modal extends BaseModal {
     }))
 
     grid.AddCellContent(new Button({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 4,
         col: 1
       },
       text: '取消',
-      width: 90,
-      height: 30,
+      shape:new Rect(0,0,90,30),
       event: {
         click: (obj, eventInfo) => {
           this.close()
@@ -116,4 +112,5 @@ class Modal extends BaseModal {
   }
 }
 
+export default Modal
 module.exports = Modal

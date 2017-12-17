@@ -11,7 +11,7 @@ class HpSpoil extends Spoil {
     this.icon = resource.hp
   }
   Effect(targetPlayer) {
-    if (targetPlayer.Hp < targetPlayer.AllHp) targetPlayer.Hp++
+    if (targetPlayer.hp < targetPlayer.AllHp) targetPlayer.hp++
   }
 }
 

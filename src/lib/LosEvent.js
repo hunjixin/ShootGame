@@ -2,7 +2,7 @@ import util from './common/util.js'
 import context from './common/context.js'
 import lodash from 'lodash'
 import EventWell from './common/EventWell.js'
-import MessageEmitter from './MessageEmitter'
+import MessageEmitter from './MessageEmitter.js'
 
 class LosEvent {
   constructor (attachEvent) {
@@ -35,12 +35,17 @@ class LosEvent {
   // 附加事件中 object-action-callback
   attachEvent (target, action, callback) {
     if (!this.hasTarget(target))
-      this.eventContainer.push({
-        target: target,
-        actions: []
-      })
+   {
+    this.eventContainer.push({
+      target: target,
+      actions: []
+    })
+    this.eventContainer.sort((b,a)=>a.target.zIndex-b.target.zIndex)
+   }
     var actions = this.findTarget(target).actions
-    if (-1 === actions.indexOf(action)) actions.push(action)
+    if (-1 === actions.indexOf(action)) {
+      actions.push(action)
+    }
   }
   deAttchEvent (target, action, funcs) {
     var items = this.findTarget(target)
@@ -68,23 +73,15 @@ class LosEvent {
     var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
 
-      var viewPosition = item.target.getAbsolutePosition(context.currentStage)
+      var viewShape = item.target.getAbsoluteShape(context.currentStage)
       var isEffect = item.target.isDisplay &&
-      util.inArea(eventInfo.position, {
-        x: viewPosition.x,
-        y: viewPosition.y,
-        width: item.target.width,
-        height: item.target.height
-      })
+      util.inArea(eventInfo.position, viewShape)
 
       if (isEffect && item.target[action]) {
         this.invokeEventListiner(item.target, action, eventInfo)
       }
+      return isEffect
     })
-
-    if (targets.length == 0) {
-      return
-    }
 
     if (action == 'click') {
       if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo)

@@ -19,18 +19,20 @@ class MessageBox extends BaseModal {
     }
 
     var grid = new Grid({
+      viewContext:this.viewContext,
       parent: this,
-      position: {
-        x: this.position.x,
-        y: this.position.y
-      },
-      width: this.width,
-      height: this.height,
+      shape:new Rect(
+        this.shape.x,
+        this.shape.y,
+        this.shape.width,
+        this.shape.height,
+      ),
       col: col,
       row: 3
     })
 
     grid.AddCellContent(new Label({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 0,
         col: 0,
@@ -44,6 +46,7 @@ class MessageBox extends BaseModal {
 
 
     grid.AddCellContent(new Button({
+      viewContext:this.viewContext,
       gridLayout: {
         row: 2,
         col: 0
@@ -60,6 +63,7 @@ class MessageBox extends BaseModal {
     }))
     if (this.cancel) {
       grid.AddCellContent(new Button({
+        viewContext:this.viewContext,
         gridLayout: {
           row: 2,
           col: 1

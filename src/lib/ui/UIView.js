@@ -10,9 +10,7 @@ class UIView extends Control {
     super(viewOption)
     this.gameWorld=gameWorld
     
-    this.position=viewOption.position
-    this.width = viewOption.width
-    this.height = viewOption.height
+    this.shape=viewOption.shape
     this.icon = viewOption.icon
   }
   stop () {

@@ -8,7 +8,7 @@ class BasePlain extends GameObject {
     this.borderColor = null
     this.enableShot=false
     this.AllHp = 1 // 总HP
-    this.Hp = 1 // 当前Hp
+    this.hp = 1 // 当前Hp
     this.isDie = false // 是否死亡
     this.shotInterVal = 10 // 发射周期
     this.shotor = new ShotorFactory(option.gameWorld)

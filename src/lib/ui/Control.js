@@ -50,10 +50,10 @@ class Control extends EObject {
     util.removeArr(this.children, childControl)
   }
   getViewArea () {
-    return this.position
+    return this.shape
   }
-  getAbsolutePosition(stage){
-    return this.position
+  getAbsoluteShape(stage){
+    return this.shape
   }
   destroy () {
     this.viewContext.losEvent.deAttchEvent(this)

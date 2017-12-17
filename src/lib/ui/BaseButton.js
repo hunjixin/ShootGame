@@ -10,7 +10,7 @@ class BaseButton extends Control {
   }
   render(drawContext) {
     super.render(drawContext)
-    this.drawText(drawContext)
+    this.drawText(drawContext,this.shape)
   }
 }
 
