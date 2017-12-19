@@ -28,7 +28,7 @@ class Control extends EObject {
   addChild (child) {
     child.parent = this
     child.viewContext = this.viewContext
-    if (!child.zIndex) child.zIndex = this.zIndex + 1
+    if (child.zIndex<=this.zIndex) child.zIndex = this.zIndex + 1
     if (!this.isDisplay) {
       child.hide()
     }

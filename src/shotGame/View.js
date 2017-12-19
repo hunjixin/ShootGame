@@ -30,7 +30,7 @@ class View extends UIView {
           x: 0,
           y: 0
         },
-        zIndex: 4
+        zIndex: 3
       },
       optional: gameWorld
     }, this)
@@ -146,7 +146,7 @@ class View extends UIView {
                 stageHeight / 2
               ),
               title: '设置页面',
-              zIndex: 2,
+              zIndex: 6,
               confirm: () => {
                 this.gameWorld.restart()
               },

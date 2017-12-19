@@ -31,7 +31,7 @@ class Grid extends Control {
             col:j
           }
         })
-       
+        super.addChild(this.cells[i][j])
       }
     }
   }

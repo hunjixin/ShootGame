@@ -40,6 +40,9 @@ class ControlCreator {
     if (parent) {
       // add some relative properties
       config.parameter.viewContext = parent.viewContext
+      if (!(config.parameter.zIndex && config.parameter.zIndex > parent.zIndex)) {
+        config.parameter.zIndex = parent.zIndex + 1
+      }
     }
     var control = this._createControl(config)
     if (parent) {
@@ -64,6 +67,9 @@ class ControlCreator {
         if (!a.type)
           console.error('type is needed')
         a.parameter.viewContext = config.parameter.viewContext
+        if (!(a.parameter.zIndex && a.parameter.zIndex > config.zIndex)) {
+          a.parameter.zIndex = config.parameter.zIndex + 1
+        }
         return this._createControl(a)
       })
       return this._creator(type, parameter, childrenControl)
