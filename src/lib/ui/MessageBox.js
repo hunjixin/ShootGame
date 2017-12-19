@@ -31,7 +31,7 @@ class MessageBox extends BaseModal {
       row: 3
     })
 
-    grid.AddCellContent(new Label({
+    grid.addChild(new Label({
       viewContext:this.viewContext,
       gridLayout: {
         row: 0,
@@ -45,7 +45,7 @@ class MessageBox extends BaseModal {
     }))
 
 
-    grid.AddCellContent(new Button({
+    grid.addChild(new Button({
       viewContext:this.viewContext,
       gridLayout: {
         row: 2,
@@ -62,7 +62,7 @@ class MessageBox extends BaseModal {
       }
     }))
     if (this.cancel) {
-      grid.AddCellContent(new Button({
+      grid.addChild(new Button({
         viewContext:this.viewContext,
         gridLayout: {
           row: 2,

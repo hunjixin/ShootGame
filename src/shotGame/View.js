@@ -1,4 +1,4 @@
-import EObject from '../lib/EObject.js'
+import Control from '../lib/ui/Control.js'
 import UIView from '../lib/ui/UIView.js'
 import ViewCoord from '../lib/coord/ViewCoord.js'
 import util from '../lib/common/util.js'
@@ -7,7 +7,7 @@ import resource from '../lib/common/resource.js'
 import TimeLine from '../lib/TimeLine.js'
 import { Boss, Player } from './index.js'
 import { Bullet, Shot } from './shot/'
-import { Bar, Button,Label, TextBlock } from '../lib/ui/'
+import { Bar, Button, Label, TextBlock } from '../lib/ui/'
 import Modal from './Modal.js'
 import Stage from './Stage.js'
 import ShowStage from './ShowStage.js'
@@ -21,73 +21,68 @@ class View extends UIView {
 
     var stageHeight = 600
     var stageWidth = 300
-    this.stage = new Stage(this.gameWorld,
-      {
+
+    this.stage = Control.getInstance({
+      type: Stage,
+      parameter: {
         shape: new Rect(0, this.headOffset, stageWidth, stageHeight),
         gameWorldOffset: {
           x: 0,
           y: 0
         },
-        parent: this,
         zIndex: 4
-      })
+      },
+      optional: gameWorld
+    }, this)
 
-    new Label({
-        parent: this,
-        viewContext:this.viewContext,
-        gridLayout: {
-          row: 0,
-          col: 0
-        },
-        shape:new Rect(stageWidth+5, stageHeight /4,80,20),
-        text: 'top view ->'
-      })
-
-    new Label({
-        parent: this,
-        viewContext:this.viewContext,
-        gridLayout: {
-          row: 0,
-          col: 0
-        },
-        shape:new Rect(stageWidth+5, stageHeight /2,80,20),
-        text: '<- full view'
-      })
-
-    new Label({
-        parent: this,
-        viewContext:this.viewContext,
-        gridLayout: {
-          row: 0,
-          col: 0
-        },
-        shape:new Rect(stageWidth+5, stageHeight*3/4,80,20),
-        text: 'bottom view ->'
-      })
-
-    this.stage2 = new ShowStage(this.gameWorld,
+    Control.getInstance([
       {
-        shape: new Rect(stageWidth + 80, 0, stageWidth, stageHeight / 2),
-        gameWorldOffset: {
-          x: 0,
-          y: 0
-        },
-        parent: this,
-        zIndex: 4
-      }
-    )
-
-    this.stage3 = new ShowStage(this.gameWorld,
+        type: Label,
+        parameter:{
+          shape: new Rect(stageWidth + 5, stageHeight / 4, 80, 20),
+          text: 'top view ->'
+        }
+      },
       {
-        shape: new Rect(stageWidth + 80, stageHeight / 2+20, stageWidth, stageHeight / 2-20),
-        gameWorldOffset: {
-          x: 0,
-          y: stageHeight / 2+20
+        type: Label,
+        parameter:{
+          shape: new Rect(stageWidth + 5, stageHeight / 2, 80, 20),
+          text: '<- full view'
+        }
+      },
+      {
+        type: Label,
+        parameter:{
+          shape: new Rect(stageWidth + 5, stageHeight * 3 / 4, 80, 20),
+          text: 'bottom view ->'
+        }
+      },
+      {
+        type: ShowStage,
+        parameter:{
+          shape: new Rect(stageWidth + 80, 0, stageWidth, stageHeight / 2),
+          gameWorldOffset: {
+            x: 0,
+            y: 0
+          },
+          zIndex: 4
         },
-        parent: this,
-        zIndex: 4
+        optional:gameWorld
+      },
+      {
+        type: ShowStage,
+        parameter:{
+          shape: new Rect(stageWidth + 80, stageHeight / 2 + 20, stageWidth, stageHeight / 2 - 20),
+          gameWorldOffset: {
+            x: 0,
+            y: stageHeight / 2 + 20
+          },
+          zIndex: 4
+        },
+        optional:gameWorld
       }
-    )
+    ], this)
+
 
     viewOption.stageManager.register('next', (args) => {
       Object.assign(this.stage, args)
@@ -158,7 +153,7 @@ class View extends UIView {
               cancel: () => {
                 this.gameWorld.restart()
               }
-            },context.setting)
+            }, context.setting)
             modal.open()
           }
         }

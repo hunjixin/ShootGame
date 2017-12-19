@@ -10,8 +10,8 @@ import { Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 
 class Stage extends GameStage {
-  constructor (gameWorld, stageConfig) {
-    super(gameWorld, stageConfig)
+  constructor (stageConfig, gameWorld) {
+    super(stageConfig, gameWorld)
 
     this.isMouseDown = false
     // 注册事件

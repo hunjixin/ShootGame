@@ -20,18 +20,22 @@ class Grid extends Control {
       for (var j = 0; j < this.col; j++) {
         if (!this.cells[i]) this.cells[i] = []
         this.cells[i][j] = new Cell({
-          parent: this,
           shape:new Rect(
             this.shape.x + this.colWidth * j + j,
             this.shape.y + this.rowHeight * i + i,
             this.colWidth,
             this.rowHeight,
-          )
+          ),
+          gridLayout:{
+            row:i,
+            col:j
+          }
         })
+       
       }
     }
   }
-  AddCellContent(childControl) {
+  addChild(childControl) {
     var row = childControl.gridLayout.row
     var column = childControl.gridLayout.col
     var colSpan = childControl.gridLayout.colSpan ? childControl.gridLayout.colSpan : 1
@@ -51,7 +55,7 @@ class Grid extends Control {
         }
       }
     }
-
+    super.addChild(this.cells[row][column])
     this.cells[row][column].addControl(childControl)
   }
   removeCell(row, col) {

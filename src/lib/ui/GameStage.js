@@ -6,7 +6,7 @@ import resource from '../common/resource.js'
 import TimeLine from '../TimeLine.js'
 
 class GameStage extends Control {
-  constructor (gameWorld, stageConfig) {
+  constructor (stageConfig, gameWorld) {
     super(stageConfig)
     this.gameWorld = gameWorld
   }

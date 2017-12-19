@@ -10,8 +10,8 @@ import { Bullet, Shot } from './shot/'
 import { Bar, Button, Modal, TextBlock } from '../lib/ui/'
 
 class ShowStage extends GameStage {
-  constructor (gameWorld, stageConfig) {
-    super(gameWorld, stageConfig)
+  constructor (stageConfig ,gameWorld ) {
+    super(stageConfig ,gameWorld)
 
     // 聚焦stage
     this.on('mouseDown', eventInfo => {
