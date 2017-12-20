@@ -100,7 +100,6 @@ class ControlCreator {
             var parameters=arguments[0]
             var children=arguments[1]
             var control =new this.type(parameters[0],parameters[1],parameters[2],parameters[3])
-            console.log(control)
             if(children&&children instanceof Array){
                     for(var i=0;i<children.length;i++){
                         control.addChild(children[i]) 

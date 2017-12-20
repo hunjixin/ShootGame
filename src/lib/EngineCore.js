@@ -1,7 +1,7 @@
 import util from './common/util.js'
 import resource from './common/resource.js'
 import context from './common/context.js'
-
+import ViewContext from './common/ViewContext.js'
 import LosEvent from './LosEvent.js'
 import ViewCoord from './coord/ViewCoord.js'
 class EngineCore {
@@ -38,10 +38,9 @@ class EngineCore {
     }), 5000)
   }
   draw () {
-
     context.UiObjectManager.forEach((item) => {
-      var context=item.viewContext.drawContext  
-      context.clearRect(0,0,context.canvas.width,context.canvas.height);  
+      var context = item.viewContext.drawContext
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     })
 
     context.UiObjectManager.forEach((item) => {
@@ -49,6 +48,44 @@ class EngineCore {
     })
   }
 
+  createViews (viewConfig) {
+    var views = []
+    if (!viewConfig) console.error('no view config')
+    if (viewConfig instanceof Array) {
+      viewConfig.forEach(config => {
+        views.push(this.createView(config))
+      })
+    }else {
+      views.push(this.createView(viewConfig))
+    }
+    return views
+  }
+  createView (viewConfig) {
+    var canvasId = viewConfig.id
+
+    this.canvas = document.getElementById(canvasId)
+    var drawContext =  this.canvas.getContext('2d')
+    this.canvas.width = viewConfig.width
+    this.canvas.height = viewConfig.height
+
+    this.viewContext = new ViewContext({
+      id: canvasId,
+      canvas: this.canvas,
+      drawContext: drawContext,
+      losEvent: new LosEvent(viewConfig.attachEvent)
+    })
+  }
+  ViewConstructor(viewConfig){
+     if(util.isAndroid()){
+        return viewConfig.android
+     }else if(util.isIOS()){
+      return viewConfig.ios
+     }else if(util.isElectron()){
+      return viewConfig.electron
+     }else {
+      return viewConfig.web
+     }
+  }
   destory () {
     context.stageManager.stage.destroy()
     context.gameWorld.destory()

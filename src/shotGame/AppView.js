@@ -20,8 +20,8 @@ class View extends UIView {
     this.gameWorld = gameWorld
     this.headOffset = 20
 
-    var stageHeight = 600
-    var stageWidth = 300
+    var stageHeight =viewOption.shape.height-20
+    var stageWidth =viewOption.shape.width
 
     this.stage = Control.getInstance({
       type: Stage,
@@ -35,54 +35,6 @@ class View extends UIView {
       },
       optional: gameWorld
     }, this)
-
-    Control.getInstance([
-      {
-        type: Label,
-        parameter:{
-          shape: new Rect(stageWidth + 5, stageHeight / 4, 80, 20),
-          text: 'top view->'
-        }
-      },
-      {
-        type: Label,
-        parameter:{
-          shape: new Rect(stageWidth + 5, stageHeight / 2, 80, 20),
-          text: '<-full view'
-        }
-      },
-      {
-        type: Label,
-        parameter:{
-          shape: new Rect(stageWidth + 5, stageHeight * 3 / 4, 80, 20),
-          text: 'bottom view->'
-        }
-      },
-      {
-        type: ShowStage,
-        parameter:{
-          shape: new Rect(stageWidth + 80, 0, stageWidth, stageHeight / 2),
-          gameWorldOffset: {
-            x: 0,
-            y: 0
-          },
-          zIndex: 4
-        },
-        optional:gameWorld
-      },
-      {
-        type: ShowStage,
-        parameter:{
-          shape: new Rect(stageWidth + 80, stageHeight / 2 + 20, stageWidth, stageHeight / 2 - 20),
-          gameWorldOffset: {
-            x: 0,
-            y: stageHeight / 2 + 20
-          },
-          zIndex: 4
-        },
-        optional:gameWorld
-      }
-    ], this)
 
 
     viewOption.stageManager.register('next', (args) => {
@@ -129,7 +81,7 @@ class View extends UIView {
         viewContext: viewOption.viewContext,
         name: 'setting',
         shape: new Rect(
-          stageWidth - 20,
+          stageWidth-20,
           0,
           20,
           20

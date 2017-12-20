@@ -3,7 +3,7 @@ import resource from './common/resource.js'
 import context from './common/context.js'
 
 class StageManager {
-  constructor (gameWorld, stageConfig) {
+  constructor (stageConfig) {
     this.gameWorld 
     this.currentStageIndex = 0
     this.stage

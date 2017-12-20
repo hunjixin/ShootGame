@@ -13,7 +13,7 @@ class LosEvent {
     this.clickWell = new EventWell(this, 2)
     this.keyWell = new EventWell(this, 3)
     this.eventType = ['click', 'move', 'mouseDown', 'mouseUp', 'keyUp', 'lostFocus', 'focus']
-    this.messageEmitter=new MessageEmitter()
+    this.messageEmitter = new MessageEmitter()
   }
   init (attachEvent) {
     attachEvent.click = this.clickFunc()
@@ -34,14 +34,13 @@ class LosEvent {
   }
   // 附加事件中 object-action-callback
   attachEvent (target, action, callback) {
-    if (!this.hasTarget(target))
-   {
-    this.eventContainer.push({
-      target: target,
-      actions: []
-    })
-    this.eventContainer.sort((b,a)=>a.target.zIndex-b.target.zIndex)
-   }
+    if (!this.hasTarget(target)) {
+      this.eventContainer.push({
+        target: target,
+        actions: []
+      })
+      this.eventContainer.sort((b, a) => a.target.zIndex - b.target.zIndex)
+    }
     var actions = this.findTarget(target).actions
     if (-1 === actions.indexOf(action)) {
       actions.push(action)
@@ -72,7 +71,7 @@ class LosEvent {
   triggerEvent (action, eventInfo) {
     var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
-
+      if (!item) return
       var viewShape = item.target.getAbsoluteShape(context.currentStage)
       var isEffect = item.target.isDisplay &&
       util.inArea(eventInfo.position, viewShape)
@@ -83,7 +82,7 @@ class LosEvent {
       return isEffect
     })
 
-    if (action == 'click') {
+    if (targets.length > 0 && action == 'click') {
       if (this.focusTarget) this.invokeEventListiner(this.focusTarget, 'lostFocus', eventInfo)
       this.focusTarget = targets[0].target
       this.invokeEventListiner(targets[0].target, 'focus', eventInfo)
@@ -133,7 +132,7 @@ class LosEvent {
         y: 0
       }
     }
-    if (util.isAndroid()) {
+    if (util.isMobile()) {
       evnetInfo.position.x = event.gesture.center.pageX - event.gesture.target.offsetLeft
       evnetInfo.position.y = event.gesture.center.pageY
     } else if (util.isElectron()) {
@@ -154,7 +153,7 @@ class LosEvent {
       }
     }
 
-    if (util.isAndroid()) {
+    if (util.isMobile()) {
       evnetInfo.position.x = event.pageX - event.target.offsetLeft
       evnetInfo.position.y = event.y
     } else if (util.isElectron()) {

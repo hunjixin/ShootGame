@@ -140,15 +140,27 @@ var util = {
     }
   },
 
-  isAndroid: function () {
-    if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+  isMobile: function () {
+    if ( (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
       return true
     } else {
       return false
     }
   },
+  isIpad: function () {
+    var UserClient = navigator.userAgent.toLowerCase()
+    return UserClient.match(/ipad/i) == 'ipad'
+  },
+  isIOS: function () {
+    var UserClient = navigator.userAgent.toLowerCase()
+    return UserClient.match(/iphone os/i) == 'iphone os'
+  },
+  isAndroid: function () {
+    var UserClient = navigator.userAgent.toLowerCase()
+    return UserClient.match(/android/i) == "android";
+  },
   isElectron: function () {
-    if ((navigator.userAgent.match(/(Electron)/i))) {
+    if ( (navigator.userAgent.match(/(Electron)/i))) {
       return true
     } else {
       return false
@@ -158,10 +170,10 @@ var util = {
     if (min > max) return max
     return parseInt(Math.random() * (max - min)) + min
   },
-  delayCall:function(func,time,...args){
-      setTimeout(() => {
-        func.apply(null,args)
-      }, time);
+  delayCall: function (func, time, ...args) {
+    setTimeout(() => {
+      func.apply(null, args)
+    }, time)
   }
 }
 
