@@ -2,6 +2,7 @@ import GameObject from '../../lib/GameObject.js'
 import resource from '../../lib/common/resource.js'
 import Shot from './Shot.js'
 import Rect from '../../lib/ui/shape/Rect.js'
+import Point from '../../lib/ui/shape/Point.js'
 /**
  * 子弹
  */
@@ -21,6 +22,8 @@ class UmbrellaShot extends GameObject {
       split = 15
     var rotate = Math.PI / (split + 1)
     var shots = []
+    var center=new Point(plain.shape.x + plain.shape.width / 2 ,plain.shape.y + plain.shape.height / 2 )
+    var radis=plain.shape.width / 2
     for (var i = 1; i <= split; i++) {
       var shot = new Shot()
       shot.belong = plain.Oid
@@ -28,11 +31,13 @@ class UmbrellaShot extends GameObject {
       shot.icon = resource.shot
       shot.gameWorld=plain.gameWorld
       shot.shape=new Rect(
-        plain.shape.x + plain.shape.width / 2 - shot.shape.width / 2,
-        plain.shape.y + plain.shape.height - 15,
+        center.x-radis* Math.cos(rotate * i),
+        center.y - radis* Math.sin(rotate * i),
         5,
         15
       )
+      shot.center=center
+      shot.rotate=rotate * i- Math.PI /2
       shot.speedY = sp * Math.sin(rotate * i)
       shot.speedX = sp * Math.cos(rotate * i)
       shots.push(shot)

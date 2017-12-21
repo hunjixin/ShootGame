@@ -6,7 +6,7 @@ import Rect from './ui/shape/Rect.js'
 class GameObject extends EObject {
   constructor (option) {
     super(option)
-
+    this.borderSize=0
     if (option && option.event) {
       Object.keys(option.event).forEach((actionName) => {
         if (option.event[actionName] instanceof Function) {

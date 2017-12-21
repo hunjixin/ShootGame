@@ -8,6 +8,7 @@ class EngineCore {
   constructor (_option) {
     this.option = {}
     this.clearTm
+    this.bound=this.getBound(_option.views)
     this.drawTm
     this.moveTm
     this.checkTm
@@ -74,6 +75,18 @@ class EngineCore {
       drawContext: drawContext,
       losEvent: new LosEvent(viewConfig.attachEvent)
     })
+  }
+  getBound(views){
+    var lxs=views.map(a=>a.position.x)
+    var rxs=views.map(a=>a.position.x+a.width)
+    var tys=views.map(a=>a.position.y)
+    var bys=views.map(a=>a.position.y+a.height)
+    return {
+      x:Math.min(...lxs),
+      y:Math.min(...tys),
+      width:Math.max(...rxs)-Math.min(...lxs),
+      height:Math.max(...bys)-Math.min(...tys)
+    }
   }
   ViewConstructor(viewConfig){
      if(util.isAndroid()){

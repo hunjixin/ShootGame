@@ -86,6 +86,12 @@ class EObject {
   }
 
   render (drawContext,shape) {
+    drawContext.save()
+    if(this.rotate){
+      drawContext.translate(shape.x+shape.width/2, shape.y+shape.height/2);
+      drawContext.rotate(this.rotate);
+      drawContext.translate(-shape.x-shape.width/2, -shape.y-shape.height/2);
+    }
     if (!this.isDisplay) return
     if(!shape) shape=this.shape
     var radis = Math.floor(Math.min(shape.width, shape.height) * 0.02)
@@ -125,6 +131,7 @@ class EObject {
         control.render(drawContext)
       })
     }
+    drawContext.restore()
   }
   drawBordor (drawContext,shape, radis) {
     if (this.borderColor && this.borderSize > 0) {
@@ -188,7 +195,9 @@ class EObject {
   getEvent (viewContext, eventName) {
     return viewContext.losEvent[eventName]
   }
-
+  isCollide(eobject){
+    return util.isCoincide(this.shape,eobject.shape)
+  }
   addChild (child) {}
 
   changeParent (parent) {}

@@ -46,41 +46,12 @@ class GameWorld extends GameWorldCore {
 
     this.ememyFactory = new EnemyFactory(this)
   }
-  maxBound () {}
-  enemyDie (enemy) {
-    var self = this
-    enemy.isDie = true
-    var bullet = new Bullet({
-      gameWorld: this,
-      isDie: false,
-      gameWorld: this,
-      icon: resource.bullet,
-      shape:new Rect(
-        (enemy.shape.x + enemy.width) / 2,
-        (enemy.shape.y + enemy.height) / 2,
-        8,
-        8
-      ),
-    })
-    self.bullets.push(bullet)
-
-    util.delayCall(() => {
-      util.removeArr(self.enemies, enemy)
-      util.removeArr(self.bullets, bullet)
-    }, 500, enemy, bullet)
+  createSpoil (enemy) {
     // 判断是否产生战利品
     var spoil = this.spoilManager.createSpoil(enemy)
     if (spoil) {
-      if (context.stateInfo.spoils.all[spoil.type])
-        context.stateInfo.spoils.all[spoil.type]++
-      else context.stateInfo.spoils.all[spoil.type] = 0
-      self.spoils.push(spoil)
+      this.spoils.push(spoil)
     }
-
-    if (context.stateInfo.enemies.resolve[enemy.type])
-      context.stateInfo.enemies.resolve[enemy.type]++
-    else
-      context.stateInfo.enemies.resolve[enemy.type] = 1
   }
   /**
    * 对象移动
@@ -97,19 +68,11 @@ class GameWorld extends GameWorldCore {
     var pShots = this.player.getShot()
     if (pShots) {
       shots.push.apply(shots, pShots)
-      for (var i = 0; i < pShots.length; i++) {
-        if (context.stateInfo.emitShot.all[pShots[i].type])
-          context.stateInfo.emitShot.all[pShots[i].type]++
-        else context.stateInfo.emitShot.all[pShots[i].type] = 1
-      }
     }
 
     this.update()
 
     this.player.update()
-    // 报告
-    context.stateInfo.currentShotNum = this.shots.length
-    context.stateInfo.currentEnemyNum = this.enemies.length
   }
   // 对象清理
   clearObject () {
@@ -241,18 +204,12 @@ class GameWorld extends GameWorldCore {
     {
       var rad = Math.random() * 3 + ''
       var newEmeny = this.ememyFactory.createEnemy(parseInt(rad.charAt(0)) + 2)
-      if (context.stateInfo.enemies.all[newEmeny.type])
-        context.stateInfo.enemies.all[newEmeny.type]++
-      else context.stateInfo.enemies.all[newEmeny.type] = 1
       this.enemies.push(newEmeny)
     }
 
     if (Math.random() < 0.01) // 百分之一生成强力敌军
     {
       var newEmeny = this.ememyFactory.createEnemy(1)
-      if (context.stateInfo.enemies.all[newEmeny.type])
-        context.stateInfo.enemies.all[newEmeny.type]++
-      else context.stateInfo.enemies.all[newEmeny.type] = 1
       this.enemies.push(newEmeny)
     }
     this.shots.forEach(shot => {
@@ -306,30 +263,27 @@ class GameWorld extends GameWorldCore {
       for (var j = shots.length - 1; j > -1; j--) {
         var oneShot = shots[j]
         if (oneShot.isDie) continue
-        if (this.player.Oid == oneShot.belong && util.isChonghe(oneShot.shape, enemyRect)) {
-          enemy.hp = enemy.hp - oneShot.attack * this.player.shotEx
-          oneShot.hp--
-          if (enemy.hp <= 0) {
-            this.enemyDie(enemy)
-          }
-          // 子弹生命  穿甲弹
-          if (oneShot.hp <= 0) {
-            oneShot.isDie = true
-            if (context.stateInfo.emitShot.resolve[oneShot.type])
-              context.stateInfo.emitShot.resolve[oneShot.type]++
-            else context.stateInfo.emitShot.resolve[oneShot.type] = 1
-            util.removeArr(shots, oneShot)
-          }
+        if (this.player.Oid == oneShot.belong) {
+           if(enemy.isCollide(oneShot)){
+            enemy.hp = enemy.hp - oneShot.attack * this.player.shotEx
+            oneShot.hp--
+            if (enemy.hp <= 0) {
+              this.createSpoil(enemy)
+              this.killEnemy(enemy)
+            }
+            // 子弹生命  穿甲弹
+            if (oneShot.hp <= 0) {
+              this.killShot(oneShot)
+            }
+           }
         }
       }
       // 检查玩家和飞机的碰撞
-      if (util.isChonghe(this.player.shape, enemyRect)) {
+      if (this.player.isCollide(enemy)) {
         enemy.hp--
         this.player.hp--
-        util.isChonghe(this.player.shape, enemyRect)
         if (enemy.hp <= 0) {
-          enemy.isDie = true
-          util.removeArr(enemies, enemy)
+          this.killEnemy(enemy)
         }
       }
     }
@@ -338,37 +292,45 @@ class GameWorld extends GameWorldCore {
     for (var j = shots.length - 1; j > -1; j--) {
       var oneShot = shots[j]
       if (oneShot.isDie) continue
-      if (this.player.Oid != oneShot.belong && util.inArea({
-          x: oneShot.shape.x + oneShot.shape.width / 2,
-          y: oneShot.shape.y
-        },  this.player.shape)) {
-        var ene = this.findEnemyByOid(oneShot.belong)
-        var shotEx = ene ? ene.shotEx : 1
-        this.player.hp = this.player.hp - oneShot.attack * shotEx
-        oneShot.hp--
-        if (oneShot.hp <= 0) {
-          oneShot.isDie = true
-          util.removeArr(shots, oneShot)
-        }
+      if (this.player.Oid != oneShot.belong) {
+          if( this.player.isCollide(oneShot)){
+            var enemy = this.findEnemyByOid(oneShot.belong)
+            var shotEx = enemy ? enemy.shotEx : 1
+            this.player.hp = this.player.hp - oneShot.attack * shotEx
+            oneShot.hp--
+            if (oneShot.hp <= 0) {
+              this.killShot(oneShot)
+            }
+          }
       }
     }
+
     // 检查玩家是否获取战利品
     for (var j = spoils.length - 1; j > -1; j--) {
       var oneSpoil = spoils[j]
       if (oneSpoil.isDie) continue
-      if (util.isChonghe(oneSpoil.shape,  this.player.shape)) {
-        oneSpoil.isDie = true
-        util.removeArr(spoils, oneSpoil)
+      if (this.player.isCollide(oneSpoil)) {
+        this.removeSpoil(oneSpoil)
         oneSpoil.Effect(this.player)
-        if (context.stateInfo.spoils.resolve[oneSpoil.type])
-          context.stateInfo.spoils.resolve[oneSpoil.type]++
-        else context.stateInfo.spoils.resolve[oneSpoil.type] = 1
       }
     }
 
     if (this.player.hp <= 0) {
       this.stop()
     }
+  }
+
+  killEnemy(enemy){
+    enemy.isDie = true
+    util.removeArr(this.enemies, enemy)
+  }
+  killShot(shot){
+    shot.isDie = true
+    util.removeArr(this.shots, shot)
+  }
+  removeSpoil(spoil){
+    spoil.isDie = true
+    util.removeArr(this.spoils, spoil)
   }
 }
 

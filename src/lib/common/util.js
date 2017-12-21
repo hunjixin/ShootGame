@@ -1,6 +1,6 @@
 var util = {
   // 两个四边型是否重叠
-  isChonghe: function (rect1, rect2) {
+  isCoincide: function (rect1, rect2) {
     if (util.inArea({
         x: rect1.x,
         y: rect1.y
@@ -14,8 +14,8 @@ var util = {
         y: rect1.y + rect1.height
       }, rect2)) return true
     if (util.inArea({
-        x: rect1.x + rect1,
-        y: rect1 + rect1.height.y
+        x: rect1.x + rect1.width,
+        y: rect1.y + rect1.height
       }, rect2)) return true
 
     if (util.inArea({
@@ -31,8 +31,8 @@ var util = {
         y: rect2.y + rect2.height
       }, rect1)) return true
     if (util.inArea({
-        x: rect2.x + rect2,
-        y: rect2 + rect2.height.y
+        x: rect2.x + rect2.width,
+        y: rect2.y + rect2.height
       }, rect1)) return true
 
     return false

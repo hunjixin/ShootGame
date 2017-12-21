@@ -23,10 +23,10 @@ class ShotGame extends EngineCore {
     ])})
 
     this.gameWorld.constraintAreas = [{
-      x: -100,
-      y: -100,
-      width: 500,
-      height: 900
+      x: this.bound.x-100,
+      y: this.bound.y-100,
+      width: this.bound.width+100,
+      height: this.bound.height+100
     }]
 
     var views = option.views

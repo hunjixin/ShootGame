@@ -33,7 +33,7 @@ class GameWorldCore {
   }
   
   checkArea (area, gameObject) {
-    return util.isChonghe(area, {x: gameObject.shape.x,y: gameObject.shape.y,width: gameObject.shape.width,height: gameObject.shape.height})
+    return util.isCoincide(area, {x: gameObject.shape.x,y: gameObject.shape.y,width: gameObject.shape.width,height: gameObject.shape.height})
   }
   stop () {
     this.timeLine.stop()
@@ -88,7 +88,6 @@ class GameWorldCore {
    * 销毁
    */
   destroy () {}
-
   /**
    * 重置
    */
