@@ -113,12 +113,12 @@ class GameWorld extends GameWorldCore {
   drawScene (stage) {
     var canvas = document.createElement('canvas')
     var drawContext = canvas.getContext('2d')
-    canvas.height = stage.shape.height
-    canvas.width = stage.shape.width
+    canvas.height = stage.shape.height/stage.gameWorldOffset.scaleY
+    canvas.width = stage.shape.width/stage.gameWorldOffset.scaleX
     // 背景
-
-    drawContext.drawImage(this.stageManager.getCurrenStageConfig().icon, stage.gameWorldOffset.x, stage.gameWorldOffset.y, stage.shape.width, stage.shape.height,
-      0, 0, stage.shape.width, stage.shape.height)
+    drawContext.drawImage(this.stageManager.getCurrenStageConfig().icon,
+     stage.gameWorldOffset.x, stage.gameWorldOffset.y, canvas.width,canvas.height,
+      0, 0, canvas.width,canvas.height)
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {

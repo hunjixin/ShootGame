@@ -26,11 +26,17 @@ class ShowStage extends GameStage {
     this.on('mouseUp', eventInfo => {
       if (this.gameWorld.isRunning == 1) this.isMouseDown = false
     })
+    this.playerOriPosition = {
+      x: 300,
+      y: 1150
+    }
     // 玩家移动中
     this.on('mouseMove', eventInfo => {
       if (this.gameWorld.isRunning == 1 && this.isMouseDown === true) {
-        this.gameWorld.player.shape.x = this.XViewToGameWorld(eventInfo.position.x - this.shape.x) - this.gameWorld.player.shape.width / 2
-        this.gameWorld.player.shape.y = this.YViewToGameWorld(eventInfo.position.y - this.shape.y) - this.gameWorld.player.shape.height / 2
+        var x = (eventInfo.position.x-this.shape.x- (this.gameWorld.player.shape.width / 2)* this.gameWorldOffset.scaleX) / this.gameWorldOffset.scaleX + this.gameWorldOffset.x 
+        var y = (eventInfo.position.y-this.shape.y- (this.gameWorld.player.shape.height / 2)* this.gameWorldOffset.scaleY) / this.gameWorldOffset.scaleY + this.gameWorldOffset.y
+        this.gameWorld.player.shape.x = x
+        this.gameWorld.player.shape.y = y
       }
     })
   }

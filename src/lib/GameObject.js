@@ -43,17 +43,29 @@ class GameObject extends EObject {
       })
     }
   }
+    /**
+   * 相对于界面坐标 需进行缩放
+   * @param {*} stage 
+   */
+  //event
   getAbsoluteShape(stage){
-    var point= stage.GameObjectToView(this.shape.getPosition())
+   var asdsad= new Rect(
+    (this.shape.x-stage.gameWorldOffset.x)*stage.gameWorldOffset.scaleX+stage.shape.x,
+    (this.shape.y-stage.gameWorldOffset.y)*stage.gameWorldOffset.scaleY+stage.shape.y,
+    this.shape.width,
+    this.shape.height)
+    return asdsad
+  }
+    /**
+   * 相对于游戏坐标 无需进行缩放
+   * @param {*} stage 
+   */
+  getPositiveShape(stage){
     return new Rect(
-      stage.shape.x+point.x,
-      stage.shape.y+ point.y,
+      this.shape.x-stage.gameWorldOffset.x,
+      this.shape.y-stage.gameWorldOffset.y,
       this.shape.width,
       this.shape.height)
-  }
-  getPositiveShape(stage){
-    var point= stage.GameObjectToView(this.shape.getPosition())
-    return new Rect(point.x,point.y,this.shape.width,this.shape.height)
   }
   render(drawContext,stage){
     super.render(drawContext,this.getPositiveShape(stage))

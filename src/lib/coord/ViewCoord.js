@@ -4,13 +4,13 @@ class ViewCoord extends Coord {
     constructor() {
       super()
     }
-    tansforWorldCoord(point) {
+    tansforWorldCoord(stage,point) {
 
     }
-    tansforWorldCoordY(y) {
+    tansforWorldCoordY(stage,y) {
 
     }
-    tansforWorldCoordX(x) {
+    tansforWorldCoordX(stage,x) {
 
     }
 }

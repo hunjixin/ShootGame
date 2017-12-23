@@ -28,14 +28,16 @@ class View extends UIView {
       parameter: {
         shape: new Rect(0, this.headOffset, stageWidth, stageHeight),
         gameWorldOffset: {
-          x: 0,
-          y: 0
+          x: 100,
+          y: 100,
+          scaleX:0.5,
+          scaleY:0.5
         },
         zIndex: 3
       },
       optional: gameWorld
     }, this)
-
+/*
     Control.getInstance([
       {
         type: Label,
@@ -83,7 +85,7 @@ class View extends UIView {
         optional:gameWorld
       }
     ], this)
-
+*/
 
     viewOption.stageManager.register('next', (args) => {
       Object.assign(this.stage, args)

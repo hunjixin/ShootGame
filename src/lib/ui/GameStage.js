@@ -1,5 +1,4 @@
 import Control from './Control.js'
-import ViewCoord from '../coord/ViewCoord.js'
 import util from '../common/util.js'
 import context from '../common/context.js'
 import resource from '../common/resource.js'
@@ -9,6 +8,7 @@ class GameStage extends Control {
   constructor (stageConfig, gameWorld) {
     super(stageConfig)
     this.gameWorld = gameWorld
+    this.gameWorldOffset=stageConfig.gameWorldOffset
   }
 
   stop () {
@@ -34,30 +34,9 @@ class GameStage extends Control {
   render (drawContext) {
     super.render(drawContext)
   }
-  GameObjectToView (point) {
-    return {
-      x: this.XGameObjectToView(point.x),
-      y: this.YGameObjectToView(point.y)
-    }
-  }
-  XGameObjectToView (x) {
-    return  x-this.gameWorldOffset.x
-  }
-  YGameObjectToView (y) {
-    return y -this.gameWorldOffset.y
-  }
-  ViewToGameWorld (point) {
-    return {
-      x: this.XViewToGameWorld(point.x),
-      y: this.YViewToGameWorld(point.y)
-    }
-  }
-  XViewToGameWorld (x) {
-    return x + this.gameWorldOffset.x
-  }
-  YViewToGameWorld (y) {
-    return y + this.gameWorldOffset.y
-  }
+
+  
+  
   destroy () {}
 }
 

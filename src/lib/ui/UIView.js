@@ -12,25 +12,7 @@ class UIView extends Control {
     
     this.shape=viewOption.shape
     this.icon = viewOption.icon
-  }
-  stop () {
-    this.gameWorld.stop()
-  }
-
-  restart () {
-    this.gameWorld.restart()
-  }
-
-  start () {
-    this.gameWorld.start()
-  }
-
-  reset () {
-    this.gameWorld.reset()
-  }
-
-  isStageTimeOut () {
-    return this.gameWorld.isStageTimeOut()
+    this.viewCoord=new ViewCoord()
   }
 
   render () {

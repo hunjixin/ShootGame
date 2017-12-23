@@ -72,6 +72,9 @@ class LosEvent {
     var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
       if (!item) return
+      if(item.target.AllHp){
+          var dd=123;
+      }
       var viewShape = item.target.getAbsoluteShape(context.currentStage)
       var isEffect = item.target.isDisplay &&
       util.inArea(eventInfo.position, viewShape)
