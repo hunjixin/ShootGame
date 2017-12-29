@@ -49,13 +49,14 @@ class GameObject extends EObject {
    */
   //event
   getAbsoluteShape(stage){
-   var asdsad= new Rect(
+   var rect= new Rect(
     (this.shape.x-stage.gameWorldOffset.x)*stage.gameWorldOffset.scaleX+stage.shape.x,
     (this.shape.y-stage.gameWorldOffset.y)*stage.gameWorldOffset.scaleY+stage.shape.y,
     this.shape.width,
     this.shape.height)
-    return asdsad
+    return rect
   }
+
     /**
    * 相对于游戏坐标 无需进行缩放
    * @param {*} stage 
@@ -67,6 +68,7 @@ class GameObject extends EObject {
       this.shape.width,
       this.shape.height)
   }
+  
   render(drawContext,stage){
     super.render(drawContext,this.getPositiveShape(stage))
   }

@@ -1,6 +1,6 @@
 var baseUrl = __dirname
 var plain = new Image()
-plain.src = baseUrl + '/image/2332.png'
+plain.src = baseUrl + '/image/player.png'
 
 var shot = new Image()
 shot.src = baseUrl + '/image/shot.png'
