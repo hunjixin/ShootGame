@@ -46,7 +46,7 @@ class GameObject extends EObject {
 
   
   render(drawContext,shape){
-    super.render(drawContext,this.getPositiveShape(stage))
+    super.render(drawContext,shape)
   }
 }
 

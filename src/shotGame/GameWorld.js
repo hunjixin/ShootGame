@@ -7,7 +7,7 @@ import { Boss, Player, EnemyFactory } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
 import Rect from '../lib/shape/Rect.js'
 import {DebugSetting} from '../lib/Debug.js'
-
+import RandomEmitter from '../lib/Particle/RandomEmitter.js'
 class GameWorld extends GameWorldCore {
   constructor (option) {
     super(option)
@@ -45,6 +45,9 @@ class GameWorld extends GameWorldCore {
     }, 100)
 
     this.ememyFactory = new EnemyFactory(this)
+    this.emitter=new RandomEmitter({
+      area:this.constraintAreas[0]
+     })
   }
   createSpoil (enemy) {
     // 判断是否产生战利品
@@ -69,9 +72,8 @@ class GameWorld extends GameWorldCore {
     if (pShots) {
       shots.push.apply(shots, pShots)
     }
-
+    this.emitter.update()
     this.update()
-
     this.player.update()
   }
   // 对象清理
@@ -125,6 +127,12 @@ class GameWorld extends GameWorldCore {
         this.renderObject(stage,drawContext,shot)
       }
     })
+    // 粒子
+    this.emitter.children.forEach(emit => {
+      if (!emit.isDie) {
+        this.renderObject(stage,drawContext,emit)
+      }
+    })
     // 飞机
     this.renderObject(stage,drawContext,this.player)
     // 敌军
@@ -145,6 +153,7 @@ class GameWorld extends GameWorldCore {
         this.renderObject(stage,drawContext,bullet)
       }
     })
+
     return canvas
   }
   // 销毁
@@ -152,7 +161,6 @@ class GameWorld extends GameWorldCore {
     super.destroy()
     this.player.destroy()
   }
-
   stop () {
     super.stop()
   }
@@ -212,12 +220,13 @@ class GameWorld extends GameWorldCore {
       var newEmeny = this.ememyFactory.createEnemy(1)
       this.enemies.push(newEmeny)
     }
+
     this.shots.forEach(shot => {
       if (!shot.isDie) {
         shot.update()
       }
     })
-
+    
     this.spoils.forEach(spoil => {
       if (!spoil.isDie) {
         spoil.update()
@@ -234,10 +243,7 @@ class GameWorld extends GameWorldCore {
       }
     })
   }
-  /**
-   * 根据id查找敌人
-   * @param {*敌人id} oid 
-   */
+  //根据id查找敌人
   findEnemyByOid (oid) {
     var enemies = this.enemies
     if (enemies) {
@@ -319,7 +325,7 @@ class GameWorld extends GameWorldCore {
       this.stop()
     }
   }
-
+  
   killEnemy(enemy){
     enemy.isDie = true
     util.removeArr(this.enemies, enemy)
@@ -332,9 +338,11 @@ class GameWorld extends GameWorldCore {
     spoil.isDie = true
     util.removeArr(this.spoils, spoil)
   }
+
   renderObject(stage,drawContext,item){
     item.render(drawContext, stage.getPositiveShape(item))
   }
+
 }
 
 export default GameWorld

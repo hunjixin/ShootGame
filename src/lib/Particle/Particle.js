@@ -15,8 +15,8 @@ class Particle {
     this.maxSize = -1
 
     // rotate
-    this.rotationStart = 0
-    this.rotationStartVariance = 0
+    this.rotation = 0
+    this.rotationAccelate = 0
 
     // speed
     this.speedX = 0
@@ -29,7 +29,9 @@ class Particle {
     this.accelateY = 0
     Object.assign(this,option)
   }
-  update () {}
+  update () {
+
+  }
   render (drawContext, shape) {}
 }
 

@@ -72,11 +72,13 @@ class LosEvent {
     var that = this
     var targets = lodash.filter(this.eventContainer, (item) => {
       if (!item) return
-      if (item.target.AllHp) {
-        var dd = 123
-      }
-      
+
       if (context.currentStage) {
+        if(!(context.currentStage.getAbsoluteShape instanceof Function)){
+          console.log(context.currentStage)
+          console.log(context.currentStage.getAbsoluteShape)
+          debugger
+        }
         var viewShape = context.currentStage.getAbsoluteShape(item.target)
       }else {
         var viewShape = item.target.shape

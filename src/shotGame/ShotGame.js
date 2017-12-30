@@ -13,21 +13,22 @@ class ShotGame extends EngineCore {
   constructor (option) {
     super(option)
 
-    this.gameWorld = context.gameWorld = new GameWorld({stageManager: new StageManager([
+    this.gameWorld = context.gameWorld = new GameWorld({
+      stageManager: new StageManager([
         {
           icon: resource.bg.bg1
         },
         {
           icon: resource.bg.bg1
         }
-    ])})
-
-    this.gameWorld.constraintAreas = [{
-      x: this.bound.x-100,
-      y: this.bound.y-100,
-      width: this.bound.width+100,
-      height: this.bound.height+100
-    }]
+      ]),
+      constraintAreas: [{
+        x: this.bound.x - 100,
+        y: this.bound.y - 100,
+        width: this.bound.width + 100,
+        height: this.bound.height + 100
+      }]
+    })
 
     var views = option.views
     this.createViews(views)

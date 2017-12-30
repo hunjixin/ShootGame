@@ -4,8 +4,9 @@ import context from '../common/context.js'
 import resource from '../common/resource.js'
 import TimeLine from '../TimeLine.js'
 import GameObject from '../GameObject.js'
-
+import Rect from '../shape/Rect.js'
 class GameStage extends Control {
+
   constructor (stageConfig, gameWorld) {
     super(stageConfig)
     this.gameWorld = gameWorld
@@ -31,6 +32,7 @@ class GameStage extends Control {
   isStageTimeOut () {
     return this.gameWorld.isStageTimeOut()
   }
+
   /**
    * 相对于游戏坐标 无需进行缩放
    * @param {*} stage 
@@ -45,8 +47,8 @@ class GameStage extends Control {
     }else{
       return item.shape
     }
-
   }
+ 
   destroy () {}
 }
 

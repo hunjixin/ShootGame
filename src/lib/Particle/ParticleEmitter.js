@@ -3,45 +3,50 @@ import Rect from '../shape/Rect.js'
 import EObject from '../EObject.js'
 import util from '../common/util.js'
 import RectangleParticle from './RectangleParticle.js'
-import Rect from '../shape/Rect.js'
 
 class ParticleEmitter extends EObject {
   constructor () {
     super()
-    this.maxParticle = 100
+    // emit count 
+    this.emitCount = 10,
+    this.emitTick = 1,
 
+    this.maxParticle = 100
     this.type = ''
 
-    this.speedX = 0
-    this.speedY = 0
-    this.maxSpeedX=-1
-    this.maxSpeedY=-1
+    this.particle = {
+      speedX: 0,
+      speedXVariance: 0,
+      speedY: 0,
+      speedYVariance: 0,
+      accelateX: 0,
+      accelateY: 0,
+      maxSpeedX: 0,
+      maxSpeedY: 0,
 
-    this.accelateX = 0
-    this.accelateY = 0
+      life: 0,
+      lifeVariance: 0,
 
-    this.life = 10
-    this.lifeVariance = 0
+      startSize: 0,
+      startSizeVariance: 0,
 
-    this.startSize = 0
-    this.startSizeVariance = 0
-    this.maxSize=-1
+      angle: 0,
+      angleVariance: 0,
 
-    this.emitAngle = 0
-    this.emitAngleVariance = 0
-
-    this.rotationStart = 0
-    this.rotationStartVariance = 0
-
-    this.rotationEnd = 0
-    this.rotationEndVariance = 0
+      rotation: 0,
+      rotationVariance: 0
+    }
   }
   update () {
     this.checkParticleAlive()
     this.updateEachParticle()()
 
-    if (this.children.length < this.maxParticle) {
-      this.createNewParticle()
+    for (let i = 0; i < this.emitCount.length; i++) {
+      if (this.children.length < this.maxParticle) {
+        this.createNewParticle()
+      }else {
+        break
+      }
     }
   }
   checkParticleAlive () {
@@ -56,7 +61,24 @@ class ParticleEmitter extends EObject {
       a.update()
     })
   }
-  createNewParticle () {
+  createNewParticle () {}
+  getParticleSpeedX () {
+    return this.particle.speedX + (this.particle.speedXVariance * (2 * util.randInt(0, 1) - 1))
+  }
+  getParticleSpeedY () {
+    return this.particle.speedY + (this.particle.speedYVariance * (2 * util.randInt(0, 1) - 1))
+  }
+  getLife () {
+    return this.particle.life + (this.particle.lifeVariance * (2 * util.randInt(0, 1) - 1))
+  }
+  getSize () {
+    return this.particle.startSize + (this.particle.startSizeVariance * (2 * util.randInt(0, 1) - 1))
+  }
+  getAngle () {
+    return this.particle.rotation + (this.particle.rotationVariance * (2 * util.randInt(0, 1) - 1))
+  }
+  getRotation () {
+    return this.particle.rotation + (this.particle.rotationVariance * (2 * util.randInt(0, 1) - 1))
   }
 }
 
