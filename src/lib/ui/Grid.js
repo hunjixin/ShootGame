@@ -3,7 +3,7 @@ import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
 import Cell from './Cell.js'
-import Rect from './shape/Rect.js'
+import Rect from '../shape/Rect.js'
 class Grid extends Control {
   constructor(option) {
     super(option)

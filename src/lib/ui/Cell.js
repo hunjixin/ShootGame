@@ -2,7 +2,7 @@ import Control from './Control.js'
 import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
-import Rect from './shape/Rect.js'
+import Rect from '../shape/Rect.js'
 class Cell extends Control {
   constructor (option) {
     super(option)

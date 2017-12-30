@@ -1,5 +1,5 @@
 import {BaseModal,Input, Grid,Bar,CheckBox, Button,Label, TextBlock } from '../lib/ui/'
-import Rect from '../lib/ui/shape/Rect.js'
+import Rect from '../lib/shape/Rect.js'
 import Control from '../lib/ui/Control.js'
 
 class Modal extends BaseModal {

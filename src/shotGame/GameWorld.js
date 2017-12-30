@@ -5,7 +5,7 @@ import resource from '../lib/common/resource.js'
 import { SpoilManager } from './spoil/'
 import { Boss, Player, EnemyFactory } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
-import Rect from '../lib/ui/shape/Rect.js'
+import Rect from '../lib/shape/Rect.js'
 import {DebugSetting} from '../lib/Debug.js'
 
 class GameWorld extends GameWorldCore {
@@ -122,27 +122,27 @@ class GameWorld extends GameWorldCore {
     // 子弹
     this.shots.forEach(shot => {
       if (!shot.isDie) {
-        shot.render(drawContext, stage)
+        this.renderObject(stage,drawContext,shot)
       }
     })
     // 飞机
-    this.player.render(drawContext, stage)
+    this.renderObject(stage,drawContext,this.player)
     // 敌军
     this.enemies.forEach(enemy => {
       if (!enemy.isDie) {
-        enemy.render(drawContext, stage)
+        this.renderObject(stage,drawContext,enemy)
       }
     })
     // 战利品
     this.spoils.forEach(spoil => {
       if (!spoil.isDie) {
-        spoil.render(drawContext, stage)
+        this.renderObject(stage,drawContext,spoil)
       }
     })
     // 死亡
     this.bullets.forEach(bullet => {
       if (!bullet.isDie) {
-        bullet.render(drawContext, stage)
+        this.renderObject(stage,drawContext,bullet)
       }
     })
     return canvas
@@ -331,6 +331,9 @@ class GameWorld extends GameWorldCore {
   removeSpoil(spoil){
     spoil.isDie = true
     util.removeArr(this.spoils, spoil)
+  }
+  renderObject(stage,drawContext,item){
+    item.render(drawContext, stage.getPositiveShape(item))
   }
 }
 

@@ -6,7 +6,7 @@ import GameWorld from './GameWorld.js'
 import LosEvent from '../lib/LosEvent.js'
 import ViewContext from '../lib/common/ViewContext.js'
 import StageManager from '../lib/StageManager.js'
-import Rect from '../lib/ui/shape/Rect.js'
+import Rect from '../lib/shape/Rect.js'
 import config from './View.config'
 
 class ShotGame extends EngineCore {

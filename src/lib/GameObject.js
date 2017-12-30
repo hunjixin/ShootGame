@@ -2,7 +2,7 @@ import util from './common/util.js'
 import resource from './common/resource.js'
 import context from './common/context.js'
 import EObject from './EObject.js'
-import Rect from './ui/shape/Rect.js'
+import Rect from './shape/Rect.js'
 class GameObject extends EObject {
   constructor (option) {
     super(option)
@@ -43,33 +43,9 @@ class GameObject extends EObject {
       })
     }
   }
-    /**
-   * 相对于界面坐标 需进行缩放
-   * @param {*} stage 
-   */
-  //event
-  getAbsoluteShape(stage){
-   var rect= new Rect(
-    (this.shape.x-stage.gameWorldOffset.x)*stage.gameWorldOffset.scaleX+stage.shape.x,
-    (this.shape.y-stage.gameWorldOffset.y)*stage.gameWorldOffset.scaleY+stage.shape.y,
-    this.shape.width,
-    this.shape.height)
-    return rect
-  }
 
-    /**
-   * 相对于游戏坐标 无需进行缩放
-   * @param {*} stage 
-   */
-  getPositiveShape(stage){
-    return new Rect(
-      this.shape.x-stage.gameWorldOffset.x,
-      this.shape.y-stage.gameWorldOffset.y,
-      this.shape.width,
-      this.shape.height)
-  }
   
-  render(drawContext,stage){
+  render(drawContext,shape){
     super.render(drawContext,this.getPositiveShape(stage))
   }
 }

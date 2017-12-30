@@ -6,7 +6,7 @@ import BasePlain from './BasePlain.js'
 import Boss from './Boss.js'
 import Enemy from './Enemy.js'
 import Player from './Player.js'
-import Rect from '../lib/ui/shape/Rect.js'
+import Rect from '../lib/shape/Rect.js'
 class EnemyFactory {
   constructor (gameWorld) {
     this.gameWorld = gameWorld

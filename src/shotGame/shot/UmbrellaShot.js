@@ -1,8 +1,8 @@
 import GameObject from '../../lib/GameObject.js'
 import resource from '../../lib/common/resource.js'
 import Shot from './Shot.js'
-import Rect from '../../lib/ui/shape/Rect.js'
-import Point from '../../lib/ui/shape/Point.js'
+import Rect from '../../lib/shape/Rect.js'
+import Point from '../../lib/shape/Point.js'
 /**
  * 子弹
  */

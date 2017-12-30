@@ -11,7 +11,7 @@ import { Bar, Button, Label, TextBlock } from '../lib/ui/'
 import Modal from './Modal.js'
 import Stage from './Stage.js'
 import ShowStage from './ShowStage.js'
-import Rect from '../lib/ui/shape/Rect.js'
+import Rect from '../lib/shape/Rect.js'
 
 class View extends UIView {
   constructor (viewOption, gameWorld) {

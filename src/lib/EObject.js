@@ -1,6 +1,6 @@
 import util from './common/util.js'
 import context from './common/context.js'
-import Rect from './ui/shape/Rect.js'
+import Rect from './shape/Rect.js'
 import lodash from 'lodash'
 /**
  * 基类

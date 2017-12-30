@@ -5,7 +5,7 @@ import GzShot from './GzShot.js'
 import UmbrellaShot from './UmbrellaShot.js'
 import Bullet from './Bullet.js'
 import Shot from './Shot.js'
-import Rect from '../../lib/ui/shape/Rect.js'
+import Rect from '../../lib/shape/Rect.js'
 class ShotorFactory {
   constructor (gameWorld) {
     this.gameWorld = gameWorld

@@ -1,5 +1,5 @@
 import GameObject from '../../lib/GameObject.js'
-import Rect from '../../lib/ui/shape/Rect.js'
+import Rect from '../../lib/shape/Rect.js'
 class Spoil extends GameObject {
   constructor(obj, type) {
     super({})

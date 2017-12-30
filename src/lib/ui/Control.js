@@ -54,9 +54,7 @@ class Control extends EObject {
   getViewArea () {
     return this.shape
   }
-  getAbsoluteShape(stage){
-    return this.shape
-  }
+
   destroy () {
     this.viewContext.losEvent.deAttchEvent(this)
     if (this.children) {

@@ -3,6 +3,7 @@ import util from '../common/util.js'
 import context from '../common/context.js'
 import resource from '../common/resource.js'
 import TimeLine from '../TimeLine.js'
+import GameObject from '../GameObject.js'
 
 class GameStage extends Control {
   constructor (stageConfig, gameWorld) {
@@ -30,13 +31,22 @@ class GameStage extends Control {
   isStageTimeOut () {
     return this.gameWorld.isStageTimeOut()
   }
+  /**
+   * 相对于游戏坐标 无需进行缩放
+   * @param {*} stage 
+   */
+  getPositiveShape(item){
+    if(item instanceof GameObject){
+      return new Rect(
+        item.shape.x-this.gameWorldOffset.x,
+        item.shape.y-this.gameWorldOffset.y,
+        item.shape.width,
+        item.shape.height)
+    }else{
+      return item.shape
+    }
 
-  render (drawContext) {
-    super.render(drawContext)
   }
-
-  
-  
   destroy () {}
 }
 

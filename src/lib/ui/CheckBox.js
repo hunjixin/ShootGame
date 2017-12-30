@@ -2,8 +2,8 @@ import Control from './Control.js'
 import util from '../common/util.js'
 import resource from '../common/resource.js'
 import context from '../common/context.js'
-import Polygon from './shape/Polygon.js'
-import Point from './shape/Point.js'
+import Polygon from '../shape/Polygon.js'
+import Point from '../shape/Point.js'
 class CheckBox extends Control {
   constructor (option) {
     if (!option.event) option.event = {}
