@@ -15,11 +15,11 @@ class EObject {
     this.shape = new Rect(0,0,0,0)   //shape
     this.speedY = 5 // Y speed
     this.speedX = 0 // X speed
+    this.opacity=1 //opacity
     this.fixed = {
       x: false,
       y: false
     } 
-
 
     this.zIndex = 0 // layer index
     this.borderColor = 'black' // border color
@@ -87,6 +87,11 @@ class EObject {
 
   render (drawContext,shape) {
     drawContext.save()
+    if(this.opacity){
+      drawContext.globalAlpha = this.opacity;
+    }else{
+      return
+    }
     if(this.rotate){
       drawContext.translate(shape.x+shape.width/2, shape.y+shape.height/2);
       drawContext.rotate(this.rotate);
@@ -97,9 +102,7 @@ class EObject {
     var radis = Math.floor(Math.min(shape.width, shape.height) * 0.02)
     if (this.backgroundColor) {
       drawContext.save()
-      
       this.lineRect(drawContext, shape.x, shape.y, shape.width + 1, shape.height + 1, radis)
-
       drawContext.fillStyle = this.backgroundColor
       drawContext.fill()
       drawContext.restore()

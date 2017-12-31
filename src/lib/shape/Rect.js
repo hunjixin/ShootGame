@@ -14,7 +14,10 @@ class Rect {
     }
     getPosition(){
       return new Point(this.x,this.y)
-    }
+    }   
+    getArea(){
+      return this
+   }
   }
   
   

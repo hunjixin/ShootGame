@@ -4,10 +4,10 @@ import Point from './Point.js'
 import Polygon from './Polygon.js'
 import Rect from './Rect.js'
 
-module.export={
-    Circle:Circle, 
-    CornerRect:CornerRect, 
-    Point:Point, 
-    Polygon:Polygon, 
-    Rect:Rect, 
+module.exports={
+    Circle, 
+    CornerRect, 
+    Point, 
+    Polygon, 
+    Rect, 
 }

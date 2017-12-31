@@ -1,18 +1,14 @@
-import Point from '../shape/Point.js'
-import Rect from '../shape/Rect.js'
 import EObject from '../EObject.js'
 import util from '../common/util.js'
-import RectangleParticle from './RectangleParticle.js'
-
+import lodash from 'lodash'
 class ParticleEmitter extends EObject {
-  constructor () {
-    super()
+  constructor (option) {
+    super({})
     // emit count 
-    this.emitCount = 10,
+    this.emitCount = 5,
     this.emitTick = 1,
 
     this.maxParticle = 100
-    this.type = ''
 
     this.particle = {
       speedX: 0,
@@ -29,19 +25,44 @@ class ParticleEmitter extends EObject {
 
       startSize: 0,
       startSizeVariance: 0,
+      sizeOffset: 0,
+      sizeVariance: 0,
 
       angle: 0,
       angleVariance: 0,
 
-      rotation: 0,
-      rotationVariance: 0
+      rotate: 0,
+      rotateVariance: 0,
+      rotateOffset: 0
     }
+    lodash.merge(this, option)
+  }
+  createNewParticle () {
+    var size = this.getSize()
+    this.children.push(new this.type({
+      emitter: this,
+      opacity: 0.2,
+      backgroundColor: 'red',
+      speedX: this.getParticleSpeedX(),
+      speedY: this.getParticleSpeedY(),
+      accelateX: this.particle.accelateX,
+      accelateY: this.particle.accelateY,
+      life: this.getLife(),
+      size: size,
+      width: this.area.width * Math.random(),
+      height: this.area.height * Math.random(),
+      sizeOffset: this.particle.sizeOffset,
+      sizeVariance: this.particle.sizeVariance,
+      angle: this.getAngle(),
+      rotate: this.getRotate(),
+      rotateOffset: this.particle.rotateOffset
+    }))
   }
   update () {
     this.checkParticleAlive()
-    this.updateEachParticle()()
+    this.updateEachParticle()
 
-    for (let i = 0; i < this.emitCount.length; i++) {
+    for (let i = 0; i < this.emitCount; i++) {
       if (this.children.length < this.maxParticle) {
         this.createNewParticle()
       }else {
@@ -61,25 +82,32 @@ class ParticleEmitter extends EObject {
       a.update()
     })
   }
-  createNewParticle () {}
   getParticleSpeedX () {
-    return this.particle.speedX + (this.particle.speedXVariance * (2 * util.randInt(0, 1) - 1))
+    return this.particle.speedX + (this.particle.speedXVariance * (2 * Math.random() - 1))
   }
   getParticleSpeedY () {
-    return this.particle.speedY + (this.particle.speedYVariance * (2 * util.randInt(0, 1) - 1))
+    return this.particle.speedY + (this.particle.speedYVariance * (2 * Math.random() - 1))
   }
   getLife () {
-    return this.particle.life + (this.particle.lifeVariance * (2 * util.randInt(0, 1) - 1))
+    return this.particle.life + (this.particle.lifeVariance * (2 * Math.random() - 1))
   }
   getSize () {
-    return this.particle.startSize + (this.particle.startSizeVariance * (2 * util.randInt(0, 1) - 1))
+    return this.particle.startSize + (this.particle.startSizeVariance * (2 * Math.random() - 1))
   }
   getAngle () {
-    return this.particle.rotation + (this.particle.rotationVariance * (2 * util.randInt(0, 1) - 1))
+    return this.particle.rotate + (this.particle.rotateVariance * (2 * Math.random() - 1))
   }
-  getRotation () {
-    return this.particle.rotation + (this.particle.rotationVariance * (2 * util.randInt(0, 1) - 1))
+  getRotate () {
+    return this.particle.rotate + (this.particle.rotateVariance * (2 * Math.random() - 1))
+  }
+  killParticle (particle) {
+    particle.isDie = true
+    util.removeArr(this.children, particle)
+  }
+  render (a, b) {
+    super.render(a, b)
   }
 }
 
 export default ParticleEmitter
+module.exports = ParticleEmitter

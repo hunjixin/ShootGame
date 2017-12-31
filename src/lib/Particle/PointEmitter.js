@@ -1,4 +1,4 @@
-import Point from '../shape/Point.js'
+import {Point} from '../shape/'
 import ParticleEmitter from './ParticleEmitter.js'
 
 class PointEmitter extends ParticleEmitter {
@@ -9,3 +9,4 @@ class PointEmitter extends ParticleEmitter {
 }
 
 export default PointEmitter
+module.exports = PointEmitter

@@ -1,25 +1,25 @@
 import Particle from './Particle.js'
-import Point from '../shape/Point.js'
+import {Point,Rect} from '../shape/'
 
 class RectangleParticle extends Particle {
   constructor (option) {
-     super()
+    super(option)
+    this.shape= new Rect(
+      this.width,
+      this.height,
+      this.size,
+      this.size
+    )
+  }
+  setPlace(x,y){
+    this.shape.x = x
+    this.shape.y = y
   } 
-   update () {
-    //position update
-    var x=this.shape.x+this.speedX
-    var y=this.shape.y+this.speedY
-
-    //size update
-
-    //speed update
-    this.speedX=this.speedX+this.accelateX
-    this.speedY=this.speedY+this.accelateY
-
-    //rotate update
-    this.rotation=this.rotation+this.rotationAccelate
-
+  setSize() {
+    this.shape.width = this.size
+    this.shape.height = this.size
   }
 }
 
 export default RectangleParticle
+module.exports = RectangleParticle

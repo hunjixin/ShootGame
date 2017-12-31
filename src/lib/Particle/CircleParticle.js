@@ -1,11 +1,21 @@
 import Particle from './Particle.js'
-import Point from '../shape/Point'
-
+import {Point,Circle} from '../shape/'
 class CircleParticle extends Particle {
   constructor (option) {
-     this.shape = new Circle(new Point(0, 0), 1)
-     super()
+    super(option)
+    this.shape=  new Circle(
+      new Point(this.width,this.height),
+      this.size
+    )
+  }
+  setPlace(x,y){
+    this.shape.x = x
+    this.shape.y = y
+  } 
+  setSize() {
+    this.shape.radius = this.size
   }
 }
 
 export default CircleParticle
+module.exports = CircleParticle

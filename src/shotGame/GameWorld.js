@@ -7,8 +7,11 @@ import { Boss, Player, EnemyFactory } from './index.js'
 import { ShotorFactory, Bullet, Shot } from './shot/'
 import Rect from '../lib/shape/Rect.js'
 import {DebugSetting} from '../lib/Debug.js'
-import RandomEmitter from '../lib/Particle/RandomEmitter.js'
+import {CircleParticle, PointEmitter,RandomEmitter,RectangleParticle} from '../lib/Particle/'
+
+
 class GameWorld extends GameWorldCore {
+
   constructor (option) {
     super(option)
     this.stageManager = option.stageManager
@@ -32,8 +35,8 @@ class GameWorld extends GameWorldCore {
         type: 'umShot',
         num: 5
       }
-      
     })
+
     this.player.setShotInterVal(1)
 
     var checkTm = setInterval(() => {
@@ -46,9 +49,23 @@ class GameWorld extends GameWorldCore {
 
     this.ememyFactory = new EnemyFactory(this)
     this.emitter=new RandomEmitter({
-      area:this.constraintAreas[0]
+      area:this.constraintAreas[0],
+      type:RectangleParticle,
+      maxParticle:100,
+      particle:{
+        life :10,
+        startSize : 50,
+        sizeOffset:-2,
+        sizeVariance:1,
+        rotate : 0,
+        rotateOffset:-5,
+        speedX : 5,
+        speedXVariance:5,
+        speedY : 5
+      }
      })
   }
+
   createSpoil (enemy) {
     // 判断是否产生战利品
     var spoil = this.spoilManager.createSpoil(enemy)
@@ -56,6 +73,7 @@ class GameWorld extends GameWorldCore {
       this.spoils.push(spoil)
     }
   }
+
   /**
    * 对象移动
    */
@@ -76,7 +94,10 @@ class GameWorld extends GameWorldCore {
     this.update()
     this.player.update()
   }
-  // 对象清理
+
+  /**
+   * 对象清理
+   */
   clearObject () {
     this.constraintAreas.forEach(constraintArea => {
       var enemies = this.enemies
@@ -109,9 +130,20 @@ class GameWorld extends GameWorldCore {
           continue
         }
       }
+
+      for (let i =  this.emitter.children.length-1; i >-1; i--) {
+         var particle = this.emitter.children[i];
+         if (particle.isDie || !util.inArea(particle.shape.getCenter(), constraintArea)) {
+          util.removeArr(this.emitter.children, particle)
+         }
+      }
     })
   }
-  // 游戏世界和ui世界的接口
+
+  /**
+   * 游戏世界和ui世界的接口
+   * @param {*场景} stage 
+   */
   drawScene (stage) {
     var canvas = document.createElement('canvas')
     var drawContext = canvas.getContext('2d')
@@ -156,22 +188,40 @@ class GameWorld extends GameWorldCore {
 
     return canvas
   }
-  // 销毁
+
+  /**
+   * 销毁
+   */
   destroy () {
     super.destroy()
     this.player.destroy()
   }
+
+  /**
+   * 停止
+   */
   stop () {
     super.stop()
   }
+
+  /**
+   * 重启
+   */
   restart () {
     super.restart()
     this.reset()
   }
+
+  /**
+   * 开始
+   */
   start () {
     super.start()
   }
-  // 重置
+
+  /**
+   * 重置
+   */
   reset () {
     this.player.reset()
     this.shots.length = 0
@@ -179,7 +229,10 @@ class GameWorld extends GameWorldCore {
     this.bullets.length = 0
     this.spoils.length = 0
   }
-  // Boss生成
+
+  /**
+   * Boss生成
+   */
   createBoss () {
     this.boss = new Boss({
       gameWorld: this,
@@ -206,7 +259,10 @@ class GameWorld extends GameWorldCore {
     this.boss.setShotInterVal(util.randInt(10, 20))
     this.enemies.push(this.boss)
   }
-  // 世界更新
+
+  /**
+   * 世界更新
+   */
   update () {
     if (Math.random() < 0.07) // 百分之七生成敌军
     {
@@ -243,7 +299,11 @@ class GameWorld extends GameWorldCore {
       }
     })
   }
-  //根据id查找敌人
+
+  /**
+   * 根据id查找敌人
+   * @param {*id} oid 
+   */
   findEnemyByOid (oid) {
     var enemies = this.enemies
     if (enemies) {
@@ -254,7 +314,10 @@ class GameWorld extends GameWorldCore {
       }
     }
   }
-  // 检测碰撞
+
+  /**
+   * 检测碰撞
+   */
   checkCollection () {
     var enemies = this.enemies
     var shots = this.shots
@@ -326,19 +389,35 @@ class GameWorld extends GameWorldCore {
     }
   }
   
+  /**
+   * kill enemy
+   * @param {enemy} enemy 
+   */
   killEnemy(enemy){
     enemy.isDie = true
     util.removeArr(this.enemies, enemy)
   }
+
+    /**
+   * kill shot
+   * @param {shot} enemy 
+   */
   killShot(shot){
     shot.isDie = true
     util.removeArr(this.shots, shot)
   }
+
   removeSpoil(spoil){
     spoil.isDie = true
     util.removeArr(this.spoils, spoil)
   }
 
+  /**
+   * render
+   * @param {stage} stage 
+   * @param {draw context} drawContext 
+   * @param {draw item} item 
+   */
   renderObject(stage,drawContext,item){
     item.render(drawContext, stage.getPositiveShape(item))
   }

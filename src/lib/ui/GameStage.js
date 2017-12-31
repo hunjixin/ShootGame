@@ -10,7 +10,7 @@ class GameStage extends Control {
   constructor (stageConfig, gameWorld) {
     super(stageConfig)
     this.gameWorld = gameWorld
-    this.gameWorldOffset=stageConfig.gameWorldOffset
+    this.gameWorldOffset = stageConfig.gameWorldOffset
   }
 
   stop () {
@@ -37,18 +37,29 @@ class GameStage extends Control {
    * 相对于游戏坐标 无需进行缩放
    * @param {*} stage 
    */
-  getPositiveShape(item){
-    if(item instanceof GameObject){
+  getPositiveShape (item) {
+    if (item instanceof GameObject) {
       return new Rect(
-        item.shape.x-this.gameWorldOffset.x,
-        item.shape.y-this.gameWorldOffset.y,
+        item.shape.x - this.gameWorldOffset.x,
+        item.shape.y - this.gameWorldOffset.y,
         item.shape.width,
         item.shape.height)
-    }else{
+    }else {
       return item.shape
     }
   }
- 
+
+  getAbsoluteShape (item) {
+    if (item instanceof GameObject) {
+      return new Rect(
+        (item.shape.x - this.gameWorldOffset.x) * this.gameWorldOffset.scaleX + this.shape.x,
+        (item.shape.y - this.gameWorldOffset.y) * this.gameWorldOffset.scaleY + this.shape.y,
+        item.shape.width,
+        item.shape.height)
+    }else {
+      return item.shape
+    }
+  }
   destroy () {}
 }
 

@@ -74,11 +74,6 @@ class LosEvent {
       if (!item) return
 
       if (context.currentStage) {
-        if(!(context.currentStage.getAbsoluteShape instanceof Function)){
-          console.log(context.currentStage)
-          console.log(context.currentStage.getAbsoluteShape)
-          debugger
-        }
         var viewShape = context.currentStage.getAbsoluteShape(item.target)
       }else {
         var viewShape = item.target.shape
