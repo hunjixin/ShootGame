@@ -5,6 +5,8 @@ import resource from '../common/resource.js'
 import TimeLine from '../TimeLine.js'
 import GameObject from '../GameObject.js'
 import Rect from '../shape/Rect.js'
+import StageAbsTransfor from './StageAbsTransfor'
+import StagePosTransfor from './StagePosTransfor'
 class GameStage extends Control {
 
   constructor (stageConfig, gameWorld) {
@@ -39,11 +41,7 @@ class GameStage extends Control {
    */
   getPositiveShape (item) {
     if (item instanceof GameObject) {
-      return new Rect(
-        item.shape.x - this.gameWorldOffset.x,
-        item.shape.y - this.gameWorldOffset.y,
-        item.shape.width,
-        item.shape.height)
+      return new StagePosTransfor({stage:this}).visitShape(item.shape)
     }else {
       return item.shape
     }
@@ -51,11 +49,7 @@ class GameStage extends Control {
 
   getAbsoluteShape (item) {
     if (item instanceof GameObject) {
-      return new Rect(
-        (item.shape.x - this.gameWorldOffset.x) * this.gameWorldOffset.scaleX + this.shape.x,
-        (item.shape.y - this.gameWorldOffset.y) * this.gameWorldOffset.scaleY + this.shape.y,
-        item.shape.width,
-        item.shape.height)
+      return new StageAbsTransfor({stage:this}).visitShape(item.shape).getArea()
     }else {
       return item.shape
     }

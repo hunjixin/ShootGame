@@ -63,6 +63,9 @@ class Control extends EObject {
       })
     }
   }
+  render(drawContext){
+    super.render(drawContext,this.shape)
+  }
 }
 
 module.exports = Control
