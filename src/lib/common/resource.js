@@ -47,12 +47,16 @@ u.src = baseUrl + '/image/u.png'
 var g = new Image()
 g.src = baseUrl + '/image/g.png'
 
+var shine = new Image()
+shine.src = baseUrl + '/image/shine.png'
+
 var setting = new Image()
 setting.src = baseUrl + '/image/setting.png'
 
 var resource = {
   shot: shot,
   bullet: bullet,
+  shine:shine,
   bg: {
     bg1: bg1,
     bg2: bg2,

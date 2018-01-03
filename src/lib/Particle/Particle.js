@@ -8,6 +8,7 @@ class Particle extends GameObject {
     this.isDie = false
     // life
     this.life = 10
+    this.startTime=new Date()
 
     // size
     this.size = 0
@@ -31,8 +32,8 @@ class Particle extends GameObject {
 
    update () {
     // position update
-    var x = this.shape.x + this.speedX
-    var y = this.shape.y + this.speedY
+    var x = this.shape.x + this.speedX+this.speedXOffset*(2*Math.random()-1)
+    var y = this.shape.y + this.speedY+this.speedYOffset*(2*Math.random()-1)
     this.setPlace(x,y)
     // size update
     this.size=this.getNextSize ()

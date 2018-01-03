@@ -126,12 +126,16 @@ u.src = baseUrl + '/image/u.png';
 var g = new Image();
 g.src = baseUrl + '/image/g.png';
 
+var shine = new Image();
+shine.src = baseUrl + '/image/shine.png';
+
 var setting = new Image();
 setting.src = baseUrl + '/image/setting.png';
 
 var resource = {
   shot: shot,
   bullet: bullet,
+  shine: shine,
   bg: {
     bg1: bg1,
     bg2: bg2,
@@ -19963,6 +19967,7 @@ var Particle = function (_GameObject) {
     _this.isDie = false;
     // life
     _this.life = 10;
+    _this.startTime = new Date();
 
     // size
     _this.size = 0;
@@ -19989,8 +19994,8 @@ var Particle = function (_GameObject) {
     key: 'update',
     value: function update() {
       // position update
-      var x = this.shape.x + this.speedX;
-      var y = this.shape.y + this.speedY;
+      var x = this.shape.x + this.speedX + this.speedXOffset * (2 * Math.random() - 1);
+      var y = this.shape.y + this.speedY + this.speedYOffset * (2 * Math.random() - 1);
       this.setPlace(x, y);
       // size update
       this.size = this.getNextSize();
@@ -20112,6 +20117,10 @@ var ParticleEmitter = function (_EObject) {
       rotateOffset: 0
     };
     _lodash2.default.merge(_this, option);
+
+    setTimeout(function () {
+      _this.checkParticle();
+    }, 50);
     return _this;
   }
 
@@ -20121,18 +20130,28 @@ var ParticleEmitter = function (_EObject) {
       var size = this.getSize();
       this.children.push(new this.type({
         emitter: this,
+
         opacity: 0.2,
-        backgroundColor: 'red',
-        speedX: this.getParticleSpeedX(),
-        speedY: this.getParticleSpeedY(),
-        accelateX: this.particle.accelateX,
-        accelateY: this.particle.accelateY,
         life: this.getLife(),
+        backgroundColor: this.particle.backgroundColor,
+        icon: this.particle.icon,
+
         size: size,
-        width: this.area.width * Math.random(),
-        height: this.area.height * Math.random(),
         sizeOffset: this.particle.sizeOffset,
         sizeVariance: this.particle.sizeVariance,
+
+        width: this.area.width * Math.random(),
+        height: this.area.height * Math.random(),
+
+        speedX: this.getParticleSpeedX(),
+        speedY: this.getParticleSpeedY(),
+
+        accelateX: this.particle.accelateX,
+        accelateY: this.particle.accelateY,
+
+        speedXOffset: this.particle.speedXOffset,
+        speedYOffset: this.particle.speedYOffset,
+
         angle: this.getAngle(),
         rotate: this.getRotate(),
         rotateOffset: this.particle.rotateOffset
@@ -20202,6 +20221,21 @@ var ParticleEmitter = function (_EObject) {
     value: function killParticle(particle) {
       particle.isDie = true;
       _util2.default.removeArr(this.children, particle);
+    }
+  }, {
+    key: 'checkParticle',
+    value: function checkParticle() {
+      var now = new Date();
+      for (var i = this.children.length - 1; i > -1; i--) {
+        var element = array[i];
+      }
+      _lodash2.default.remove(this.children, function (element) {
+        if (now - element.startTime > element.life) {
+          element.isDie = true;
+          return true;
+        }
+        return false;
+      });
     }
   }, {
     key: 'render',
@@ -23213,18 +23247,23 @@ var GameWorld = function (_GameWorldCore) {
     _this.ememyFactory = new _index.EnemyFactory(_this);
     _this.emitter = new _Particle.RandomEmitter({
       area: _this.constraintAreas[0],
-      type: _Particle.CircleParticle,
+      type: _Particle.RectangleParticle,
       maxParticle: 30,
       particle: {
         life: 10,
+        backgroundColor: "red",
         startSize: 50,
-        sizeOffset: -2,
+        sizeOffset: -0.5,
+        icon: _resource2.default.shine,
         sizeVariance: 1,
         rotate: 0,
-        rotateOffset: -5,
+        rotateOffset: -10,
         speedX: 5,
-        speedXVariance: 5,
-        speedY: 5
+        speedXVariance: -5,
+        speedY: 5,
+        speedYVariance: -5,
+        speedXOffset: 2,
+        speedYOffset: 2
       }
     });
     return _this;

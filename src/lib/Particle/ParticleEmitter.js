@@ -36,23 +36,37 @@ class ParticleEmitter extends EObject {
       rotateOffset: 0
     }
     lodash.merge(this, option)
+    
+    setTimeout(() => {
+      this.checkParticle()
+    }, 50);
   }
   createNewParticle () {
     var size = this.getSize()
     this.children.push(new this.type({
       emitter: this,
+
       opacity: 0.2,
-      backgroundColor: 'red',
-      speedX: this.getParticleSpeedX(),
-      speedY: this.getParticleSpeedY(),
-      accelateX: this.particle.accelateX,
-      accelateY: this.particle.accelateY,
       life: this.getLife(),
+      backgroundColor: this.particle.backgroundColor,
+      icon: this.particle.icon,
+
       size: size,
-      width: this.area.width * Math.random(),
-      height: this.area.height * Math.random(),
       sizeOffset: this.particle.sizeOffset,
       sizeVariance: this.particle.sizeVariance,
+
+      width: this.area.width * Math.random(),
+      height: this.area.height * Math.random(),
+
+      speedX: this.getParticleSpeedX(),
+      speedY: this.getParticleSpeedY(),
+
+      accelateX: this.particle.accelateX,
+      accelateY: this.particle.accelateY,
+
+      speedXOffset: this.particle.speedXOffset,
+      speedYOffset: this.particle.speedYOffset,
+
       angle: this.getAngle(),
       rotate: this.getRotate(),
       rotateOffset: this.particle.rotateOffset
@@ -103,6 +117,19 @@ class ParticleEmitter extends EObject {
   killParticle (particle) {
     particle.isDie = true
     util.removeArr(this.children, particle)
+  }
+  checkParticle () {
+    var now = new Date()
+    for (let i = this.children.length - 1; i > -1; i--) {
+      const element = array[i]
+    }
+    lodash.remove(this.children, element => {
+      if (now - element.startTime > element.life) {
+        element.isDie = true
+        return true
+      }
+      return false
+    })
   }
   render (a, b) {
     super.render(a, b)

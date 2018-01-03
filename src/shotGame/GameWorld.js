@@ -50,18 +50,23 @@ class GameWorld extends GameWorldCore {
     this.ememyFactory = new EnemyFactory(this)
     this.emitter=new RandomEmitter({
       area:this.constraintAreas[0],
-      type:CircleParticle,
+      type:RectangleParticle,
       maxParticle:30,
       particle:{
         life :10,
+        backgroundColor:"red",
         startSize : 50,
-        sizeOffset:-2,
+        sizeOffset:-0.5,
+        icon:resource.shine,
         sizeVariance:1,
         rotate : 0,
-        rotateOffset:-5,
+        rotateOffset:-10,
         speedX : 5,
-        speedXVariance:5,
-        speedY : 5
+        speedXVariance:-5,
+        speedY : 5,
+        speedYVariance:-5,
+        speedXOffset:2,
+        speedYOffset:2,
       }
      })
   }
