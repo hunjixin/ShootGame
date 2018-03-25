@@ -28,8 +28,8 @@ class View extends UIView {
       parameter: {
         shape: new Rect(0, this.headOffset, stageWidth, stageHeight),
         gameWorldOffset: {
-          x: 100,
-          y: 100,
+          x: 0,
+          y: 0,
           scaleX:0.5,
           scaleY:0.5
         },
@@ -37,7 +37,7 @@ class View extends UIView {
       },
       optional: gameWorld
     }, this)
-/*
+
     Control.getInstance([
       {
         type: Label,
@@ -66,7 +66,9 @@ class View extends UIView {
           shape: new Rect(stageWidth + 80, 0, stageWidth, stageHeight / 2),
           gameWorldOffset: {
             x: 0,
-            y: 0
+            y: 0,
+            scaleX:0.5,
+            scaleY:0.5
           },
           zIndex: 4
         },
@@ -78,14 +80,16 @@ class View extends UIView {
           shape: new Rect(stageWidth + 80, stageHeight / 2 + 20, stageWidth, stageHeight / 2 - 20),
           gameWorldOffset: {
             x: 0,
-            y: stageHeight / 2 + 20
+            y: stageHeight / 2 + 20,
+            scaleX:0.5,
+            scaleY:0.5
           },
           zIndex: 4
         },
         optional:gameWorld
       }
     ], this)
-*/
+
 
     viewOption.stageManager.register('next', (args) => {
       Object.assign(this.stage, args)

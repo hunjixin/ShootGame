@@ -48,7 +48,7 @@ class GameWorld extends GameWorldCore {
     }, 100)
 
     this.ememyFactory = new EnemyFactory(this)
-    resource.shine.
+
     this.emitter=new RandomEmitter({
       area:this.constraintAreas[0],
       type:RectangleParticle,

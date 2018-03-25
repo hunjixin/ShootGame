@@ -26,7 +26,7 @@ class Drawer {
 
   fillDebug (rect) {
     var drawer=new StrokeDrawer(this.context,{color:'blue'})
-    drawer.visitShape(shape)
+    drawer.visitShape(rect)
   }
 }
 

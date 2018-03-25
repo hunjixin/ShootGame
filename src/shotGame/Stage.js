@@ -58,7 +58,7 @@ class Stage extends GameStage {
     this.gameWorld.reset()
   }
   render (drawContext) {
-    super.render(drawContext)
+    //super.render(drawContext)
     var canvas = this.gameWorld.drawScene(this)
     drawContext.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height,
