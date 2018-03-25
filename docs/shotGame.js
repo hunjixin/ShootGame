@@ -781,7 +781,7 @@ exports.default = TimeLine;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -799,26 +799,26 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var ViewCoord = function (_Coord) {
-  _inherits(ViewCoord, _Coord);
+    _inherits(ViewCoord, _Coord);
 
-  function ViewCoord() {
-    _classCallCheck(this, ViewCoord);
+    function ViewCoord() {
+        _classCallCheck(this, ViewCoord);
 
-    return _possibleConstructorReturn(this, (ViewCoord.__proto__ || Object.getPrototypeOf(ViewCoord)).call(this));
-  }
+        return _possibleConstructorReturn(this, (ViewCoord.__proto__ || Object.getPrototypeOf(ViewCoord)).call(this));
+    }
 
-  _createClass(ViewCoord, [{
-    key: 'tansforWorldCoord',
-    value: function tansforWorldCoord(stage, point) {}
-  }, {
-    key: 'tansforWorldCoordY',
-    value: function tansforWorldCoordY(stage, y) {}
-  }, {
-    key: 'tansforWorldCoordX',
-    value: function tansforWorldCoordX(stage, x) {}
-  }]);
+    _createClass(ViewCoord, [{
+        key: 'tansforWorldCoord',
+        value: function tansforWorldCoord(stage, point) {}
+    }, {
+        key: 'tansforWorldCoordY',
+        value: function tansforWorldCoordY(stage, y) {}
+    }, {
+        key: 'tansforWorldCoordX',
+        value: function tansforWorldCoordX(stage, x) {}
+    }]);
 
-  return ViewCoord;
+    return ViewCoord;
 }(_Coord3.default);
 
 exports.default = ViewCoord;
@@ -2296,7 +2296,7 @@ var Stage = function (_GameStage) {
   }, {
     key: 'render',
     value: function render(drawContext) {
-      _get(Stage.prototype.__proto__ || Object.getPrototypeOf(Stage.prototype), 'render', this).call(this, drawContext);
+      //super.render(drawContext)
       var canvas = this.gameWorld.drawScene(this);
       drawContext.drawImage(canvas, // 绘制
       0, 0, canvas.width, canvas.height, this.shape.x, this.shape.y, this.shape.width, this.shape.height);
@@ -21289,7 +21289,7 @@ var Drawer = function () {
     key: 'fillDebug',
     value: function fillDebug(rect) {
       var drawer = new _shape.StrokeDrawer(this.context, { color: 'blue' });
-      drawer.visitShape(shape);
+      drawer.visitShape(rect);
     }
   }]);
 
@@ -23245,6 +23245,7 @@ var GameWorld = function (_GameWorldCore) {
     }, 100);
 
     _this.ememyFactory = new _index.EnemyFactory(_this);
+
     _this.emitter = new _Particle.RandomEmitter({
       area: _this.constraintAreas[0],
       type: _Particle.RectangleParticle,
@@ -23254,7 +23255,7 @@ var GameWorld = function (_GameWorldCore) {
         backgroundColor: "red",
         startSize: 50,
         sizeOffset: -0.5,
-        icon: _resource2.default.shine,
+        icon: _resource2.default.shine.complete ? _resource2.default.shine : null,
         sizeVariance: 1,
         rotate: 0,
         rotateOffset: -10,
@@ -23850,8 +23851,8 @@ var View = function (_UIView) {
       parameter: {
         shape: new _Rect2.default(0, _this.headOffset, stageWidth, stageHeight),
         gameWorldOffset: {
-          x: 100,
-          y: 100,
+          x: 0,
+          y: 0,
           scaleX: 0.5,
           scaleY: 0.5
         },
@@ -23859,55 +23860,52 @@ var View = function (_UIView) {
       },
       optional: gameWorld
     }, _this);
-    /*
-        Control.getInstance([
-          {
-            type: Label,
-            parameter:{
-              shape: new Rect(stageWidth + 5, stageHeight / 4, 80, 20),
-              text: 'top view->'
-            }
-          },
-          {
-            type: Label,
-            parameter:{
-              shape: new Rect(stageWidth + 5, stageHeight / 2, 80, 20),
-              text: '<-full view'
-            }
-          },
-          {
-            type: Label,
-            parameter:{
-              shape: new Rect(stageWidth + 5, stageHeight * 3 / 4, 80, 20),
-              text: 'bottom view->'
-            }
-          },
-          {
-            type: ShowStage,
-            parameter:{
-              shape: new Rect(stageWidth + 80, 0, stageWidth, stageHeight / 2),
-              gameWorldOffset: {
-                x: 0,
-                y: 0
-              },
-              zIndex: 4
-            },
-            optional:gameWorld
-          },
-          {
-            type: ShowStage,
-            parameter:{
-              shape: new Rect(stageWidth + 80, stageHeight / 2 + 20, stageWidth, stageHeight / 2 - 20),
-              gameWorldOffset: {
-                x: 0,
-                y: stageHeight / 2 + 20
-              },
-              zIndex: 4
-            },
-            optional:gameWorld
-          }
-        ], this)
-    */
+
+    _Control2.default.getInstance([{
+      type: _ui.Label,
+      parameter: {
+        shape: new _Rect2.default(stageWidth + 5, stageHeight / 4, 80, 20),
+        text: 'top view->'
+      }
+    }, {
+      type: _ui.Label,
+      parameter: {
+        shape: new _Rect2.default(stageWidth + 5, stageHeight / 2, 80, 20),
+        text: '<-full view'
+      }
+    }, {
+      type: _ui.Label,
+      parameter: {
+        shape: new _Rect2.default(stageWidth + 5, stageHeight * 3 / 4, 80, 20),
+        text: 'bottom view->'
+      }
+    }, {
+      type: _ShowStage2.default,
+      parameter: {
+        shape: new _Rect2.default(stageWidth + 80, 0, stageWidth, stageHeight / 2),
+        gameWorldOffset: {
+          x: 0,
+          y: 0,
+          scaleX: 0.5,
+          scaleY: 0.5
+        },
+        zIndex: 4
+      },
+      optional: gameWorld
+    }, {
+      type: _ShowStage2.default,
+      parameter: {
+        shape: new _Rect2.default(stageWidth + 80, stageHeight / 2 + 20, stageWidth, stageHeight / 2 - 20),
+        gameWorldOffset: {
+          x: 0,
+          y: stageHeight / 2 + 20,
+          scaleX: 0.5,
+          scaleY: 0.5
+        },
+        zIndex: 4
+      },
+      optional: gameWorld
+    }], _this);
 
     viewOption.stageManager.register('next', function (args) {
       Object.assign(_this.stage, args);
